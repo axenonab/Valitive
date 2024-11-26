@@ -1,0 +1,73 @@
+name: Create inbound change set to SF porduction org
+
+#Definition when the workflow should run.
+on: 
+  workflow_dispatch:
+    inputs:
+        ApexComponents:
+            description: 'ApexClasses to change set'
+            required: false
+            type: text
+        ApexTriggers:
+            description: 'ApexTriggers to change set'
+            required: false
+            type: text
+        Flows:
+            description: 'Flows to change set'
+            required: false
+            type: text
+        Objects:
+            description: 'Objects to change set'
+            required: false
+            type: text
+        testclasses:
+            description: Test Classes to include in Change Set
+            required: false
+            type: text
+
+
+#Jobs to be Executed
+jobs:
+    create-and-test-change-set:
+        runs-on: ubuntu-latest
+        steps:
+            #Install Salesforce CLI
+            - name: 'Install SFDX'
+              run: |
+                  wget https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
+                  mkdir ~/sfdx
+                  tar xJf sfdx-linux-x64.tar.xz -C ~/sfdx --strip-components 1
+                  echo "$HOME/sfdx/bin" >> $GITHUB_PATH
+                  ~/sfdx/bin/sfdx version
+            # Checkout the source code
+            - name: 'Checkout source code'
+              uses: actions/checkout@v2
+              with:
+                fetch-depth: 0
+            - name: setup python
+              uses: actions/setup-python@v2
+              with:
+                python-version: 3.8 #install the python needed
+            - name: install requirements
+              run: pip install -r requirements.txt
+            - name: execute python script
+              run: |
+                python create_change_set.py \
+                --apex_classes="${{ github.event.inputs.ApexComponents }}" \
+                --apex_triggers="${{ github.event.inputs.ApexTriggers }}" \
+                --flows="${{ github.event.inputs.Flows }}" \
+                --objects="${{ github.event.inputs.Objects }}"
+            - name: build the .zip artifact
+              run: |
+                sfdx force:source:convert --rootdir toDeploy --outputdir tmp_convert
+                zip -r deploymentArtifact.zip tmp_convert
+            - name: 'Populate auth file with SFDX_URL secret of integration org'
+              shell: bash
+              run: |
+                  echo ${{ secrets.SFDX_PROD_URL }} > ./SFDX_PROD_URL.txt
+            # Authenticate to org using the URL stored in the text file
+            - name: 'Authenticate to Production Org'
+              run: sfdx auth:sfdxurl:store -f ./SFDX_PROD_URL.txt -s -a prod
+            - name: 'Check-only deploy delta changes - run all specific tests'
+              run: |
+                  sfdx force:mdapi:deploy --zipfile deploymentArtifact.zip --checkonly --testlevel RunSpecifiedTests --runtests ${{github.event.inputs.testclasses}}  --json

@@ -1,0 +1,61 @@
+name: Manually deploy to branch to SFOrg
+
+#Definition when the workflow should run.
+on: 
+  workflow_dispatch:
+    inputs:
+      confirm_branch:
+        type: string
+        required: true
+        description: Confirm branch
+
+env:
+ BRANCH_NAME: ${{ github.ref_name }} 
+
+#Jobs to be Executed
+jobs:
+    create-and-test-change-set:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: trstringer/manual-approval@v1
+              with:
+                secret: ${{ github.TOKEN }}
+                approvers: AndreasTimoudasAxenon
+            #Install Salesforce CLI
+            - name: 'Install SFDX'
+              run: |
+                  wget https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
+                  mkdir ~/sfdx
+                  tar xJf sfdx-linux-x64.tar.xz -C ~/sfdx --strip-components 1
+                  echo "$HOME/sfdx/bin" >> $GITHUB_PATH
+                  ~/sfdx/bin/sfdx version
+            # Checkout the source code
+            - name: 'Checkout source code'
+              uses: actions/checkout@v2
+              with:
+                fetch-depth: 0
+            
+            - name: 'Populate auth file with SFDX_URL secret of Development org'
+              if: ${{ env.BRANCH_NAME == 'dev' }}
+              shell: bash
+              run: |
+                  echo ${{ secrets.SFDX_DEV_URL }} > ./SFDX_AUTH_URL.txt
+
+            - name: 'Populate auth file with SFDX_URL secret of QA org'
+              if: ${{ env.BRANCH_NAME == 'qa' }}
+              shell: bash
+              run: |
+                  echo ${{ secrets.SFDX_QA_URL }} > ./SFDX_AUTH_URL.txt
+
+            - name: 'Populate auth file with SFDX_URL secret of Production org'
+              if: ${{ env.BRANCH_NAME == 'master' }}
+              shell: bash
+              run: |
+                  echo ${{ secrets.SFDX_PROD_URL }} > ./SFDX_AUTH_URL.txt
+
+            # Authenticate to org using the URL stored in the text file
+            - name: 'Authenticate to Specified Org'
+              run: sfdx auth:sfdxurl:store -f ./SFDX_AUTH_URL.txt -s -a deployOrg
+            - name: 'Check-only deploy delta changes - run all specific tests'
+              run: |
+                  run: sfdx force:source:deploy -p force-app/ --testlevel RunLocalTests --json
