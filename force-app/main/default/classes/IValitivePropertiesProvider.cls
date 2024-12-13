@@ -7,4 +7,7 @@ public interface IValitivePropertiesProvider {
     String getPassword();
     String getPrivateMonitoringSetId();
     String getOrganisationMonitoringSetId();
+    String getClientId();
+    String getClientSecret();
+    String getApiVersion();
 }

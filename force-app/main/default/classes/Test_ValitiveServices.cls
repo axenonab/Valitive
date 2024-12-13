@@ -14,7 +14,9 @@ private class Test_ValitiveServices {
             .withUsername('mock-user')
             .withPassword('mock-pass')
             .withPrivateMonitoringSetId('mock-private-id')
-            .withOrganisationMonitoringSetId('mock-organisation-id');
+            .withOrganisationMonitoringSetId('mock-organisation-id')
+            .withClientId('mock-client-id')
+            .withClientSecret('mock-client-secret');
         ValitiveClient client = new ValitiveClient(mockProvider);
         ValitiveServices service = new ValitiveServices(client);
         HttpResponse response = service.addPersonToMonitorSet('1', '2');

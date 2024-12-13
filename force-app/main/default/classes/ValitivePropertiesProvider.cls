@@ -36,6 +36,18 @@ public class ValitivePropertiesProvider implements IValitivePropertiesProvider {
         return (String) SETTINGS.get('Organisation_Monitoring_Set_Id__c');
     }
 
+    public String getClientId() {
+        return (String) SETTINGS.get('Client_Id__c');
+    }
+
+    public String getClientSecret() {
+        return (String) SETTINGS.get('Client_Secret__c');
+    }
+
+    public String getApiVersion() {
+        return (String) SETTINGS.get('API_Version__c');
+    }
+
     public Valitive_Setting__mdt getSettings() {
         Boolean isSandbox = isSandbox();
         Valitive_Setting__mdt settings = isSandbox() ? Valitive_Setting__mdt.getInstance('Sandbox') : Valitive_Setting__mdt.getInstance('Production');

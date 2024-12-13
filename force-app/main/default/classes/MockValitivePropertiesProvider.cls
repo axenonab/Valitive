@@ -7,6 +7,9 @@ public class MockValitivePropertiesProvider implements IValitivePropertiesProvid
     private String password;
     private String privateMonitoringSetId;
     private String organisationMonitoringSetId;
+    private String clientId;
+    private String clientSecret;
+    private String apiVersion;
 
     public MockValitivePropertiesProvider withBaseURL(String baseURL) {
         this.baseURL = baseURL;
@@ -43,6 +46,21 @@ public class MockValitivePropertiesProvider implements IValitivePropertiesProvid
         return this;
     }
 
+    public MockValitivePropertiesProvider withClientId(String clientId) {
+        this.clientId = clientId;
+        return this;
+    }
+
+    public MockValitivePropertiesProvider withClientSecret(String clientSecret) {
+        this.clientSecret = clientSecret;
+        return this;
+    }
+
+    public MockValitivePropertiesProvider withApiVersion(String apiVersion) {
+        this.apiVersion = apiVersion;
+        return this;
+    }
+
     public String getBaseURL() {
         return baseURL;
     }
@@ -69,5 +87,17 @@ public class MockValitivePropertiesProvider implements IValitivePropertiesProvid
 
     public String getOrganisationMonitoringSetId() {
         return organisationMonitoringSetId;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public String getClientSecret() {
+        return clientSecret;
+    }
+
+    public String getApiVersion() {
+        return apiVersion;
     }
 }

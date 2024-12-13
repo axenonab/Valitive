@@ -5,6 +5,15 @@
 // You can also execute the entire file by running the command:
 //     SFDX: Execute Anonymous Apex with Editor Contents
 
-string tempvar = 'Enter_your_name_here';
-System.debug('Hello World!');
-System.debug('My name is ' + tempvar);
+ValitivePropertiesProvider valitivePropertiesProvider = new ValitivePropertiesProvider();
+ValitiveClient valitiveClient = new ValitiveClient(valitivePropertiesProvider);
+ValitiveServices valitiveServices = new ValitiveServices(valitiveClient);
+HttpResponse response = valitiveServices.getEvents(valitiveClient.PROPERTIES_PROVIDER.getPrivateMonitoringSetId(), null);
+ValitiveEventResponse eventResponse = ValitiveEventResponse.parse(response.getBody());
+for(ValitiveEventResponse.Event event : eventResponse.events) {
+    System.debug('EVENT' + event);
+}
+//     else{
+//         System.debug('EVENT' + event.payload?.type);
+//     }
+// }
