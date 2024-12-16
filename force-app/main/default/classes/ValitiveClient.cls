@@ -1,4 +1,4 @@
-public virtual class ValitiveClient {
+public class ValitiveClient {
     
     public final IValitivePropertiesProvider PROPERTIES_PROVIDER;
     private static String access_token;
@@ -40,8 +40,12 @@ public virtual class ValitiveClient {
     public HttpResponse getNewAccessToken() {
         Http http = new Http();
         HttpRequest request = new HttpRequest();
-        String template_url = '{0}/pub/oauth/token?grant_type={1}&username={2}&password={3}';
-        request.setEndpoint(this.PROPERTIES_PROVIDER.getTokenEndpoint());
+        String template_url = '{0}{1}';
+        String url = String.format(template_url, new List<String>{
+            this.PROPERTIES_PROVIDER.getBaseURL(),
+            this.PROPERTIES_PROVIDER.getTokenEndpoint()
+        });
+        request.setEndpoint(url);
         request.setHeader('Authorization', 'Basic ' + generateBasicAuth()); 
         request.setMethod('POST');
         request.setHeader('Content-Type', 'application/x-www-form-urlencoded');

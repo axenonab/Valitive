@@ -1,16 +1,14 @@
 public class ValitiveQueryParams {
 
-    public class EventQueryParams {
-        public final static String HAPPENED_ON_OR_AFTER = 'happenedOnOrAfter';
-        public final static String HAPPENED_BEFORE = 'happenedBefore';
-        public final static String DETECTED_ON_OR_AFTER = 'detectedOnOrAfter';
-        public final static String DETECTED_BEFORE = 'detectedBefore';
-        public final static String EVENT_TYPES = 'eventTypes';
-        public final static String SUBJECT_IDS = 'subjectIds';
-        public final static String LEGAL_IDS = 'legalIds';
-        public final static String PARTY_IDS = 'partyIds';
-        public final static String ITERATOR = 'iterator';
-        public final static String WITH_TOTAL = 'withTotal';
-        public final static String SORT_BY = 'sortBy';
-    }
+        public static final String HAPPENED_ON_OR_AFTER = 'happenedOnOrAfter';
+        public static final String HAPPENED_BEFORE = 'happenedBefore';
+        public static final String DETECTED_ON_OR_AFTER = 'detectedOnOrAfter';
+        public static final String DETECTED_BEFORE = 'detectedBefore';
+        public static final String EVENT_TYPES = 'eventTypes';
+        public static final String SUBJECT_IDS = 'subjectIds';
+        public static final String LEGAL_IDS = 'legalIds';
+        public static final String PARTY_IDS = 'partyIds';
+        public static final String ITERATOR = 'iterator';
+        public static final String WITH_TOTAL = 'withTotal';
+        public static final String SORT_BY = 'sortBy';
 }

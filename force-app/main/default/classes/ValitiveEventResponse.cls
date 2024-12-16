@@ -14,8 +14,7 @@ public class ValitiveEventResponse {
 
     public class Event {
         public String id;
-        public String type;
-        public String detectedAt;
+        public Datetime detectedAt;
         public String monitoringSetId;
         public List<String> subjectIds;
         public Payload payload;
@@ -23,7 +22,7 @@ public class ValitiveEventResponse {
         public Event(Map<String, Object> obj){
             this.id = (String) obj.get('id');
             this.type = (String) obj.get('_type');
-            this.detectedAt = (String) obj.get('detectedAt');
+            this.detectedAt = (Datetime) System.JSON.deserialize((String) obj.get('detectedAt'), Datetime.class);
             this.monitoringSetId = (String) obj.get('monitoringSetId');
             this.subjectIds = (List<String>) System.JSON.deserialize(System.JSON.serialize(obj.get('subjectIds')), List<String>.class);
             this.payload = parsePayload((Map<String, Object>) obj.get('payload'));
@@ -86,34 +85,12 @@ public class ValitiveEventResponse {
         }
     }
 
-    public class PersonAddrCorrectedPayload extends Payload {
-        public String type;
-        public String id;
-        public String timestamp;
-        public String personId;
-        public String personLegalId;
-        public String validSince;
-        public Address address;
-        public Address oldAddress;
-        public String addressKind;
-
-        public PersonAddrCorrectedPayload(Map<String, Object> payload){
-            this.type = (String) payload.get('_type');
-            this.id = (String) payload.get('id');
-            this.timestamp = (String) payload.get('timestamp');
-            this.personId = (String) payload.get('personId');
-            this.personLegalId = (String) payload.get('personLegalId');
-            this.validSince = (String) payload.get('validSince');
-            this.address = parseAddress((Map<String, Object>) payload.get('address'));
-            this.oldAddress = parseAddress((Map<String, Object>) payload.get('oldAddress'));
-            this.addressKind = (String) payload.get('addressKind');
-        }
-    }
+   
 
     public class PersonDeceasedPayload extends Payload {
         public String type;
         public String id;
-        public String timestamp;
+        public Datetime timestamp;
         public String personId;
         public String personLegalId;
         public String deceasedOn;
@@ -123,7 +100,7 @@ public class ValitiveEventResponse {
         public PersonDeceasedPayload(Map<String, Object> payload){
             this.type = (String) payload.get('_type');
             this.id = (String) payload.get('id');
-            this.timestamp = (String) payload.get('timestamp');
+            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
             this.personId = (String) payload.get('personId');
             this.personLegalId = (String) payload.get('personLegalId');
             this.deceasedOn = (String) payload.get('deceasedOn');
@@ -135,10 +112,10 @@ public class ValitiveEventResponse {
     public class PersonNameChangedPayload extends Payload {
         public String type;
         public String id;
-        public String timestamp;
+        public Datetime timestamp;
         public String personId;
         public String personLegalId;
-        public String validSince;
+        public Date validSince;
         public String givenName;
         public String firstName;
         public String middleName;
@@ -151,10 +128,10 @@ public class ValitiveEventResponse {
         public PersonNameChangedPayload(Map<String, Object> payload){
             this.type = (String) payload.get('_type');
             this.id = (String) payload.get('id');
-            this.timestamp = (String) payload.get('timestamp');
+            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
             this.personId = (String) payload.get('personId');
             this.personLegalId = (String) payload.get('personLegalId');
-            this.validSince = (String) payload.get('validSince');
+            this.validSince = (Date) System.JSON.deserialize((String) payload.get('validSince'), Date.class);
             this.givenName = (String) payload.get('givenName');
             this.firstName = (String) payload.get('firstName');
             this.middleName = (String) payload.get('middleName');
@@ -169,11 +146,11 @@ public class ValitiveEventResponse {
     public class PhoneBoundPayload extends Payload {
         public String type;
         public String id;
-        public String timestamp;
+        public Datetime timestamp;
         public String telNumber;
         public String partyId;
         public String kind;
-        public String registeredSince;
+        public Date registeredSince;
         public String areaCode;
         public String provider;
         public String countryCode;
@@ -181,11 +158,11 @@ public class ValitiveEventResponse {
         public PhoneBoundPayload(Map<String, Object> payload){
             this.type = (String) payload.get('_type');
             this.id = (String) payload.get('id');
-            this.timestamp = (String) payload.get('timestamp');
+            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
             this.telNumber = (String) payload.get('number');
             this.partyId = (String) payload.get('partyId');
             this.kind = (String) payload.get('kind');
-            this.registeredSince = (String) payload.get('registeredSince');
+            this.registeredSince = (Date) System.JSON.deserialize((String) payload.get('registeredSince'), Date.class);
             this.areaCode = (String) payload.get('areaCode');
             this.provider = (String) payload.get('provider');
             this.countryCode = (String) payload.get('countryCode');
@@ -195,11 +172,11 @@ public class ValitiveEventResponse {
     public class PhoneUnboundPayload extends Payload {
         public String type;
         public String id;
-        public String timestamp;
+        public Datetime timestamp;
         public String telNumber;
         public String partyId;
         public String kind;
-        public String registeredSince;
+        public Date registeredSince;
         public String areaCode;
         public String provider;
         public String countryCode;
@@ -207,11 +184,11 @@ public class ValitiveEventResponse {
         public PhoneUnboundPayload(Map<String, Object> payload){
             this.type = (String) payload.get('_type');
             this.id = (String) payload.get('id');
-            this.timestamp = (String) payload.get('timestamp');
+            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
             this.telNumber = (String) payload.get('number');
             this.partyId = (String) payload.get('partyId');
             this.kind = (String) payload.get('kind');
-            this.registeredSince = (String) payload.get('registeredSince');
+            this.registeredSince = (Date) System.JSON.deserialize((String) payload.get('registeredSince'), Date.class);
             this.areaCode = (String) payload.get('areaCode');
             this.provider = (String) payload.get('provider');
             this.countryCode = (String) payload.get('countryCode');
@@ -221,31 +198,35 @@ public class ValitiveEventResponse {
     public class PersonProtectionActivatedPayload extends Payload {
         public String personId;
         public String personLegalId;
-        public String since;
+        public Date since;
+        public Datetime timestamp;
 
         public PersonProtectionActivatedPayload(Map<String, Object> payload){
             this.personId = (String) payload.get('personId');
             this.personLegalId = (String) payload.get('personLegalId');
-            this.since = (String) payload.get('since');
+            this.since = (Date) System.JSON.deserialize((String) payload.get('since'), Date.class);
+            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
         }
     }
 
     public class PersonProtectionDeactivatedPayload extends Payload {
         public String personId;
         public String personLegalId;
-        public String since;
+        public Datetime timestamp;
+        public Date since;
 
         public PersonProtectionDeactivatedPayload(Map<String, Object> payload){
             this.personId = (String) payload.get('personId');
             this.personLegalId = (String) payload.get('personLegalId');
-            this.since = (String) payload.get('since');
+            this.since = (Date) System.JSON.deserialize((String) payload.get('since'), Date.class);
+            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
         }
     }
 
     public class PersonLegalIdChangedPayload extends Payload {
         public String id;
-        public String timestamp;
-        public String validSince;
+        public Datetime timestamp;
+        public Date validSince;
         public String oldLegalId;
         public Integer changeCode;
         public String personId;
@@ -253,8 +234,8 @@ public class ValitiveEventResponse {
 
         public PersonLegalIdChangedPayload(Map<String, Object> payload){
             this.id = (String) payload.get('id');
-            this.timestamp = (String) payload.get('timestamp');
-            this.validSince = (String) payload.get('validSince');
+            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
+            this.validSince = (Date) System.JSON.deserialize((String) payload.get('validSince'), Date.class);
             this.oldLegalId = (String) payload.get('oldLegalId');
             this.changeCode = (Integer) payload.get('changeCode');
             this.personId = (String) payload.get('personId');
@@ -265,7 +246,7 @@ public class ValitiveEventResponse {
     public class PersonGenderChangedPayload extends Payload {
         public String type;
         public String id;
-        public String timestamp;
+        public Datetime timestamp;
         public String personId;
         public String personLegalId;
         public String gender;
@@ -274,9 +255,11 @@ public class ValitiveEventResponse {
         public PersonGenderChangedPayload(Map<String, Object> payload){
             this.type = (String) payload.get('_type');
             this.id = (String) payload.get('id');
-            this.timestamp = (String) payload.get('timestamp');
+            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
             this.personId = (String) payload.get('personId');
             this.personLegalId = (String) payload.get('personLegalId');
+            this.oldGender = (String) payload.get('oldGender');
+            this.gender = (String) payload.get('gender');
         }
     }
 
@@ -284,7 +267,7 @@ public class ValitiveEventResponse {
     public class PersonAddrChangedPayload extends Payload {
         public String type;
         public String id;
-        public String timestamp;
+        public Datetime timestamp;
         public String personId;
         public String personLegalId;
         public String validSince;
@@ -295,7 +278,7 @@ public class ValitiveEventResponse {
         public PersonAddrChangedPayload(Map<String, Object> payload){
             this.type = (String) payload.get('_type');
             this.id = (String) payload.get('id');
-            this.timestamp = (String) payload.get('timestamp');
+            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
             this.personId = (String) payload.get('personId');
             this.personLegalId = (String) payload.get('personLegalId');
             this.validSince = (String) payload.get('validSince');
@@ -306,6 +289,30 @@ public class ValitiveEventResponse {
 
     }
 
+    public class PersonAddrCorrectedPayload extends Payload {
+        public String type;
+        public String id;
+        public Datetime timestamp;
+        public String personId;
+        public String personLegalId;
+        public String validSince;
+        public Address address;
+        public Address oldAddress;
+        public String addressKind;
+
+        public PersonAddrCorrectedPayload(Map<String, Object> payload){
+            this.type = (String) payload.get('_type');
+            this.id = (String) payload.get('id');
+            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
+            this.personId = (String) payload.get('personId');
+            this.personLegalId = (String) payload.get('personLegalId');
+            this.validSince = (String) payload.get('validSince');
+            this.address = parseAddress((Map<String, Object>) payload.get('address'));
+            this.oldAddress = parseAddress((Map<String, Object>) payload.get('oldAddress'));
+            this.addressKind = (String) payload.get('addressKind');
+        }
+    }
+
     public abstract class Address {}
 
 
@@ -313,19 +320,19 @@ public class ValitiveEventResponse {
         public String type;
         public String country;
         public List<String> addressLines;
-        public String city;
 
         public RawAddress(Map<String, Object> address){
             this.type = (String) address.get('_type');
             this.country = (String) address.get('country');
             this.addressLines = (List<String>) System.JSON.deserialize(System.JSON.serialize(address.get('addressLines')), List<String>.class);
-            this.city = (String) address.get('city');
         }
     }
 
     public class SwedishAddress extends Address{
         public String type;
         public String country;
+        public String city;
+        public String zip;
         public Geolocation geolocation;
         public String postbox;
         public String street;
@@ -344,11 +351,13 @@ public class ValitiveEventResponse {
         public SwedishAddress(Map<String, Object> address){
             this.type = (String) address.get('_type');
             this.country = (String) address.get('country');
-            this.geolocation = new Geolocation((Map<String, Object>) address.get('geolocation'));
+            this.city = (String) address.get('city');
+            this.zip = (String) address.get('zip');
+            this.geolocation = new Geolocation((Map<String, Object>) address.get('geoPoint'));
             this.postbox = (String) address.get('postbox');
             this.street = (String) address.get('street');
             this.street2 = (String) address.get('street2');
-            this.streetNumber = (String) address.get('number_x');
+            this.streetNumber = (String) address.get('number');
             this.numberSuffix = (String) address.get('numberSuffix');
             this.flat = (String) address.get('flat');
             this.careOf = (String) address.get('careOf');
@@ -362,12 +371,12 @@ public class ValitiveEventResponse {
     }
 
     public class Geolocation {
-        public String latitude;
-        public String longetude;
+        public Decimal latitude;
+        public Decimal longitude;
 
         public Geolocation(Map<String, Object> geolocation){
-            this.latitude = (String) geolocation?.get('lat');
-            this.longetude = (String) geolocation?.get('long');
+            this.latitude = (Decimal) geolocation?.get('lat');
+            this.longitude = (Decimal) geolocation?.get('long');
         }
     }
 
