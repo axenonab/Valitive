@@ -6,6 +6,7 @@ public class ValitiveEventResponse {
     }
 
     public ValitiveEventResponse(String json){
+        System.debug(json);
         List<Object> parsed = (List<Object>) System.JSON.deserializeUntyped(json);
         for(Object obj : parsed){
             events.add(new Event((Map<String, Object>) obj));
@@ -21,7 +22,6 @@ public class ValitiveEventResponse {
 
         public Event(Map<String, Object> obj){
             this.id = (String) obj.get('id');
-            this.type = (String) obj.get('_type');
             this.detectedAt = (Datetime) System.JSON.deserialize((String) obj.get('detectedAt'), Datetime.class);
             this.monitoringSetId = (String) obj.get('monitoringSetId');
             this.subjectIds = (List<String>) System.JSON.deserialize(System.JSON.serialize(obj.get('subjectIds')), List<String>.class);
@@ -200,8 +200,10 @@ public class ValitiveEventResponse {
         public String personLegalId;
         public Date since;
         public Datetime timestamp;
+        public String type;
 
         public PersonProtectionActivatedPayload(Map<String, Object> payload){
+            this.type = (String) payload.get('_type');
             this.personId = (String) payload.get('personId');
             this.personLegalId = (String) payload.get('personLegalId');
             this.since = (Date) System.JSON.deserialize((String) payload.get('since'), Date.class);
@@ -214,8 +216,10 @@ public class ValitiveEventResponse {
         public String personLegalId;
         public Datetime timestamp;
         public Date since;
+        public String type;
 
         public PersonProtectionDeactivatedPayload(Map<String, Object> payload){
+            this.type = (String) payload.get('_type');
             this.personId = (String) payload.get('personId');
             this.personLegalId = (String) payload.get('personLegalId');
             this.since = (Date) System.JSON.deserialize((String) payload.get('since'), Date.class);
@@ -224,6 +228,7 @@ public class ValitiveEventResponse {
     }
 
     public class PersonLegalIdChangedPayload extends Payload {
+        public String type;
         public String id;
         public Datetime timestamp;
         public Date validSince;
@@ -233,6 +238,7 @@ public class ValitiveEventResponse {
         public String personLegalId;
 
         public PersonLegalIdChangedPayload(Map<String, Object> payload){
+            this.type = (String) payload.get('_type');
             this.id = (String) payload.get('id');
             this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
             this.validSince = (Date) System.JSON.deserialize((String) payload.get('validSince'), Date.class);

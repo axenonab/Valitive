@@ -40,12 +40,7 @@ public class ValitiveClient {
     public HttpResponse getNewAccessToken() {
         Http http = new Http();
         HttpRequest request = new HttpRequest();
-        String template_url = '{0}{1}';
-        String url = String.format(template_url, new List<String>{
-            this.PROPERTIES_PROVIDER.getBaseURL(),
-            this.PROPERTIES_PROVIDER.getTokenEndpoint()
-        });
-        request.setEndpoint(url);
+        request.setEndpoint(this.PROPERTIES_PROVIDER.getTokenEndpoint());
         request.setHeader('Authorization', 'Basic ' + generateBasicAuth()); 
         request.setMethod('POST');
         request.setHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -54,6 +49,9 @@ public class ValitiveClient {
         System.debug('Headers: ' + request.getHeader('Authorization'));
         System.debug('Endpoint: ' + request.getEndpoint());
         HttpResponse response = http.send(request);
+        if(response.getStatusCode() != 200){
+            throw new ValitiveAuthException('Error getting access token: ' + response.getBody());
+        }
         return response;
     }
 
@@ -63,35 +61,6 @@ public class ValitiveClient {
         return http.send(request);
     }
 
-    public Boolean hasNextPage(HttpResponse response) {
-        return response.getHeaderKeys().contains('Next-Link');
-    }
+    public class ValitiveAuthException extends Exception{}
 
-    public Boolean hasPreviousPage(HttpResponse response) {
-        return response.getHeaderKeys().contains('Prev-Link');
-    }
-
-    public String getCurrentPage(HttpResponse response) {
-        return response.getHeader('Current-Link');
-    }
-
-    public String getNextPage(HttpResponse response) {
-        return response.getHeader('Next-Link');
-    }
-
-    public String getPreviousPage(HttpResponse response) {
-        return response.getHeader('Prev-Link');
-    }
-
-    public Integer getTotalCount(HttpResponse response) {
-        return Integer.valueOf(response.getHeader('Total-Count'));
-    }
-
-    public Integer getResultCount(HttpResponse response) {
-        return Integer.valueOf(response.getHeader('Result-Count'));
-    }
-
-    public String getResultRange(HttpResponse response) {
-        return response.getHeader('Result-Range');
-    }
 }

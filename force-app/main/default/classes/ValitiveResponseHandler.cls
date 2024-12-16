@@ -70,7 +70,7 @@ public class ValitiveResponseHandler {
                     eventsToInsert.add(createPersonNameChangedEvent(valitiveEvent, personNameChangedPayload));
 
                 } else {
-                    System.debug('Unknown event payload type ' + event.type);
+                    System.debug('Unknown event payload type ' + eventPayload);
                 } 
             }
         if(!eventsToInsert.isEmpty()){
@@ -81,13 +81,13 @@ public class ValitiveResponseHandler {
     public static Valitive_Event__c createBasicInfoEvent(ValitiveEventResponse.Event event){
         Valitive_Event__c valitiveEvent = new Valitive_Event__c();
         valitiveEvent.Event_Id__c = event.id;
-        valitiveEvent.Type__c = event.type;
         valitiveEvent.Detected_At__c = event.detectedAt;
         ValitiveEvent.Person_Legal_Id__c = event.subjectIds[0];
         return valitiveEvent;
     }
 
     public static Valitive_Event__c createPhoneBoundEvent(Valitive_Event__c event, ValitiveEventResponse.PhoneBoundPayload phoneBoundPayload){
+        event.Type__c = phoneBoundPayload.type;
         event.Person_Id__c = phoneBoundPayload.partyId;
         event.Timestamp__c = phoneBoundPayload.timestamp;
         event.Phone_Kind__c = phoneBoundPayload.kind;
@@ -100,6 +100,7 @@ public class ValitiveResponseHandler {
     }
 
     public static Valitive_Event__c createPhoneUnboundEvent(Valitive_Event__c event, ValitiveEventResponse.PhoneUnboundPayload phoneUnboundPayload){
+        event.Type__c = phoneUnboundPayload.type;
         event.Person_Id__c = phoneUnboundPayload.partyId;
         event.Timestamp__c = phoneUnboundPayload.timestamp;
         event.Phone_Kind__c = phoneUnboundPayload.kind;
@@ -112,6 +113,7 @@ public class ValitiveResponseHandler {
     }
 
     public static Valitive_Event__c createPersonProtectionActivatedEvent(Valitive_Event__c event, ValitiveEventResponse.PersonProtectionActivatedPayload personProtectionActivatedPayload){
+        event.Type__c = personProtectionActivatedPayload.type;
         event.Since__c = personProtectionActivatedPayload.since;
         event.Person_Legal_Id__c = personProtectionActivatedPayload.personLegalId;
         event.person_Id__c = personProtectionActivatedPayload.personId;
@@ -120,6 +122,7 @@ public class ValitiveResponseHandler {
     }
 
     public static Valitive_Event__c createPersonProtectionDeactivatedEvent(Valitive_Event__c event, ValitiveEventResponse.PersonProtectionDeactivatedPayload personProtectionDeactivatedPayload){
+        event.Type__c = personProtectionDeactivatedPayload.type;
         event.Since__c = personProtectionDeactivatedPayload.since;
         event.Person_Legal_Id__c = personProtectionDeactivatedPayload.personLegalId;
         event.person_Id__c = personProtectionDeactivatedPayload.personId;
@@ -128,6 +131,7 @@ public class ValitiveResponseHandler {
     }
 
     public static Valitive_Event__c createPersonLegalIdChangedEvent(Valitive_Event__c event, ValitiveEventResponse.PersonLegalIdChangedPayload personLegalIdChangedPayload){
+        event.Type__c = personLegalIdChangedPayload.type;
         event.Old_Legal_Id__c = personLegalIdChangedPayload.oldLegalId;
         event.Valid_Since__c = personLegalIdChangedPayload.validSince;
         event.Old_Legal_Id__c = personLegalIdChangedPayload.oldLegalId;
@@ -138,6 +142,7 @@ public class ValitiveResponseHandler {
     }
 
     public static Valitive_Event__c createPersonGenderChangedEvent(Valitive_Event__c event, ValitiveEventResponse.PersonGenderChangedPayload personGenderChangedPayload){
+        event.Type__c = personGenderChangedPayload.type;
         event.Gender__c = personGenderChangedPayload.gender;
         event.Old_Gender__c = personGenderChangedPayload.oldGender;
         event.Timestamp__c = personGenderChangedPayload.timestamp;
@@ -147,7 +152,7 @@ public class ValitiveResponseHandler {
     }
 
     public static Valitive_Event__c createPersonAddrChangedEvent(Valitive_Event__c event, ValitiveEventResponse.PersonAddrChangedPayload personAddrChangedPayload){
-
+        event.Type__c = personAddrChangedPayload.type;
         event.Person_Legal_Id__c = personAddrChangedPayload.personLegalId;
         event.Person_Id__c = personAddrChangedPayload.personId;
         event.Timestamp__c = personAddrChangedPayload.timestamp;
@@ -171,7 +176,7 @@ public class ValitiveResponseHandler {
     }
 
     public static Valitive_Event__c createPersonAddrCorrectedEvent(Valitive_Event__c event, ValitiveEventResponse.PersonAddrCorrectedPayload personAddrCorrectedPayload){
-
+        event.Type__c = personAddrCorrectedPayload.type;
         event.Person_Legal_Id__c = personAddrCorrectedPayload.personLegalId;
         event.Person_Id__c = personAddrCorrectedPayload.personId;
         event.Timestamp__c = personAddrCorrectedPayload.timestamp;
@@ -195,6 +200,7 @@ public class ValitiveResponseHandler {
     }
 
     public static Valitive_Event__c createPersonNameChangedEvent(Valitive_Event__c event, ValitiveEventResponse.PersonNameChangedPayload personNameChangedPayload){
+        event.Type__c = personNameChangedPayload.type;
         event.Person_Legal_Id__c = personNameChangedPayload.personLegalId;
         event.Person_Id__c = personNameChangedPayload.personId;
         event.Timestamp__c = personNameChangedPayload.timestamp;

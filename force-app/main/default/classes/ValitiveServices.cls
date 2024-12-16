@@ -60,7 +60,7 @@ public class ValitiveServices {
         String url = String.format(template_url, new List<String>{
             this.client.PROPERTIES_PROVIDER.getBaseUrl(),
             this.client.PROPERTIES_PROVIDER.getApiVersion(), 
-            monitorSetId 
+            monitorSetId
         });
         String body = JSON.serialize(new Map<String, Object>{
             'legalIds' => new List<String>{personId},
@@ -97,6 +97,12 @@ public class ValitiveServices {
         return String.join(queryParamList, '&');
     }
 
+    public HttpResponse syncEvents(String url){
+        HttpRequest request = createHttpRequest('GET', url, null);
+        HttpResponse response = this.client.send(request);
+        return response;
+    }
+
     public HttpResponse syncEvents(String entity, Map<String, Object> params){
         HttpResponse response;
         if(entity == 'Private'){
@@ -112,11 +118,43 @@ public class ValitiveServices {
         }
         if(response.getStatusCode() == 200){
             ValitiveResponseHandler.handleEventsResponse(response);
+        } else {
+
         }
         return response;
     }
 
+    public Boolean hasNextPage(HttpResponse response) {
+        return response.getHeaderKeys().contains('Next-Link');
+    }
 
+    public Boolean hasPreviousPage(HttpResponse response) {
+        return response.getHeaderKeys().contains('Prev-Link');
+    }
+
+    public String getCurrentPage(HttpResponse response) {
+        return response.getHeader('Current-Link');
+    }
+
+    public String getNextPage(HttpResponse response) {
+        return response.getHeader('Next-Link');
+    }
+
+    public String getPreviousPage(HttpResponse response) {
+        return response.getHeader('Prev-Link');
+    }
+
+    public Integer getTotalCount(HttpResponse response) {
+        return Integer.valueOf(response.getHeader('Total-Count'));
+    }
+
+    public Integer getResultCount(HttpResponse response) {
+        return Integer.valueOf(response.getHeader('Result-Count'));
+    }
+
+    public String getResultRange(HttpResponse response) {
+        return response.getHeader('Result-Range');
+    }
 
    
     

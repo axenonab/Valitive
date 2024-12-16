@@ -5,8 +5,7 @@
 // You can also execute the entire file by running the command:
 //     SFDX: Execute Anonymous Apex with Editor Contents
 
-ValitivePropertiesProvider valitivePropertiesProvider = new ValitivePropertiesProvider();
-ValitiveClient valitiveClient = new ValitiveClient(valitivePropertiesProvider);
-ValitiveServices valitiveServices = new ValitiveServices(valitiveClient);
-HttpResponse response = valitiveServices.syncEvents('Private');
+
+ValitiveServices valitiveServices = new ValitiveServices();
+HttpResponse response = valitiveServices.syncEvents('Private', null);
 
