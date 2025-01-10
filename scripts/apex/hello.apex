@@ -6,6 +6,12 @@
 //     SFDX: Execute Anonymous Apex with Editor Contents
 
 
-ValitiveServices valitiveServices = new ValitiveServices();
-HttpResponse response = valitiveServices.syncEvents('Private', null);
+// ValitiveService valitiveService = new ValitiveService();
+// HttpResponse response = valitiveService.syncEvents('Private', null);
+Map<String, Object> params = new Map<String, Object>{
+    ValitiveQueryParams.ROW_LIMIT => 700
+};
+ValitiveEventsSyncQueueable queueable = new ValitiveEventsSyncQueueable('Private', params);
+
+System.enqueueJob(queueable);
 

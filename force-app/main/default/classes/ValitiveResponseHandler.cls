@@ -55,7 +55,10 @@ public class ValitiveResponseHandler {
 
                     System.debug('PersonAddrChangedPayload');
                     ValitiveEventResponse.PersonAddrChangedPayload personAddrChangedPayload = (ValitiveEventResponse.PersonAddrChangedPayload) eventPayload;
-                    eventsToInsert.add(createPersonAddrChangedEvent(valitiveEvent, personAddrChangedPayload));
+                    Valitive_Event__c createdEvent = createPersonAddrChangedEvent(valitiveEvent, personAddrChangedPayload);
+                    if(createdEvent.Address_Type__c == 'SE_NORMALIZED') {
+                        eventsToInsert.add(createdEvent);
+                    }
 
                 } else if(eventPayload instanceOf ValitiveEventResponse.PersonAddrCorrectedPayload){
 
@@ -68,9 +71,23 @@ public class ValitiveResponseHandler {
                     System.debug('PersonNameChangedPayload');
                     ValitiveEventResponse.PersonNameChangedPayload personNameChangedPayload = (ValitiveEventResponse.PersonNameChangedPayload) eventPayload;
                     eventsToInsert.add(createPersonNameChangedEvent(valitiveEvent, personNameChangedPayload));
+                }
 
-                } else {
-                    System.debug('Unknown event payload type ' + eventPayload);
+                else if(eventPayload instanceof ValitiveEventResponse.PersonDeceasedPayload) {
+                    
+                    System.debug('PersonDeceasedPayload');
+                    ValitiveEventResponse.PersonDeceasedPayload personDeceasedPayload = (ValitiveEventResponse.PersonDeceasedPayload) eventPayload;
+                    eventsToInsert.add(PersonDeceasedEvent(valitiveEvent, personDeceasedPayload));
+
+                } 
+
+                else if (eventPayload instanceof ValitiveEventResponse.PersonGuardPayload) {
+                    System.debug('PersonGuardPayload');
+                    ValitiveEventResponse.PersonGuardPayload personGuardPayload = (ValitiveEventResponse.PersonGuardPayload) eventPayload;
+                    eventsToInsert.add(createPersonGuardEvent(valitiveEvent, personGuardPayload));
+                }
+                 else {
+                    System.debug('Unknown event payload type');
                 } 
             }
         if(!eventsToInsert.isEmpty()){
@@ -84,6 +101,15 @@ public class ValitiveResponseHandler {
         valitiveEvent.Detected_At__c = event.detectedAt;
         ValitiveEvent.Person_Legal_Id__c = event.subjectIds[0];
         return valitiveEvent;
+    }
+
+    public static Valitive_Event__c createPersonGuardEvent(Valitive_Event__c event, ValitiveEventResponse.PersonGuardPayload personGuardPayload){
+        event.Type__c = personGuardPayload.type;
+        event.Person_Id__c = personGuardPayload.personId;
+        event.Timestamp__c = personGuardPayload.timestamp;
+        event.Guardianship_Type__c = personGuardPayload.guardianshipInfo.type;
+        event.Guarded_Since__c = personGuardPayload.guardianshipInfo.guardedSince;
+        return event;
     }
 
     public static Valitive_Event__c createPhoneBoundEvent(Valitive_Event__c event, ValitiveEventResponse.PhoneBoundPayload phoneBoundPayload){
@@ -115,7 +141,6 @@ public class ValitiveResponseHandler {
     public static Valitive_Event__c createPersonProtectionActivatedEvent(Valitive_Event__c event, ValitiveEventResponse.PersonProtectionActivatedPayload personProtectionActivatedPayload){
         event.Type__c = personProtectionActivatedPayload.type;
         event.Since__c = personProtectionActivatedPayload.since;
-        event.Person_Legal_Id__c = personProtectionActivatedPayload.personLegalId;
         event.person_Id__c = personProtectionActivatedPayload.personId;
         event.Timestamp__c = personProtectionActivatedPayload.timestamp;
         return event;
@@ -124,7 +149,6 @@ public class ValitiveResponseHandler {
     public static Valitive_Event__c createPersonProtectionDeactivatedEvent(Valitive_Event__c event, ValitiveEventResponse.PersonProtectionDeactivatedPayload personProtectionDeactivatedPayload){
         event.Type__c = personProtectionDeactivatedPayload.type;
         event.Since__c = personProtectionDeactivatedPayload.since;
-        event.Person_Legal_Id__c = personProtectionDeactivatedPayload.personLegalId;
         event.person_Id__c = personProtectionDeactivatedPayload.personId;
         event.Timestamp__c = personProtectionDeactivatedPayload.timestamp;
         return event;
@@ -135,9 +159,19 @@ public class ValitiveResponseHandler {
         event.Old_Legal_Id__c = personLegalIdChangedPayload.oldLegalId;
         event.Valid_Since__c = personLegalIdChangedPayload.validSince;
         event.Old_Legal_Id__c = personLegalIdChangedPayload.oldLegalId;
-        event.Person_Legal_Id__c = personLegalIdChangedPayload.personLegalId;
         event.Person_Id__c = personLegalIdChangedPayload.personId;
         event.Timestamp__c = personLegalIdChangedPayload.timestamp;
+        event.Sync_Status__c = 'Awaiting Manual Review';
+        return event;
+    }
+
+    public static Valitive_Event__c PersonDeceasedEvent(Valitive_Event__c event, ValitiveEventResponse.PersonDeceasedPayload personDeceasedPayload){
+        event.Type__c = personDeceasedPayload.type;
+        event.Person_Id__c = personDeceasedPayload.personId;
+        event.Timestamp__c = personDeceasedPayload.timestamp;
+        event.Deceased_On__c = personDeceasedPayload.deceasedOn;
+        event.Deceased_On_Month__c = personDeceasedPayload.deceasedOnMonth;
+        event.Deceased_On_Year__c = personDeceasedPayload.deceasedOnYear;
         return event;
     }
 
@@ -146,21 +180,24 @@ public class ValitiveResponseHandler {
         event.Gender__c = personGenderChangedPayload.gender;
         event.Old_Gender__c = personGenderChangedPayload.oldGender;
         event.Timestamp__c = personGenderChangedPayload.timestamp;
-        event.Person_Legal_Id__c = personGenderChangedPayload.personLegalId;
         event.Person_Id__c = personGenderChangedPayload.personId;
+        event.Sync_Status__c = 'Awaiting Manual Review';
         return event;
     }
 
     public static Valitive_Event__c createPersonAddrChangedEvent(Valitive_Event__c event, ValitiveEventResponse.PersonAddrChangedPayload personAddrChangedPayload){
         event.Type__c = personAddrChangedPayload.type;
-        event.Person_Legal_Id__c = personAddrChangedPayload.personLegalId;
         event.Person_Id__c = personAddrChangedPayload.personId;
         event.Timestamp__c = personAddrChangedPayload.timestamp;
 
         if(personAddrChangedPayload.address instanceOf ValitiveEventResponse.SwedishAddress){
             ValitiveEventResponse.SwedishAddress swedishAddress = (ValitiveEventResponse.SwedishAddress) personAddrChangedPayload.address;
             event = mapSwedishAddress(event, swedishAddress);
-        } else if(personAddrChangedPayload.address instanceOf ValitiveEventResponse.RawAddress){
+
+        } 
+        //NO INTREST IN RAW ADDRESSES
+        else if(personAddrChangedPayload.address instanceOf ValitiveEventResponse.RawAddress){
+            //NO INTREST IN RAW ADDRESSES
             ValitiveEventResponse.RawAddress rawAddress = (ValitiveEventResponse.RawAddress) personAddrChangedPayload.address;
             event = mapRawAddress(event, rawAddress);
         }
@@ -168,7 +205,11 @@ public class ValitiveResponseHandler {
         if(personAddrChangedPayload.oldAddress instanceOf ValitiveEventResponse.SwedishAddress){
             ValitiveEventResponse.SwedishAddress swedishAddress = (ValitiveEventResponse.SwedishAddress) personAddrChangedPayload.oldAddress;
             event = mapOldSwedishAddress(event, swedishAddress);
-        } else if(personAddrChangedPayload.oldAddress instanceOf ValitiveEventResponse.RawAddress){
+
+        } 
+        //NO INTREST IN RAW ADDRESSES
+        else if(personAddrChangedPayload.oldAddress instanceOf ValitiveEventResponse.RawAddress){
+
             ValitiveEventResponse.RawAddress rawAddress = (ValitiveEventResponse.RawAddress) personAddrChangedPayload.oldAddress;
             event = mapOldRawAddress(event, rawAddress);
         }
@@ -236,7 +277,6 @@ public class ValitiveResponseHandler {
         event.Misc__c = swedishAddress.misc;
         event.Floor__c = swedishAddress.floor;
         event.Entrance__c = swedishAddress.entrance;
-        event.Address_Kind__c = swedishAddress.kind;
         return event;
     }
 

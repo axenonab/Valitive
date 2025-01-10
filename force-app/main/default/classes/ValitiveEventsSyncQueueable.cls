@@ -1,12 +1,20 @@
 public class ValitiveEventsSyncQueueable implements Queueable, Database.AllowsCallouts {
 
+    private Set<String> ValidEntities = new Set<String>{'Private', 'Organisation'};
+
     private String entity;
     private String nextPage;
     private Map<String, Object> params;
-    private final ValitiveServices service = new ValitiveServices();
+    private final ValitiveService service = new ValitiveService();
+
+
 
     // Constructor for syncing by entity with optional parameters
     public ValitiveEventsSyncQueueable(String entity, Map<String, Object> params) {
+        if (!ValidEntities.contains(entity)) {
+            System.debug('Invalid entity provided. Exiting.');
+            return;
+        }
         this.entity = entity;
         this.params = params.isEmpty() ? null : params;
     }

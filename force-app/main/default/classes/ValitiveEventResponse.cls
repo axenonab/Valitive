@@ -57,7 +57,19 @@ public class ValitiveEventResponse {
                 }
                 when 'PERSON_LEGAL_ID_CHANGED' {
                     return new PersonLegalIdChangedPayload(payload);
-                }                                
+                }
+                when 'PERSON_GENDER_CHANGED' {
+                    return new PersonGenderChangedPayload(payload);
+                }
+                when 'SE_GUARD_ADDED' {
+                    return new PersonGuardPayload(payload);
+                }
+                when 'SE_GUARD_REMOVED' {
+                    return new PersonGuardPayload(payload);
+                }
+                when 'SE_GUARD_CHANGED' {
+                    return new PersonGuardPayload(payload);
+                }
                 when else {
                     return null;
                 }
@@ -93,9 +105,9 @@ public class ValitiveEventResponse {
         public Datetime timestamp;
         public String personId;
         public String personLegalId;
-        public String deceasedOn;
+        public Date deceasedOn;
         public String deceasedOnMonth;
-        public String deceasedOnYear;
+        public Integer deceasedOnYear;
 
         public PersonDeceasedPayload(Map<String, Object> payload){
             this.type = (String) payload.get('_type');
@@ -103,9 +115,9 @@ public class ValitiveEventResponse {
             this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
             this.personId = (String) payload.get('personId');
             this.personLegalId = (String) payload.get('personLegalId');
-            this.deceasedOn = (String) payload.get('deceasedOn');
+            this.deceasedOn = (Date) System.JSON.deserialize((String) payload.get('deceasedOn'), Date.class);
             this.deceasedOnMonth = (String) payload.get('deceasedOnMonth');
-            this.deceasedOnYear = (String) payload.get('deceasedOnYear');
+            this.deceasedOnYear = (Integer) payload.get('deceasedOnYear');
         }
     }
 
@@ -269,6 +281,39 @@ public class ValitiveEventResponse {
         }
     }
 
+    public class PersonGuardPayload extends Payload {
+        public String type;
+        public String id;
+        public Datetime timestamp;
+        public String personId;
+        public String personLegalId;
+        public SwedishGuardianshipInfo guardianshipInfo;
+
+        public PersonGuardPayload(Map<String, Object> payload){
+            this.type = (String) payload.get('_type');
+            this.id = (String) payload.get('id');
+            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
+            this.personId = (String) payload.get('personId');
+            this.personLegalId = (String) payload.get('personLegalId');
+            this.guardianshipInfo = new SwedishGuardianshipInfo((Map<String, Object>) payload.get('guardianshipInfo'));
+        }
+    }
+
+    public class SwedishGuardianshipInfo {
+        public String type;
+        public Date guardedSince;
+        public Date decisionDate;
+        public Date publicationDate;
+        public String publicationText;
+
+        public SwedishGuardianshipInfo(Map<String, Object> guardianshipInfo){
+            this.type = (String) guardianshipInfo.get('type');
+            this.guardedSince = (Date) System.JSON.deserialize((String) guardianshipInfo.get('guardedSince'), Date.class);
+            this.decisionDate = (Date) System.JSON.deserialize((String) guardianshipInfo.get('decisionDate'), Date.class);
+            this.publicationDate = (Date) System.JSON.deserialize((String) guardianshipInfo.get('publicationDate'), Date.class);
+            this.publicationText = (String) guardianshipInfo.get('publicationText');
+        }
+    }
 
     public class PersonAddrChangedPayload extends Payload {
         public String type;

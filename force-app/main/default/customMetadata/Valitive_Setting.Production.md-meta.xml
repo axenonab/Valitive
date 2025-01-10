@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <label>Production</label>
+    <protected>false</protected>
+    <values>
+        <field>API_Version__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Base_URL__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Client_Id__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Client_Secret__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Grant_Type__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Organisation_Monitoring_Set_Id__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Password__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Private_Monitoring_Set_Id__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Token_Endpoint__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Username__c</field>
+        <value xsi:nil="true"/>
+    </values>
+</CustomMetadata>

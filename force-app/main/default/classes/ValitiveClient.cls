@@ -7,11 +7,20 @@ public class ValitiveClient {
         this.PROPERTIES_PROVIDER = provider;
     }
 
+
+    /**
+     * Fetches the access token from the cache
+     * @return String The access token
+     */
     public String fetchAccessToken() {
         String accessToken = (String) Cache.Org.get('local.AccessTokenCache.ValitiveAuthToken');
         return accessToken;
     }
 
+    /**
+     * Gets the access token from the cache or fetches a new one
+     * @return String The access token
+     */
     public String getAccessToken() {
 
         String accessToken = fetchAccessToken();
@@ -28,15 +37,29 @@ public class ValitiveClient {
         return accessToken;
     }
 
+
+    /**
+     * Sets the access token in the cache
+     * @param accessToken The access token
+     * @param expiresIn The time in seconds until the token expires
+     */
     public void setAccessToken(String accessToken, Integer expiresIn) {
         Cache.Org.put('local.AccessTokenCache.ValitiveAuthToken', accessToken, expiresIn);
     }
 
+    /**
+     * Generates a basic auth string
+     */
     public String generateBasicAuth() {
         Blob headerValue = Blob.valueOf(this.PROPERTIES_PROVIDER.getClientId() + ':' + this.PROPERTIES_PROVIDER.getClientSecret());
         return EncodingUtil.base64Encode(headerValue);
     }
 
+    /**
+     * Gets a new access token from the Valitive API
+     * @return HttpResponse The response from the API
+     * @throws ValitiveAuthException If the request fails
+     */
     public HttpResponse getNewAccessToken() {
         Http http = new Http();
         HttpRequest request = new HttpRequest();
@@ -45,9 +68,6 @@ public class ValitiveClient {
         request.setMethod('POST');
         request.setHeader('Content-Type', 'application/x-www-form-urlencoded');
         request.setBody('grant_type=' + this.PROPERTIES_PROVIDER.getGrantType() + '&username=' + this.PROPERTIES_PROVIDER.getUsername() + '&password=' + this.PROPERTIES_PROVIDER.getPassword()); 
-        System.debug('Request: ' + request.getBody());
-        System.debug('Headers: ' + request.getHeader('Authorization'));
-        System.debug('Endpoint: ' + request.getEndpoint());
         HttpResponse response = http.send(request);
         if(response.getStatusCode() != 200){
             throw new ValitiveAuthException('Error getting access token: ' + response.getBody());
@@ -55,6 +75,12 @@ public class ValitiveClient {
         return response;
     }
 
+
+    /**
+     * Sends an HTTP request with the access token
+     * @param request The request to send
+     * @return HttpResponse The response from the API
+     */
     public HttpResponse send(HttpRequest request) {
         Http http = new Http();
         request.setHeader('Authorization', 'Bearer ' + getAccessToken());

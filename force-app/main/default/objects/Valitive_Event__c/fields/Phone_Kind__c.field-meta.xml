@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Phone_Kind__c</fullName>
+    <externalId>false</externalId>
+    <label>Phone Kind</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>MOBILE</fullName>
+                <default>false</default>
+                <label>MOBILE</label>
+            </value>
+            <value>
+                <fullName>LANDLINE</fullName>
+                <default>false</default>
+                <label>LANDLINE</label>
+            </value>
+            <value>
+                <fullName>SWITCHBOARD</fullName>
+                <default>false</default>
+                <label>SWITCHBOARD</label>
+            </value>
+            <value>
+                <fullName>OFFICIAL</fullName>
+                <default>false</default>
+                <label>OFFICIAL</label>
+            </value>
+            <value>
+                <fullName>OTHER</fullName>
+                <default>false</default>
+                <label>OTHER</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

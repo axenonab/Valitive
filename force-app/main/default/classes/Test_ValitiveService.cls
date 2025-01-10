@@ -1,5 +1,5 @@
 @IsTest
-private class Test_ValitiveServices {
+private class Test_ValitiveService {
 
     private static MockValitivePropertiesProvider mockProvider = createMockProvider();
     private static ValitiveClientMock mock = new ValitiveClientMock(mockProvider);
@@ -10,7 +10,7 @@ private class Test_ValitiveServices {
         Test.setMock(HttpCalloutMock.class, mock.mockServer);
         Test.startTest();
 
-        ValitiveServices service = new ValitiveServices();
+        ValitiveService service = new ValitiveService();
         service.setMockIValitivePropertiesProvider(mockProvider);
         HttpResponse response = service.addPersonToMonitorSet(mockProvider.getPrivateMonitoringSetId(), '1');
 
@@ -24,7 +24,7 @@ private class Test_ValitiveServices {
         Test.setMock(HttpCalloutMock.class, mock.mockServer);
         Test.startTest();
 
-        ValitiveServices service = new ValitiveServices();
+        ValitiveService service = new ValitiveService();
         service.setMockIValitivePropertiesProvider(mockProvider);
         HttpResponse response = service.deletePersonFromMonitorSet(mockProvider.getPrivateMonitoringSetId(), '1');
 
@@ -39,7 +39,7 @@ private class Test_ValitiveServices {
         Test.setMock(HttpCalloutMock.class, mock.mockServer);
         Test.startTest();
 
-        ValitiveServices service = new ValitiveServices();
+        ValitiveService service = new ValitiveService();
         service.setMockIValitivePropertiesProvider(mockProvider);
         HttpResponse response = service.deletePersonsFromMonitorSet(mockProvider.getPrivateMonitoringSetId(), new List<String>{'1', '2'});
 
@@ -54,7 +54,7 @@ private class Test_ValitiveServices {
         Test.setMock(HttpCalloutMock.class, mock.mockServer);
         Test.startTest();
 
-        ValitiveServices service = new ValitiveServices();
+        ValitiveService service = new ValitiveService();
         service.setMockIValitivePropertiesProvider(mockProvider);
         HttpResponse response = service.getEvents(mockProvider.getPrivateMonitoringSetId(), null);
 
@@ -80,7 +80,7 @@ private class Test_ValitiveServices {
         Test.setMock(HttpCalloutMock.class, mock.mockServer);
         Test.startTest();
 
-        ValitiveServices service = new ValitiveServices();
+        ValitiveService service = new ValitiveService();
         service.setMockIValitivePropertiesProvider(mockProvider);
         HttpResponse response = service.getEvents(mockProvider.getPrivateMonitoringSetId(), params);
 
