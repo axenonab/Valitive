@@ -12,7 +12,7 @@ private class Test_ValitiveService {
 
         ValitiveService service = new ValitiveService();
         service.setMockIValitivePropertiesProvider(mockProvider);
-        HttpResponse response = service.addPersonToMonitorSet(mockProvider.getPrivateMonitoringSetId(), '1');
+        HttpResponse response = service.addPersonToPrivateMonitoringSet('1');
 
         Test.stopTest();
 
@@ -95,7 +95,7 @@ private class Test_ValitiveService {
         return new MockValitivePropertiesProvider()
             .withBaseURL('https://mock.valitive.com')
             .withApiVersion('v1')
-            .withTokenEndpoint('/oauth/token')
+            .withTokenEndpoint('https://mock.valitive.com/oauth/token')
             .withGrantType('mock-grant')
             .withUsername('mock-user')
             .withPassword('mock-pass')

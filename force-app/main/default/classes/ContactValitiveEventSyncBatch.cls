@@ -8,7 +8,26 @@ public class ContactValitiveEventSyncBatch implements Database.Batchable<sObject
             SELECT
                 Id,
                 Contact__c,
-                Type__c
+                Given_Name__c,
+                FirstName__c,
+                LastName__c,
+                Type__c,
+                Phone_Kind__c,
+                Telephone_Number__c,
+                Country_Code__c,
+                City__c,
+                County__c,
+                Zip__c,
+                Street__c,
+                Property_Identifier__c,
+                Flat__c,
+                Municipality__c,
+                Address_Kind__c,
+                Guarded_Since__c,
+                Deceased_On__c,
+                Sync_Status__c,
+                Synced_To_Contact_At__c,
+                Contact_Sync_Errors__c
             FROM Valitive_Event__c
             WHERE Sync_Status__c = 'Awaiting Contact Sync'
         ]);
@@ -22,6 +41,7 @@ public class ContactValitiveEventSyncBatch implements Database.Batchable<sObject
             Contact updatedContact = handleContactEvents(contactId, contactEvents);
             contactsToUpdate.add(updatedContact);
         }
+        doUpdate(contactsToUpdate, contactEventsMap);
     }
 
     public void finish(Database.BatchableContext BC) {
@@ -40,7 +60,7 @@ public class ContactValitiveEventSyncBatch implements Database.Batchable<sObject
             if(saveResult.isSuccess()){
                 List<Valitive_Event__c> events = contactMap.get(saveResult.getId());
                 for(Valitive_Event__c event: events){
-                    eventsToUpdate.add(setSyncStatus(event, 'Completed', Datetime.now(), null));
+                    eventsToUpdate.add(setSyncStatus(event, 'Completed', Datetime.now(), new List<Database.Error>()));
                 }
             } else {
                 List<Database.Error> errors = saveResult.getErrors();
@@ -58,16 +78,16 @@ public class ContactValitiveEventSyncBatch implements Database.Batchable<sObject
     public Valitive_event__c setSyncStatus(Valitive_event__c event, String status, Datetime syncDate, List<Database.Error> errors){
         event.Sync_Status__c = status;
         event.Synced_To_Contact_At__c = syncDate;
-        if(!errors.isEmpty() && errors != null){
-            event.Sync_Error__c = String.join(errors, '\n');
+        if(!errors.isEmpty()){
+            event.Contact_Sync_Errors__c = String.join(errors, '\n');
         }
         return event;
     }
 
-    public Contact handleContactEvents(Id ContactId, List<Valitive_Event__c> events){
-        Contact con = new Contact(Id=event.Contact__c);
+    public Contact handleContactEvents(Id ContactId, List<Valitive_Event__c> contactEvents){
+        Contact con = new Contact(Id=ContactId);
         for(Valitive_Event__c event: contactEvents){
-            switch on Type__c {
+            switch on event.Type__c {
                 when 'SE_PERSON_ADDR_CHANGED' {
                     con = ContactValitiveEventMapping.mapPersonAddrChangedEventToContact(con, event);
                 }

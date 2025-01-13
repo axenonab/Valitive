@@ -24,6 +24,14 @@ public class SingleRequestMock implements HttpCalloutMock {
 			this.responseHeaders = responseHeaders;
 		}
 
+		public SingleRequestMock(Integer code, String status, Map<String, Object> body) {
+			this.code = code;
+			this.status = status;
+			this.bodyAsString = JSON.serialize(body);
+			this.bodyAsBlob = null;
+			this.responseHeaders = null;
+		}
+
 	    public HTTPResponse respond(HTTPRequest req) {
 	        HttpResponse resp = new HttpResponse();
 			resp.setStatusCode(code);

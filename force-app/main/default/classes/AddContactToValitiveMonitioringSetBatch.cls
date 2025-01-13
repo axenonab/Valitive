@@ -1,5 +1,7 @@
 public class AddContactToValitiveMonitioringSetBatch implements Database.Batchable<sObject>, Database.AllowsCallouts {
 
+    @TestVisible
+    private ValitiveService valitiveService = new ValitiveService();
 
     public Database.QueryLocator start(Database.BatchableContext BC) {
         return Database.getQueryLocator([
@@ -14,13 +16,9 @@ public class AddContactToValitiveMonitioringSetBatch implements Database.Batchab
     }
 
     public void execute(Database.BatchableContext BC, List<Contact> contacts) {
-        ValitivePropertiesProvider provider = new ValitivePropertiesProvider();
-        String privateMonitoringSetId = provider.getPrivateMonitoringSetId();
 
-        ValitiveService valitiveService = new ValitiveService();
         for (Contact contact : contacts) {
-
-            HttpResponse response = valitiveService.addPersonToMonitorSet(privateMonitoringSetId, removeHyphen(contact.Personal_Identity_Number__c));
+            HttpResponse response = this.valitiveService.addPersonToPrivateMonitoringSet(removeHyphen(contact.Personal_Identity_Number__c));
             if (response.getStatusCode() < 400) {
                 contact.IsInMonitoringSet__c = true;
             }

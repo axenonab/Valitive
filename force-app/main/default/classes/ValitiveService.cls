@@ -38,17 +38,28 @@ public class ValitiveService {
      * @param personId The legal ID of the person to add
      * @return HttpResponse The response from the API
      */
-    public HttpResponse addPersonToMonitorSet(String monitorSetId, String personId) {
-        String template_url = '{0}/pub/api/{1}/monitoring-set/{2}/scope/se/person/{3}';
+    private HttpResponse addPersonToMonitorSet(String monitorSetId, String personId) {
+        String template_url = '{0}/pub/api/{1}/monitoring-set/{2}/scope/se/person/legalId';
         String url = String.format(template_url, new List<String>{
             this.client.PROPERTIES_PROVIDER.getBaseUrl(), 
             this.client.PROPERTIES_PROVIDER.getApiVersion(),
-            monitorSetId, 
-            personId
+            monitorSetId
         });
 
-        HttpRequest request = createHttpRequest('POST', url, null);
+        String body = JSON.serialize(new Map<String, Object>{
+            'legalId' => personId
+        });
+
+        HttpRequest request = createHttpRequest('POST', url, body);
         return this.client.send(request);
+    }
+
+    public HttpResponse addPersonToPrivateMonitoringSet(String personId) {
+        return addPersonToMonitorSet(this.client.PROPERTIES_PROVIDER.getPrivateMonitoringSetId(), personId);
+    }
+
+    public HttpResponse addPersonToOrganisationMonitoringSet(String personId) {
+        return addPersonToMonitorSet(this.client.PROPERTIES_PROVIDER.getOrganisationMonitoringSetId(), personId);
     }
 
     /**

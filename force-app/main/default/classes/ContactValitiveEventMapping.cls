@@ -115,8 +115,8 @@ public class ContactValitiveEventMapping {
     }
 
     public static String formatZipCode(String zipCode) {
-        if (zipCode.length() == 4) {
-            return zipCode.substring(0, 2) + ' ' + zipCode.substring(2, 4);
+        if (zipCode.length() == 5) {
+            return zipCode.substring(0, 3) + ' ' + zipCode.substring(3, 5);
         }
         return zipCode;
     }

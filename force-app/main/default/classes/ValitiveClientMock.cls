@@ -32,7 +32,8 @@ public class ValitiveClientMock {
                 '_type' => 'mock-type',
                 'id' => 'mock-id',
                 'monitoringSetId' => 'mock-monitoring-set-id',
-                'updatedAt' => 'mock-datetime'
+                'updatedAt' => 'mock-datetime',
+                'data' => new Map<String, Object>{}
                 }
             ),
             null
@@ -297,8 +298,8 @@ public class ValitiveClientMock {
         );
 
         Map<String, HttpCalloutMock> endpoint2TestResp = new Map<String, HttpCalloutMock>{
-            this.provider.getBaseURL() + this.provider.getTokenEndpoint() => authMock,
-            this.provider.getBaseURL() + '/pub/api/' + this.provider.getApiVersion() + '/monitoring-set/' + this.provider.getPrivateMonitoringSetId() + '/scope/se/person/1' => addPersonToMonitorSerMock,
+            this.provider.getTokenEndpoint() => authMock,
+            this.provider.getBaseURL() + '/pub/api/' + this.provider.getApiVersion() + '/monitoring-set/' + this.provider.getPrivateMonitoringSetId() + '/scope/se/person/legalId' => addPersonToMonitorSerMock,
             this.provider.getBaseURL() + '/pub/api/' + this.provider.getApiVersion() + '/monitoring-set/' + this.provider.getPrivateMonitoringSetId() + '/scope/' => deletePersonFromMonitorSetMock,
             this.provider.getBaseURL() + '/pub/api/' + this.provider.getApiVersion() + '/monitoring-set/' + this.provider.getPrivateMonitoringSetId() + '/events' => getEventMock
         };
