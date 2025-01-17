@@ -22,7 +22,7 @@ public class ValitiveEventResponse {
 
         public Event(Map<String, Object> obj){
             this.id = (String) obj.get('id');
-            this.detectedAt = (Datetime) System.JSON.deserialize((String) obj.get('detectedAt'), Datetime.class);
+            this.detectedAt = (Datetime) System.JSON.deserialize(System.JSON.serialize(obj.get('detectedAt')), Datetime.class);
             this.monitoringSetId = (String) obj.get('monitoringSetId');
             this.subjectIds = (List<String>) System.JSON.deserialize(System.JSON.serialize(obj.get('subjectIds')), List<String>.class);
             this.payload = parsePayload((Map<String, Object>) obj.get('payload'));
@@ -82,7 +82,7 @@ public class ValitiveEventResponse {
     public abstract class Payload {
 
         public Address parseAddress(Map<String, Object> address){
-            String type = (String) address.get('_type');
+            String type = (String) address?.get('_type');
             switch on type {
                 when 'SE_NORMALIZED' {
                     return new SwedishAddress(address);
@@ -112,7 +112,7 @@ public class ValitiveEventResponse {
         public PersonDeceasedPayload(Map<String, Object> payload){
             this.type = (String) payload.get('_type');
             this.id = (String) payload.get('id');
-            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
+            this.timestamp = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('timestamp')), Datetime.class);
             this.personId = (String) payload.get('personId');
             this.personLegalId = (String) payload.get('personLegalId');
             this.deceasedOn = (Date) System.JSON.deserialize((String) payload.get('deceasedOn'), Date.class);
@@ -140,10 +140,10 @@ public class ValitiveEventResponse {
         public PersonNameChangedPayload(Map<String, Object> payload){
             this.type = (String) payload.get('_type');
             this.id = (String) payload.get('id');
-            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
+            this.timestamp = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('timestamp')), Datetime.class);
             this.personId = (String) payload.get('personId');
             this.personLegalId = (String) payload.get('personLegalId');
-            this.validSince = (Date) System.JSON.deserialize((String) payload.get('validSince'), Date.class);
+            this.validSince = payload.containsKey('validSince') ? ((Datetime) System.JSON.deserialize(System.Json.serialize(payload.get('validSince')), Datetime.class)).date() : null;
             this.givenName = (String) payload.get('givenName');
             this.firstName = (String) payload.get('firstName');
             this.middleName = (String) payload.get('middleName');
@@ -170,11 +170,11 @@ public class ValitiveEventResponse {
         public PhoneBoundPayload(Map<String, Object> payload){
             this.type = (String) payload.get('_type');
             this.id = (String) payload.get('id');
-            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
+            this.timestamp = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('timestamp')), Datetime.class);
             this.telNumber = (String) payload.get('number');
             this.partyId = (String) payload.get('partyId');
             this.kind = (String) payload.get('kind');
-            this.registeredSince = (Date) System.JSON.deserialize((String) payload.get('registeredSince'), Date.class);
+            this.registeredSince = payload.containsKey('registeredSince') ? (Date) System.JSON.deserialize((String) payload.get('registeredSince'), Date.class) : null;
             this.areaCode = (String) payload.get('areaCode');
             this.provider = (String) payload.get('provider');
             this.countryCode = (String) payload.get('countryCode');
@@ -196,11 +196,11 @@ public class ValitiveEventResponse {
         public PhoneUnboundPayload(Map<String, Object> payload){
             this.type = (String) payload.get('_type');
             this.id = (String) payload.get('id');
-            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
+            this.timestamp = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('timestamp')), Datetime.class);
             this.telNumber = (String) payload.get('number');
             this.partyId = (String) payload.get('partyId');
             this.kind = (String) payload.get('kind');
-            this.registeredSince = (Date) System.JSON.deserialize((String) payload.get('registeredSince'), Date.class);
+            this.registeredSince = payload.containsKey('registeredSince') ? (Date) System.JSON.deserialize((String) payload.get('registeredSince'), Date.class) : null;
             this.areaCode = (String) payload.get('areaCode');
             this.provider = (String) payload.get('provider');
             this.countryCode = (String) payload.get('countryCode');
@@ -218,8 +218,8 @@ public class ValitiveEventResponse {
             this.type = (String) payload.get('_type');
             this.personId = (String) payload.get('personId');
             this.personLegalId = (String) payload.get('personLegalId');
-            this.since = (Date) System.JSON.deserialize((String) payload.get('since'), Date.class);
-            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
+            this.since = payload.containsKey('since') ? (Date) System.JSON.deserialize((String) payload.get('since'), Date.class) : null;
+            this.timestamp = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('timestamp')), Datetime.class);
         }
     }
 
@@ -235,7 +235,7 @@ public class ValitiveEventResponse {
             this.personId = (String) payload.get('personId');
             this.personLegalId = (String) payload.get('personLegalId');
             this.since = (Date) System.JSON.deserialize((String) payload.get('since'), Date.class);
-            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
+            this.timestamp = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('timestamp')), Datetime.class);
         }
     }
 
@@ -252,8 +252,8 @@ public class ValitiveEventResponse {
         public PersonLegalIdChangedPayload(Map<String, Object> payload){
             this.type = (String) payload.get('_type');
             this.id = (String) payload.get('id');
-            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
-            this.validSince = (Date) System.JSON.deserialize((String) payload.get('validSince'), Date.class);
+            this.timestamp = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('timestamp')), Datetime.class);
+            this.validSince = payload.containsKey('validSince') ? ((Datetime) System.JSON.deserialize(System.Json.serialize(payload.get('validSince')), Datetime.class)).date() : null;
             this.oldLegalId = (String) payload.get('oldLegalId');
             this.changeCode = (Integer) payload.get('changeCode');
             this.personId = (String) payload.get('personId');
@@ -273,7 +273,7 @@ public class ValitiveEventResponse {
         public PersonGenderChangedPayload(Map<String, Object> payload){
             this.type = (String) payload.get('_type');
             this.id = (String) payload.get('id');
-            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
+            this.timestamp = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('timestamp')), Datetime.class);
             this.personId = (String) payload.get('personId');
             this.personLegalId = (String) payload.get('personLegalId');
             this.oldGender = (String) payload.get('oldGender');
@@ -292,7 +292,7 @@ public class ValitiveEventResponse {
         public PersonGuardPayload(Map<String, Object> payload){
             this.type = (String) payload.get('_type');
             this.id = (String) payload.get('id');
-            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
+            this.timestamp = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('timestamp')), Datetime.class);
             this.personId = (String) payload.get('personId');
             this.personLegalId = (String) payload.get('personLegalId');
             this.guardianshipInfo = new SwedishGuardianshipInfo((Map<String, Object>) payload.get('guardianshipInfo'));
@@ -321,7 +321,7 @@ public class ValitiveEventResponse {
         public Datetime timestamp;
         public String personId;
         public String personLegalId;
-        public String validSince;
+        public Date validSince;
         public Address address;
         public Address oldAddress;
         public String addressKind;
@@ -329,10 +329,10 @@ public class ValitiveEventResponse {
         public PersonAddrChangedPayload(Map<String, Object> payload){
             this.type = (String) payload.get('_type');
             this.id = (String) payload.get('id');
-            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
+            this.timestamp = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('timestamp')), Datetime.class);
             this.personId = (String) payload.get('personId');
             this.personLegalId = (String) payload.get('personLegalId');
-            this.validSince = (String) payload.get('validSince');
+            this.validSince = payload.containsKey('validSince') ? ((Datetime) System.JSON.deserialize(System.Json.serialize(payload.get('validSince')), Datetime.class)).date() : null;
             this.address = parseAddress((Map<String, Object>) payload.get('address'));
             this.oldAddress = parseAddress((Map<String, Object>) payload.get('oldAddress'));
             this.addressKind = (String) payload.get('addressKind');
@@ -346,7 +346,7 @@ public class ValitiveEventResponse {
         public Datetime timestamp;
         public String personId;
         public String personLegalId;
-        public String validSince;
+        public Date validSince;
         public Address address;
         public Address oldAddress;
         public String addressKind;
@@ -354,10 +354,10 @@ public class ValitiveEventResponse {
         public PersonAddrCorrectedPayload(Map<String, Object> payload){
             this.type = (String) payload.get('_type');
             this.id = (String) payload.get('id');
-            this.timestamp = (Datetime) System.JSON.deserialize((String) payload.get('timestamp'), Datetime.class);
+            this.timestamp = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('timestamp')), Datetime.class);
             this.personId = (String) payload.get('personId');
             this.personLegalId = (String) payload.get('personLegalId');
-            this.validSince = (String) payload.get('validSince');
+            this.validSince = payload.containsKey('validSince') ? ((Datetime) System.JSON.deserialize(System.Json.serialize(payload.get('validSince')), Datetime.class)).date() : null;
             this.address = parseAddress((Map<String, Object>) payload.get('address'));
             this.oldAddress = parseAddress((Map<String, Object>) payload.get('oldAddress'));
             this.addressKind = (String) payload.get('addressKind');

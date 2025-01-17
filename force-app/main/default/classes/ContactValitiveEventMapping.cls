@@ -107,7 +107,7 @@ public class ContactValitiveEventMapping {
 
     public static String formatPhoneNumber(Valitive_Event__c event) {
         String telNumber = event.Telephone_Number__c;
-        String countryCode = event.Country_Code__c;
+        String countryCode = event.Country_Code__c.replaceAll('[^0-9 ]', '');
         string regexReplace = String.format('^{0}', new List<Object>{countryCode});
         String formatedNumber = telNumber.replaceAll(regexReplace, '0');
         return formatedNumber;

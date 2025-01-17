@@ -17,43 +17,36 @@ public class ValitiveResponseHandler {
 
                 if(eventPayload instanceof ValitiveEventResponse.PhoneBoundPayload){
 
-                    System.debug('PhoneBoundPayload');
                     ValitiveEventResponse.PhoneBoundPayload phoneBoundPayload = (ValitiveEventResponse.PhoneBoundPayload) eventPayload;
                     eventsToInsert.add(createPhoneBoundEvent(valitiveEvent, phoneBoundPayload));
 
                 } else if(eventPayload instanceof ValitiveEventResponse.PhoneUnboundPayload){
 
-                    System.debug('PhoneUnboundPayload');
                     ValitiveEventResponse.PhoneUnboundPayload phoneUnboundPayload = (ValitiveEventResponse.PhoneUnboundPayload) eventPayload;
                     eventsToInsert.add(createPhoneUnboundEvent(valitiveEvent, phoneUnboundPayload));
 
                 } else if(eventPayload instanceof ValitiveEventResponse.PersonProtectionActivatedPayload){
 
-                    System.debug('PersonProtectionActivatedPayload');
                     ValitiveEventResponse.PersonProtectionActivatedPayload personProtectionActivatedPayload = (ValitiveEventResponse.PersonProtectionActivatedPayload) eventPayload;
                     eventsToInsert.add(createPersonProtectionActivatedEvent(valitiveEvent, personProtectionActivatedPayload));
 
                 } else if(eventPayload instanceof ValitiveEventResponse.PersonProtectionDeactivatedPayload){
 
-                    System.debug('PersonProtectionDeactivatedPayload');
                     ValitiveEventResponse.PersonProtectionDeactivatedPayload personProtectionDeactivatedPayload = (ValitiveEventResponse.PersonProtectionDeactivatedPayload) eventPayload;
                     eventsToInsert.add(createPersonProtectionDeactivatedEvent(valitiveEvent, personProtectionDeactivatedPayload));
 
                 } else if(eventPayload instanceof ValitiveEventResponse.PersonLegalIdChangedPayload){
 
-                    System.debug('PersonLegalIdChangedPayload');
                     ValitiveEventResponse.PersonLegalIdChangedPayload personLegalIdChangedPayload = (ValitiveEventResponse.PersonLegalIdChangedPayload) eventPayload;
                     eventsToInsert.add(createPersonLegalIdChangedEvent(valitiveEvent, personLegalIdChangedPayload));
 
                 } else if(eventPayload instanceof ValitiveEventResponse.PersonGenderChangedPayload){
 
-                    System.debug('PersonGenderChangedPayload');
                     ValitiveEventResponse.PersonGenderChangedPayload personGenderChangedPayload = (ValitiveEventResponse.PersonGenderChangedPayload) eventPayload;
                     eventsToInsert.add(createPersonGenderChangedEvent(valitiveEvent, personGenderChangedPayload));
 
                 } else if(eventPayload instanceof ValitiveEventResponse.PersonAddrChangedPayload){
 
-                    System.debug('PersonAddrChangedPayload');
                     ValitiveEventResponse.PersonAddrChangedPayload personAddrChangedPayload = (ValitiveEventResponse.PersonAddrChangedPayload) eventPayload;
                     Valitive_Event__c createdEvent = createPersonAddrChangedEvent(valitiveEvent, personAddrChangedPayload);
                     if(createdEvent.Address_Type__c == 'SE_NORMALIZED') {
@@ -62,37 +55,45 @@ public class ValitiveResponseHandler {
 
                 } else if(eventPayload instanceOf ValitiveEventResponse.PersonAddrCorrectedPayload){
 
-                    System.debug('PersonAddrCorrectedPayload');
                     ValitiveEventResponse.PersonAddrCorrectedPayload personAddrCorrectedPayload = (ValitiveEventResponse.PersonAddrCorrectedPayload) eventPayload;
                     eventsToInsert.add(createPersonAddrCorrectedEvent(valitiveEvent, personAddrCorrectedPayload));
 
                 } else if(eventPayload instanceof ValitiveEventResponse.PersonNameChangedPayload) {
 
-                    System.debug('PersonNameChangedPayload');
                     ValitiveEventResponse.PersonNameChangedPayload personNameChangedPayload = (ValitiveEventResponse.PersonNameChangedPayload) eventPayload;
                     eventsToInsert.add(createPersonNameChangedEvent(valitiveEvent, personNameChangedPayload));
                 }
 
                 else if(eventPayload instanceof ValitiveEventResponse.PersonDeceasedPayload) {
-                    
-                    System.debug('PersonDeceasedPayload');
+
                     ValitiveEventResponse.PersonDeceasedPayload personDeceasedPayload = (ValitiveEventResponse.PersonDeceasedPayload) eventPayload;
                     eventsToInsert.add(PersonDeceasedEvent(valitiveEvent, personDeceasedPayload));
 
                 } 
 
                 else if (eventPayload instanceof ValitiveEventResponse.PersonGuardPayload) {
-                    System.debug('PersonGuardPayload');
+
                     ValitiveEventResponse.PersonGuardPayload personGuardPayload = (ValitiveEventResponse.PersonGuardPayload) eventPayload;
                     eventsToInsert.add(createPersonGuardEvent(valitiveEvent, personGuardPayload));
                 }
                  else {
-                    System.debug('Unknown event payload type');
+                    continue;
                 } 
             }
         if(!eventsToInsert.isEmpty()){
             upsert eventsToInsert Event_Id__c;
+            setContactId(eventsToInsert);
         }
+    }
+
+    public static void setContactId(List<Valitive_Event__c> events){
+        List<Valitive_Event__c> eventsToUpdate = new List<Valitive_Event__c>();
+        for(Valitive_Event__c event : events){
+            String formattedLegalId = event.Person_Legal_Id__c.subString(0, 8) + '-' + event.Person_Legal_Id__c.subString(8, 12);
+            event.Contact__r = new Contact(Personal_Identity_Number__c = formattedLegalId);
+            eventsToUpdate.add(event);
+        }
+        List<Database.SaveResult> results = Database.update(eventsToUpdate, false);
     }
 
     public static Valitive_Event__c createBasicInfoEvent(ValitiveEventResponse.Event event){
@@ -189,6 +190,7 @@ public class ValitiveResponseHandler {
         event.Type__c = personAddrChangedPayload.type;
         event.Person_Id__c = personAddrChangedPayload.personId;
         event.Timestamp__c = personAddrChangedPayload.timestamp;
+        event.Valid_Since__c = personAddrChangedPayload.validSince;
 
         if(personAddrChangedPayload.address instanceOf ValitiveEventResponse.SwedishAddress){
             ValitiveEventResponse.SwedishAddress swedishAddress = (ValitiveEventResponse.SwedishAddress) personAddrChangedPayload.address;
@@ -218,9 +220,9 @@ public class ValitiveResponseHandler {
 
     public static Valitive_Event__c createPersonAddrCorrectedEvent(Valitive_Event__c event, ValitiveEventResponse.PersonAddrCorrectedPayload personAddrCorrectedPayload){
         event.Type__c = personAddrCorrectedPayload.type;
-        event.Person_Legal_Id__c = personAddrCorrectedPayload.personLegalId;
         event.Person_Id__c = personAddrCorrectedPayload.personId;
         event.Timestamp__c = personAddrCorrectedPayload.timestamp;
+        event.Valid_Since__c = personAddrCorrectedPayload.validSince;
 
         if(personAddrCorrectedPayload.address instanceOf ValitiveEventResponse.SwedishAddress){
             ValitiveEventResponse.SwedishAddress swedishAddress = (ValitiveEventResponse.SwedishAddress) personAddrCorrectedPayload.address;

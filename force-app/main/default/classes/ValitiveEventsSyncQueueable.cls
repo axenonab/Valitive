@@ -46,33 +46,31 @@ public class ValitiveEventsSyncQueueable implements Queueable, Database.AllowsCa
 
         HttpResponse response;
 
-        try {
-            // Sync based on nextPage or entity
-            if (this.nextPage != null) {
-                response = service.syncEvents(this.nextPage);
-            } else {
-                response = service.syncEvents(this.entity, this.params);
-            }
 
-            // Handle non-200 status codes
-            if (response.getStatusCode() != 200) {
-                System.debug('Error syncing events: ' + response.getStatusCode() + ' - ' + response.getBody());
-                return;
-            }
-
-            // Process the response
-            ValitiveResponseHandler.handleEventsResponse(response);
-
-            // Check for next page and enqueue if available
-            if (service.hasNextPage(response)) {
-                String nextIterator = service.getNextPage(response);
-                if (!Test.isRunningTest()) {
-                    ValitiveEventsSyncQueueable nextSync = new ValitiveEventsSyncQueueable(nextIterator, true);
-                    System.enqueueJob(nextSync);
-                }
-            }
-        } catch (Exception e) {
-            System.debug('Exception during event sync: ' + e.getMessage());
+        // Sync based on nextPage or entity
+        if (this.nextPage != null) {
+            response = service.syncEvents(this.nextPage);
+        } else {
+            response = service.syncEvents(this.entity, this.params);
         }
+
+        // Handle non-200 status codes
+        if (response.getStatusCode() != 200) {
+            System.debug('Error syncing events: ' + response.getStatusCode() + ' - ' + response.getBody());
+            return;
+        }
+
+        // Process the response
+        ValitiveResponseHandler.handleEventsResponse(response);
+
+        // Check for next page and enqueue if available
+        if (service.hasNextPage(response)) {
+            String nextIterator = service.getNextPage(response);
+            if (!Test.isRunningTest()) {
+                ValitiveEventsSyncQueueable nextSync = new ValitiveEventsSyncQueueable(nextIterator, true);
+                System.enqueueJob(nextSync);
+            }
+        }
+
     }
 }
