@@ -52,14 +52,14 @@ public class ValitiveClientMock {
             System.JSON.serialize(new List<Object>{
                 new Map<String, Object>{
                     'id' => 'mock-idSE_PERSON_NAME_CHANGED',
-                    'detectedAt' => '"2021-08-23T14:55:05.327Z"',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
                     'monitoringSetId' => 'mock-monitoring-set-id',
                     'subjectIds' => new List<String>{'198505229846'},
                     'payload' => new Map<String, Object>{
                         '_type' => 'SE_PERSON_NAME_CHANGED',
                         'id' => 'mock-id',
-                        'timestamp' => '"2021-08-23T14:55:05.327Z"',
-                        'validSince' => '"2021-08-23T14:55:05.327Z"',
+                        'timestamp' => '2021-08-23T14:55:05.327Z',
+                        'validSince' => '2021-08-23T14:55:05.327Z',
                         'givenName' => 'Sven',
                         'firstName' => 'Sven Lars',
                         'lastName' => 'Svenson',
@@ -73,14 +73,14 @@ public class ValitiveClientMock {
                 },
                 new Map<String, Object>{
                     'id' => 'mock-idPERSON_LEGAL_ID_CHANGED',
-                    'detectedAt' => '"2021-08-23T14:55:05.327Z"',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
                     'monitoringSetId' => 'mock-monitoring-set-id',
                     'subjectIds' => new List<String>{'198505229846'},
                     'payload' => new Map<String, Object>{
                         '_type' => 'PERSON_LEGAL_ID_CHANGED',
                         'id' => 'mock-id',
-                        'timestamp' => '"2021-08-23T14:55:05.327Z"',
-                        'validSince' => '"2021-08-23T14:55:05.327Z"',
+                        'timestamp' => '2021-08-23T14:55:05.327Z',
+                        'validSince' => '2021-08-23T14:55:05.327Z',
                         'oldLegalId' => '198712229884',
                         'changeCode' => 23,
                         'personId' => 'mock-person-id',
@@ -89,14 +89,14 @@ public class ValitiveClientMock {
                 },
                 new Map<String, Object>{
                     'id' => 'mock-idSE_PERSON_ADDR_CHANGED',
-                    'detectedAt' => '"2021-08-23T14:55:05.327Z"',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
                     'monitoringSetId' => 'mock-monitoring-set-id',
                     'subjectIds' => new List<String>{'198505229846'},
                     'payload' => new Map<String, Object>{
                         '_type' => 'SE_PERSON_ADDR_CHANGED',
                         'id' => 'mock-id',
-                        'timestamp' => '"2021-08-23T14:55:05.327Z"',
-                        'validSince' => '"2021-08-23T14:55:05.327Z"',
+                        'timestamp' => '2021-08-23T14:55:05.327Z',
+                        'validSince' => '2021-08-23T14:55:05.327Z',
                         'oldLegalId' => '198712229884',
                         'changeCode' => 23,
                         'personId' => 'mock-person-id',
@@ -129,14 +129,14 @@ public class ValitiveClientMock {
                 },
                 new Map<String, Object>{
                     'id' => 'mock-idSE_PERSON_ADDR_CHANGEDRAW',
-                    'detectedAt' => '"2021-08-23T14:55:05.327Z"',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
                     'monitoringSetId' => 'mock-monitoring-set-id',
                     'subjectIds' => new List<String>{'198505229846'},
                     'payload' => new Map<String, Object>{
                         '_type' => 'SE_PERSON_ADDR_CHANGED',
                         'id' => 'mock-id',
-                        'timestamp' => '"2021-08-23T14:55:05.327Z"',
-                        'validSince' => '"2021-08-23T14:55:05.327Z"',
+                        'timestamp' => '2021-08-23T14:55:05.327Z',
+                        'validSince' => '2021-08-23T14:55:05.327Z',
                         'oldLegalId' => '198712229884',
                         'changeCode' => 23,
                         'personId' => 'mock-person-id',
@@ -150,14 +150,14 @@ public class ValitiveClientMock {
                 },
                 new Map<String, Object>{
                     'id' => 'mock-idSE_PERSON_ADDR_CORRECTED',
-                    'detectedAt' => '"2021-08-23T14:55:05.327Z"',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
                     'monitoringSetId' => 'mock-monitoring-set-id',
                     'subjectIds' => new List<String>{'198505229846'},
                     'payload' => new Map<String, Object>{
                         '_type' => 'SE_PERSON_ADDR_CORRECTED',
                         'id' => 'mock-id',
-                        'timestamp' => '"2021-08-23T14:55:05.327Z"',
-                        'validSince' => '"2021-08-23T14:55:05.327Z"',
+                        'timestamp' => '2021-08-23T14:55:05.327Z',
+                        'validSince' => '2021-08-23T14:55:05.327Z',
                         'oldLegalId' => '198712229884',
                         'changeCode' => 23,
                         'personId' => 'mock-person-id',
@@ -190,14 +190,14 @@ public class ValitiveClientMock {
                 },
                 new Map<String, Object>{
                     'id' => 'mock-idSE_PERSON_ADDR_CORRECTEDRAW',
-                    'detectedAt' => '"2021-08-23T14:55:05.327Z"',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
                     'monitoringSetId' => 'mock-monitoring-set-id',
                     'subjectIds' => new List<String>{'198505229846'},
                     'payload' => new Map<String, Object>{
                         '_type' => 'SE_PERSON_ADDR_CORRECTED',
                         'id' => 'mock-id',
-                        'timestamp' => '"2021-08-23T14:55:05.327Z"',
-                        'validSince' => '"2021-08-23T14:55:05.327Z"',
+                        'timestamp' => '2021-08-23T14:55:05.327Z',
+                        'validSince' => '2021-08-23T14:55:05.327Z',
                         'oldLegalId' => '198712229884',
                         'changeCode' => 23,
                         'personId' => 'mock-person-id',
@@ -211,78 +211,129 @@ public class ValitiveClientMock {
                 },
                 new Map<String, Object>{
                     'id' => 'mock-idPHONE_BOUND',
-                    'detectedAt' => '"2021-08-23T14:55:05.327Z"',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
                     'monitoringSetId' => 'mock-monitoring-set-id',
                     'subjectIds' => new List<String>{'198505229846'},
                     'payload' => new Map<String, Object>{
                         '_type' => 'PHONE_BOUND',
                         'id' => 'mock-id',
-                        'timestamp' => '"2021-08-23T14:55:05.327Z"',
+                        'timestamp' => '2021-08-23T14:55:05.327Z',
                         'number' => 'mock-number',
                         'partyId' => 'mock-party-id',
                         'kind' => 'MOBILE',
-                        'registeredSince' => '"2021-08-23T14:55:05.327Z"',
+                        'registeredSince' => '2021-08-23T14:55:05.327Z',
                         'areaCode' => 'mock-area-code',
                         'countryCode' => 'mock-country-code'
                     }
                 },
                 new Map<String, Object>{
                     'id' => 'mock-idPHONE_UNBOUND',
-                    'detectedAt' => '"2021-08-23T14:55:05.327Z"',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
                     'monitoringSetId' => 'mock-monitoring-set-id',
                     'subjectIds' => new List<String>{'198505229846'},
                     'payload' => new Map<String, Object>{
                         '_type' => 'PHONE_UNBOUND',
                         'id' => 'mock-id',
-                        'timestamp' => '"2021-08-23T14:55:05.327Z"',
+                        'timestamp' => '2021-08-23T14:55:05.327Z',
                         'number' => 'mock-number',
                         'partyId' => 'mock-party-id',
                         'kind' => 'MOBILE',
-                        'registeredSince' => '"2021-08-23T14:55:05.327Z"',
+                        'registeredSince' => '2021-08-23T14:55:05.327Z',
                         'areaCode' => 'mock-area-code',
                         'countryCode' => 'mock-country-code'
                     }
                 },
                 new Map<String, Object>{
                     'id' => 'mock-idPERSON_PROTECTION_ACTIVATED',
-                    'detectedAt' => '"2021-08-23T14:55:05.327Z"',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
                     'monitoringSetId' => 'mock-monitoring-set-id',
                     'subjectIds' => new List<String>{'198505229846'},
                     'payload' => new Map<String, Object>{
                         '_type' => 'PERSON_PROTECTION_ACTIVATED',
                         'personId' => 'mock-person-id',
                         'personLegalId' => '198403239846',
-                        'since' => '"2021-08-23"',
-                        'timestamp' => '"2021-08-23T14:55:05.327Z"'
+                        'since' => '2021-08-23',
+                        'timestamp' => '2021-08-23T14:55:05.327Z'
                     }
                 },
                 new Map<String, Object>{
                     'id' => 'mock-idPERSON_PROTECTION_DEACTIVATED',
-                    'detectedAt' => '"2021-08-23T14:55:05.327Z"',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
                     'monitoringSetId' => 'mock-monitoring-set-id',
                     'subjectIds' => new List<String>{'198505229846'},
                     'payload' => new Map<String, Object>{
                         '_type' => 'PERSON_PROTECTION_DEACTIVATED',
                         'personId' => 'mock-person-id',
                         'personLegalId' => '198403239846',
-                        'since' => '"2021-08-23"',
-                        'timestamp' => '"2021-08-23T14:55:05.327Z"'
+                        'since' => '2021-08-23',
+                        'timestamp' => '2021-08-23T14:55:05.327Z'
                     }
                 },
                 new Map<String, Object>{
-                    'id' => 'mock-idPERSON_LEGAL_ID_CHANGED',
-                    'detectedAt' => '"2021-08-23T14:55:05.327Z"',
+                    'id' => 'mock-id-2PERSON_LEGAL_ID_CHANGED',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
                     'monitoringSetId' => 'mock-monitoring-set-id',
                     'subjectIds' => new List<String>{'198505229846'},
                     'payload' => new Map<String, Object>{
                         '_type' => 'PERSON_LEGAL_ID_CHANGED',
                         'id' => 'mock-id',
-                        'timestamp' => '"2021-08-23T14:55:05.327Z"',
-                        'validSince' => '"2021-08-23T14:55:05.327Z"',
+                        'timestamp' => '2021-08-23T14:55:05.327Z',
+                        'validSince' => '2021-08-23T14:55:05.327Z',
                         'oldLegalId' => '198712229884',
                         'changeCode' => 23,
                         'personId' => 'mock-person-id',
                         'personLegalId' => '198403239846'
+                    }
+                },
+                new Map<String, Object>{
+                    'id' => 'mock-id-PERSON_DECEASED',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
+                    'monitoringSetId' => 'mock-monitoring-set-id',
+                    'subjectIds' => new List<String>{'198505229846'},
+                    'payload' => new Map<String, Object>{
+                        '_type' => 'PERSON_DECEASED',
+                        'id' => 'mock-id',
+                        'timestamp' => '2021-08-23T14:55:05.327Z',
+                        'personId' => 'mock-person-id',
+                        'personLegalId' => '198403239846',
+                        'deceasedOnMonth' => '2021-08',
+                        'deceasedOnYear' => '2021',
+                        'deceasedOn' => '2021-08-23T14:55:05.327Z'
+                    }
+                },
+                new Map<String, Object>{
+                    'id' => 'mock-id-PERSON_GENDER_CHANGED',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
+                    'monitoringSetId' => 'mock-monitoring-set-id',
+                    'subjectIds' => new List<String>{'198505229846'},
+                    'payload' => new Map<String, Object>{
+                        '_type' => 'PERSON_GENDER_CHANGED',
+                        'id' => 'mock-id',
+                        'timestamp' => '2021-08-23T14:55:05.327Z',
+                        'personId' => 'mock-person-id',
+                        'personLegalId' => '198403239846',
+                        'oldGender' => 'MALE',
+                        'gender' => 'FEMALE'
+                    }
+                },
+                new Map<String, Object>{
+                    'id' => 'mock-id-SE_GUARD_ADDED',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
+                    'monitoringSetId' => 'mock-monitoring-set-id',
+                    'subjectIds' => new List<String>{'198505229846'},
+                    'payload' => new Map<String, Object>{
+                        '_type' => 'SE_GUARD_ADDED',
+                        'id' => 'mock-id',
+                        'timestamp' => '2021-08-23T14:55:05.327Z',
+                        'personId' => 'mock-person-id',
+                        'personLegalId' => '198403239846',
+                        'guardianshipInfo' => new Map<String, Object>{
+                            'type' => 'GUARDIANSHIP',
+                            'guardedSince' => '2021-08-23',
+                            'decisionDate' => '2021-08-23',
+                            'publicationDate' => '2021-08-23',
+                            'publicationText' => 'mock-publication-text'
+                        }
                     }
                 }
 

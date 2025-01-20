@@ -2,7 +2,7 @@ public class ValitiveEventHandler {
 
     public static Map<Type, IValitiveEventHandler> eventHandlers = new Map<Type, IValitiveEventHandler>{
         ValitiveEventResponse.PhoneBoundPayload.class => new PhoneBoundEvent(),
-        ValitiveEventResponse.PhoneUnboundPayload.class => new PhoneUnboundEvent(),
+        // ValitiveEventResponse.PhoneUnboundPayload.class => new PhoneUnboundEvent(),
         ValitiveEventResponse.PersonProtectionActivatedPayload.class => new PersonProtectionActivatedEvent(),
         ValitiveEventResponse.PersonProtectionDeactivatedPayload.class => new PersonProtectionDeactivatedEvent(),
         ValitiveEventResponse.PersonLegalIdChangedPayload.class => new PersonLegalIdChangedEvent(),
@@ -14,13 +14,18 @@ public class ValitiveEventHandler {
         ValitiveEventResponse.PersonGuardPayload.class => new PersonGuardEvent()
     };
 
+    public static IValitiveEventHandler getEventHandler(ValitiveEventResponse.Payload payload){
+        return eventHandlers.get(payload.getClassType());
+    }
+
     public static Valitive_Event__c handleEvent(Valitive_Event__c baseEvent, ValitiveEventResponse.Payload payload) {
-        IValitiveEventHandler handler = eventHandlers.get(payload.getClassType());
+        IValitiveEventHandler handler = getEventHandler(payload);
         if(handler != null) {
             return handler.handleEvent(baseEvent, payload);
         }
         return null;
     }
+
 
     public interface IValitiveEventHandler {
         Valitive_Event__c handleEvent(Valitive_Event__c baseEvent, ValitiveEventResponse.Payload payload);
@@ -114,33 +119,30 @@ public class ValitiveEventHandler {
             baseEvent.Person_Id__c = personAddrChangedPayload.personId;
             baseEvent.Timestamp__c = personAddrChangedPayload.timestamp;
             baseEvent.Valid_Since__c = personAddrChangedPayload.validSince;
-    
-            if(personAddrChangedPayload.address instanceOf ValitiveEventResponse.SwedishAddress){
+
+            Type addressType = personAddrChangedPayload.address != null ? personAddrChangedPayload.address.getClassType() : null;
+            Type oldAddressType = personAddrChangedPayload.oldAddress != null ? personAddrChangedPayload.oldAddress.getClassType() : null;
+            
+            //WE DO NOT CARE FOR NEW RAW ADDRESSES OR NULL ADDRESSES
+            if(addressType == null || addressType == ValitiveEventResponse.RawAddress.class){
+                return null;
+            }
+
+            if (addressType == ValitiveEventResponse.SwedishAddress.class) {
                 ValitiveEventResponse.SwedishAddress swedishAddress = (ValitiveEventResponse.SwedishAddress) personAddrChangedPayload.address;
                 baseEvent = ValitiveEventHandler.mapSwedishAddress(baseEvent, swedishAddress);
-    
-            } 
-            //NO INTREST IN RAW ADDRESSES
-            else if(personAddrChangedPayload.address instanceOf ValitiveEventResponse.RawAddress){
-                //NO INTREST IN RAW ADDRESSES
-                ValitiveEventResponse.RawAddress rawAddress = (ValitiveEventResponse.RawAddress) personAddrChangedPayload.address;
-                baseEvent = ValitiveEventHandler.mapRawAddress(baseEvent, rawAddress);
             }
-    
-            if(personAddrChangedPayload.oldAddress instanceOf ValitiveEventResponse.SwedishAddress){
-                ValitiveEventResponse.SwedishAddress swedishAddress = (ValitiveEventResponse.SwedishAddress) personAddrChangedPayload.oldAddress;
-                baseEvent = ValitiveEventHandler.mapOldSwedishAddress(baseEvent, swedishAddress);
-    
-            } 
-            //NO INTREST IN RAW ADDRESSES
-            else if(personAddrChangedPayload.oldAddress instanceOf ValitiveEventResponse.RawAddress){
-    
-                ValitiveEventResponse.RawAddress rawAddress = (ValitiveEventResponse.RawAddress) personAddrChangedPayload.oldAddress;
-                baseEvent = ValitiveEventHandler.mapOldRawAddress(baseEvent, rawAddress);
+            if (oldAddressType == ValitiveEventResponse.SwedishAddress.class) {
+                ValitiveEventResponse.SwedishAddress oldSwedishAddress = (ValitiveEventResponse.SwedishAddress) personAddrChangedPayload.oldAddress;
+                baseEvent = ValitiveEventHandler.mapOldSwedishAddress(baseEvent, oldSwedishAddress);
+            } else if (oldAddressType == ValitiveEventResponse.RawAddress.class) {
+                ValitiveEventResponse.RawAddress oldRawAddress = (ValitiveEventResponse.RawAddress) personAddrChangedPayload.oldAddress;
+                baseEvent = ValitiveEventHandler.mapOldRawAddress(baseEvent, oldRawAddress);
             }
             return baseEvent;
+
         }
-    }
+    } 
 
     public class PersonAddrCorrectedEvent implements IValitiveEventHandler {
         public Valitive_Event__c handleEvent(Valitive_Event__c baseEvent, ValitiveEventResponse.Payload payload) {
@@ -149,29 +151,26 @@ public class ValitiveEventHandler {
             baseEvent.Person_Id__c = personAddrCorrectedPayload.personId;
             baseEvent.Timestamp__c = personAddrCorrectedPayload.timestamp;
             baseEvent.Valid_Since__c = personAddrCorrectedPayload.validSince;
-    
-            if(personAddrCorrectedPayload.address instanceOf ValitiveEventResponse.SwedishAddress){
+
+            Type addressType = personAddrCorrectedPayload.address != null ? personAddrCorrectedPayload.address.getClassType() : null;
+            Type oldAddressType = personAddrCorrectedPayload.oldAddress != null ? personAddrCorrectedPayload.oldAddress.getClassType() : null;
+
+            //WE DO NOT CARE FOR NEW RAW ADDRESSES OR NULL ADDRESSES
+            if(addressType == null || addressType == ValitiveEventResponse.RawAddress.class){
+                return null;
+            }
+
+            if (addressType == ValitiveEventResponse.SwedishAddress.class) {
                 ValitiveEventResponse.SwedishAddress swedishAddress = (ValitiveEventResponse.SwedishAddress) personAddrCorrectedPayload.address;
                 baseEvent = ValitiveEventHandler.mapSwedishAddress(baseEvent, swedishAddress);
-    
             } 
-            //NO INTREST IN RAW ADDRESSES
-            else if(personAddrCorrectedPayload.address instanceOf ValitiveEventResponse.RawAddress){
-                //NO INTREST IN RAW ADDRESSES
-                ValitiveEventResponse.RawAddress rawAddress = (ValitiveEventResponse.RawAddress) personAddrCorrectedPayload.address;
-                baseEvent = ValitiveEventHandler.mapRawAddress(baseEvent, rawAddress);
-            }
-    
-            if(personAddrCorrectedPayload.oldAddress instanceOf ValitiveEventResponse.SwedishAddress){
-                ValitiveEventResponse.SwedishAddress swedishAddress = (ValitiveEventResponse.SwedishAddress) personAddrCorrectedPayload.oldAddress;
-                baseEvent = ValitiveEventHandler.mapOldSwedishAddress(baseEvent, swedishAddress);
-    
-            } 
-            //NO INTREST IN RAW ADDRESSES
-            else if(personAddrCorrectedPayload.oldAddress instanceOf ValitiveEventResponse.RawAddress){
-    
-                ValitiveEventResponse.RawAddress rawAddress = (ValitiveEventResponse.RawAddress) personAddrCorrectedPayload.oldAddress;
-                baseEvent = ValitiveEventHandler.mapOldRawAddress(baseEvent, rawAddress);
+
+            if (oldAddressType == ValitiveEventResponse.SwedishAddress.class) {
+                ValitiveEventResponse.SwedishAddress oldSwedishAddress = (ValitiveEventResponse.SwedishAddress) personAddrCorrectedPayload.oldAddress;
+                baseEvent = ValitiveEventHandler.mapOldSwedishAddress(baseEvent, oldSwedishAddress);
+            } else if (oldAddressType == ValitiveEventResponse.RawAddress.class) {
+                ValitiveEventResponse.RawAddress oldRawAddress = (ValitiveEventResponse.RawAddress) personAddrCorrectedPayload.oldAddress;
+                baseEvent = ValitiveEventHandler.mapOldRawAddress(baseEvent, oldRawAddress);
             }
             return baseEvent;
         }

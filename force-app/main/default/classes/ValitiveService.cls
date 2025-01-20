@@ -58,7 +58,7 @@ public class ValitiveService {
         return addPersonToMonitorSet(this.client.PROPERTIES_PROVIDER.getPrivateMonitoringSetId(), personId);
     }
 
-    public HttpResponse addPersonToOrganisationMonitoringSet(String personId) {
+    public HttpResponse addOrganisationToOrganisationMonitoringSet(String personId) {
         return addPersonToMonitorSet(this.client.PROPERTIES_PROVIDER.getOrganisationMonitoringSetId(), personId);
     }
 

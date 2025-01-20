@@ -6,7 +6,6 @@ public class ValitiveEventResponse {
     }
 
     public ValitiveEventResponse(String json){
-        System.debug(json);
         List<Object> parsed = (List<Object>) System.JSON.deserializeUntyped(json);
         for(Object obj : parsed){
             events.add(new Event((Map<String, Object>) obj));
@@ -30,6 +29,7 @@ public class ValitiveEventResponse {
 
         public Payload parsePayload(Map<String, Object> payload){
             String type = (String) payload.get('_type');
+
             switch on type {
                 when 'SE_PERSON_ADDR_CHANGED' {
                     return new PersonAddrChangedPayload(payload);
@@ -97,6 +97,7 @@ public class ValitiveEventResponse {
         }
 
         public Type getClassType(){
+
             if (this instanceof ValitiveEventResponse.PhoneBoundPayload) {
                 return ValitiveEventResponse.PhoneBoundPayload.class;
             }
@@ -401,7 +402,19 @@ public class ValitiveEventResponse {
         }
     }
 
-    public abstract class Address {}
+    public abstract class Address {
+
+        public Type getClassType(){
+
+            if (this instanceof ValitiveEventResponse.SwedishAddress) {
+                return ValitiveEventResponse.SwedishAddress.class;
+            }
+            if (this instanceof ValitiveEventResponse.RawAddress) {
+                return ValitiveEventResponse.RawAddress.class;
+            }
+            return null;
+        }
+    }
 
 
     public class RawAddress extends Address {

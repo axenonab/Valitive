@@ -5,6 +5,8 @@ public class ValitiveEventsSyncQueueable implements Queueable, Database.AllowsCa
     private String entity;
     private String nextPage;
     private Map<String, Object> params;
+
+    @TestVisible
     private final ValitiveService service = new ValitiveService();
 
 

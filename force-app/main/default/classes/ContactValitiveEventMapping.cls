@@ -95,7 +95,7 @@ public class ContactValitiveEventMapping {
         return con;
     }
 
-    public static String constructAdressSteetString(Valitive_Event__c event) {
+    private static String constructAdressSteetString(Valitive_Event__c event) {
         String street = event.Street__c + ' ' + event.Property_Identifier__c;
         if(!String.isBlank(event.Number_Suffix__c)){
             street += event.Number_Suffix__c;
@@ -106,9 +106,7 @@ public class ContactValitiveEventMapping {
         return street;
     }
 
-
-
-    public static String formatPhoneNumber(Valitive_Event__c event) {
+    private static String formatPhoneNumber(Valitive_Event__c event) {
         String telNumber = event.Telephone_Number__c;
         String countryCode = event.Country_Code__c.replaceAll('[^0-9 ]', '');
         string regexReplace = String.format('^{0}', new List<Object>{countryCode});
@@ -117,7 +115,7 @@ public class ContactValitiveEventMapping {
 
     }
 
-    public static String formatZipCode(String zipCode) {
+    private static String formatZipCode(String zipCode) {
         if (zipCode.length() == 5) {
             return zipCode.substring(0, 3) + ' ' + zipCode.substring(3, 5);
         }
