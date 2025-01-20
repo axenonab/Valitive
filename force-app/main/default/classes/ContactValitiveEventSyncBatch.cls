@@ -21,6 +21,7 @@ public class ContactValitiveEventSyncBatch implements Database.Batchable<sObject
                 Street__c,
                 Property_Identifier__c,
                 Flat__c,
+                Number_Suffix__c,
                 Municipality__c,
                 Address_Kind__c,
                 Guarded_Since__c,

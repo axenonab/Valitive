@@ -95,6 +95,43 @@ public class ValitiveEventResponse {
                 }
             }
         }
+
+        public Type getClassType(){
+            if (this instanceof ValitiveEventResponse.PhoneBoundPayload) {
+                return ValitiveEventResponse.PhoneBoundPayload.class;
+            }
+            if (this instanceof ValitiveEventResponse.PhoneUnboundPayload) {
+                return ValitiveEventResponse.PhoneUnboundPayload.class;
+            }
+            if (this instanceof ValitiveEventResponse.PersonProtectionActivatedPayload) {
+                return ValitiveEventResponse.PersonProtectionActivatedPayload.class;
+            }
+            if (this instanceof ValitiveEventResponse.PersonProtectionDeactivatedPayload) {
+                return ValitiveEventResponse.PersonProtectionDeactivatedPayload.class;
+            }
+            if (this instanceof ValitiveEventResponse.PersonLegalIdChangedPayload) {
+                return ValitiveEventResponse.PersonLegalIdChangedPayload.class;
+            }
+            if (this instanceof ValitiveEventResponse.PersonGenderChangedPayload) {
+                return ValitiveEventResponse.PersonGenderChangedPayload.class;
+            }
+            if (this instanceof ValitiveEventResponse.PersonGuardPayload) {
+                return ValitiveEventResponse.PersonGuardPayload.class;
+            }
+            if (this instanceof ValitiveEventResponse.PersonAddrChangedPayload) {
+                return ValitiveEventResponse.PersonAddrChangedPayload.class;
+            }
+            if (this instanceof ValitiveEventResponse.PersonAddrCorrectedPayload) {
+                return ValitiveEventResponse.PersonAddrCorrectedPayload.class;
+            }
+            if (this instanceof ValitiveEventResponse.PersonNameChangedPayload) {
+                return ValitiveEventResponse.PersonNameChangedPayload.class;
+            }
+            if (this instanceof ValitiveEventResponse.PersonDeceasedPayload) {
+                return ValitiveEventResponse.PersonDeceasedPayload.class;
+            }
+            return null;
+        }
     }
 
    
@@ -430,5 +467,8 @@ public class ValitiveEventResponse {
             this.longitude = (Decimal) geolocation?.get('long');
         }
     }
+
+
+        
 
 }

@@ -45,7 +45,7 @@ public class ContactValitiveEventMapping {
             return con;
         }
         con.MailingStreet = constructAdressSteetString(event);
-        con.MailingCity = event.City__c;
+        con.MailingCity = event.City__c != null ? event.City__c.toUpperCase() : null;
         con.MailingState = event.County__c;
         con.MailingPostalCode = formatZipCode(event.Zip__c);
         // con.MailingCountry = event.Country__c;
@@ -97,6 +97,9 @@ public class ContactValitiveEventMapping {
 
     public static String constructAdressSteetString(Valitive_Event__c event) {
         String street = event.Street__c + ' ' + event.Property_Identifier__c;
+        if(!String.isBlank(event.Number_Suffix__c)){
+            street += event.Number_Suffix__c;
+        }
         if (!String.isBlank(event.Flat__c)){
             street += ' lgh ' + event.Flat__c;
         }
