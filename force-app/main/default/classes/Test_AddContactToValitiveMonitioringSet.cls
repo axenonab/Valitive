@@ -1,7 +1,7 @@
 @IsTest
 private class Test_AddContactToValitiveMonitioringSet {
 
-    private static MockValitivePropertiesProvider mockProvider = createMockProvider();
+    private static MockValitivePropertiesProvider mockProvider = MockValitivePropertiesProvider.createMockProvider();
     private static ValitiveClientMock mock = new ValitiveClientMock(mockProvider);
     
     @IsTest
@@ -26,17 +26,5 @@ private class Test_AddContactToValitiveMonitioringSet {
     }
 
 
-    public static MockValitivePropertiesProvider createMockProvider(){
-        return new MockValitivePropertiesProvider()
-            .withBaseURL('https://mock.valitive.com')
-            .withApiVersion('v1')
-            .withTokenEndpoint('https://mock.valitive.com/oauth/token')
-            .withGrantType('mock-grant')
-            .withUsername('mock-user')
-            .withPassword('mock-pass')
-            .withPrivateMonitoringSetId('mock-private-id')
-            .withOrganisationMonitoringSetId('mock-organisation-id')
-            .withClientId('mock-client-id')
-            .withClientSecret('mock-client-secret');
-    }
+
 }

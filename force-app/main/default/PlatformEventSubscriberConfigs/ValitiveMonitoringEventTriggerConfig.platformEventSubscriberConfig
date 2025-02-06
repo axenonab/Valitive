@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PlatformEventSubscriberConfig xmlns="http://soap.sforce.com/2006/04/metadata">
+    <batchSize>100</batchSize>
+    <masterLabel>ValitiveMonitoringEventTriggerConfig</masterLabel>
+    <platformEventConsumer>ValitiveMonitoringEventTrigger</platformEventConsumer>
+    <user>axenon-uat@unicef.se</user>
+</PlatformEventSubscriberConfig>

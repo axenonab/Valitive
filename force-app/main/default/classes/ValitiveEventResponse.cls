@@ -81,21 +81,6 @@ public class ValitiveEventResponse {
 
     public abstract class Payload {
 
-        public Address parseAddress(Map<String, Object> address){
-            String type = (String) address?.get('_type');
-            switch on type {
-                when 'SE_NORMALIZED' {
-                    return new SwedishAddress(address);
-                }
-                when 'RAW' {
-                    return new RawAddress(address);
-                }
-                when else {
-                    return null;
-                }
-            }
-        }
-
         public Type getClassType(){
 
             if (this instanceof ValitiveEventResponse.PhoneBoundPayload) {
@@ -360,8 +345,8 @@ public class ValitiveEventResponse {
         public String personId;
         public String personLegalId;
         public Date validSince;
-        public Address address;
-        public Address oldAddress;
+        public ValitiveAddress.Address address;
+        public ValitiveAddress.Address oldAddress;
         public String addressKind;
 
         public PersonAddrChangedPayload(Map<String, Object> payload){
@@ -371,8 +356,8 @@ public class ValitiveEventResponse {
             this.personId = (String) payload.get('personId');
             this.personLegalId = (String) payload.get('personLegalId');
             this.validSince = payload.containsKey('validSince') ? ((Datetime) System.JSON.deserialize(System.Json.serialize(payload.get('validSince')), Datetime.class)).date() : null;
-            this.address = parseAddress((Map<String, Object>) payload.get('address'));
-            this.oldAddress = parseAddress((Map<String, Object>) payload.get('oldAddress'));
+            this.address = ValitiveAddress.parseAddress((Map<String, Object>) payload.get('address'));
+            this.oldAddress = ValitiveAddress.parseAddress((Map<String, Object>) payload.get('oldAddress'));
             this.addressKind = (String) payload.get('addressKind');
         }
 
@@ -385,8 +370,8 @@ public class ValitiveEventResponse {
         public String personId;
         public String personLegalId;
         public Date validSince;
-        public Address address;
-        public Address oldAddress;
+        public ValitiveAddress.Address address;
+        public ValitiveAddress.Address oldAddress;
         public String addressKind;
 
         public PersonAddrCorrectedPayload(Map<String, Object> payload){
@@ -396,92 +381,12 @@ public class ValitiveEventResponse {
             this.personId = (String) payload.get('personId');
             this.personLegalId = (String) payload.get('personLegalId');
             this.validSince = payload.containsKey('validSince') ? ((Datetime) System.JSON.deserialize(System.Json.serialize(payload.get('validSince')), Datetime.class)).date() : null;
-            this.address = parseAddress((Map<String, Object>) payload.get('address'));
-            this.oldAddress = parseAddress((Map<String, Object>) payload.get('oldAddress'));
+            this.address = ValitiveAddress.parseAddress((Map<String, Object>) payload.get('address'));
+            this.oldAddress = ValitiveAddress.parseAddress((Map<String, Object>) payload.get('oldAddress'));
             this.addressKind = (String) payload.get('addressKind');
         }
     }
 
-    public abstract class Address {
-
-        public Type getClassType(){
-
-            if (this instanceof ValitiveEventResponse.SwedishAddress) {
-                return ValitiveEventResponse.SwedishAddress.class;
-            }
-            if (this instanceof ValitiveEventResponse.RawAddress) {
-                return ValitiveEventResponse.RawAddress.class;
-            }
-            return null;
-        }
-    }
-
-
-    public class RawAddress extends Address {
-        public String type;
-        public String country;
-        public List<String> addressLines;
-
-        public RawAddress(Map<String, Object> address){
-            this.type = (String) address.get('_type');
-            this.country = (String) address.get('country');
-            this.addressLines = (List<String>) System.JSON.deserialize(System.JSON.serialize(address.get('addressLines')), List<String>.class);
-        }
-    }
-
-    public class SwedishAddress extends Address{
-        public String type;
-        public String country;
-        public String city;
-        public String zip;
-        public Geolocation geolocation;
-        public String postbox;
-        public String street;
-        public String street2;
-        public String streetNumber;
-        public string numberSuffix;
-        public String flat;
-        public String careOf;
-        public String county;
-        public String municipality;
-        public String misc;
-        public String floor;
-        public String entrance;
-        public String kind;
-
-        public SwedishAddress(Map<String, Object> address){
-            this.type = (String) address.get('_type');
-            this.country = (String) address.get('country');
-            this.city = (String) address.get('city');
-            this.zip = (String) address.get('zip');
-            this.geolocation = new Geolocation((Map<String, Object>) address.get('geoPoint'));
-            this.postbox = (String) address.get('postbox');
-            this.street = (String) address.get('street');
-            this.street2 = (String) address.get('street2');
-            this.streetNumber = (String) address.get('number');
-            this.numberSuffix = (String) address.get('numberSuffix');
-            this.flat = (String) address.get('flat');
-            this.careOf = (String) address.get('careOf');
-            this.county = (String) address.get('county');
-            this.municipality = (String) address.get('municipality');
-            this.misc = (String) address.get('misc');
-            this.floor = (String) address.get('floor');
-            this.entrance = (String) address.get('entrance');
-            this.kind = (String) address.get('kind');
-        }
-    }
-
-    public class Geolocation {
-        public Decimal latitude;
-        public Decimal longitude;
-
-        public Geolocation(Map<String, Object> geolocation){
-            this.latitude = (Decimal) geolocation?.get('lat');
-            this.longitude = (Decimal) geolocation?.get('long');
-        }
-    }
-
-
-        
+  
 
 }

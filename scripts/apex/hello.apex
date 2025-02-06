@@ -15,11 +15,13 @@
 
 // System.enqueueJob(queueable);
 
-String endpoint = 'https://mock.valitive.com/pub/api/v1/monitoring-set/mock-private-id/events?limit=700';
+// String endpoint = 'https://mock.valitive.com/pub/api/v1/monitoring-set/mock-private-id/events?limit=700';
 
-// Split the URL at the "?" and take the part before it
-if (endpoint.contains('?')) {
-    endpoint = endpoint.split('\\?')[0];
-}
+// // Split the URL at the "?" and take the part before it
+// if (endpoint.contains('?')) {
+//     endpoint = endpoint.split('\\?')[0];
+// }
 
-System.debug('Base URL: ' + endpoint); // Outputs: https://mock.valitive.com/pub/api/v1/monitoring-set/mock-private-id/events
+// System.debug('Base URL: ' + endpoint); // Outputs: https://mock.valitive.com/pub/api/v1/monitoring-set/mock-private-id/events
+
+Database.executeBatch(new AddContactToValitiveMonitioringSetBatch());

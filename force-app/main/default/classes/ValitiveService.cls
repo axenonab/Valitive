@@ -12,6 +12,22 @@ public class ValitiveService {
         this.client = new ValitiveClient(provider);
     }
 
+    /**
+     * Default constructor
+     */
+    public ValitiveService() {}
+
+    /**
+     * Constructor with IValitivePropertiesProvider
+     * @param provider The IValitivePropertiesProvider to use
+     */
+    public ValitiveService(IValitivePropertiesProvider provider) {
+        this.IPROPERTIES_PROVIDER = provider;
+        this.client = new ValitiveClient(provider);
+    }
+
+
+
 
     /**
      * Create an HttpRequest object

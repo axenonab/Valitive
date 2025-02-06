@@ -100,4 +100,18 @@ public class MockValitivePropertiesProvider implements IValitivePropertiesProvid
     public String getApiVersion() {
         return apiVersion;
     }
+
+    public static MockValitivePropertiesProvider createMockProvider(){
+        return new MockValitivePropertiesProvider()
+            .withBaseURL('https://mock.valitive.com')
+            .withApiVersion('v1')
+            .withTokenEndpoint('https://mock.valitive.com/oauth/token')
+            .withGrantType('mock-grant')
+            .withUsername('mock-user')
+            .withPassword('mock-pass')
+            .withPrivateMonitoringSetId('mock-private-id')
+            .withOrganisationMonitoringSetId('mock-organisation-id')
+            .withClientId('mock-client-id')
+            .withClientSecret('mock-client-secret');
+    }
 }

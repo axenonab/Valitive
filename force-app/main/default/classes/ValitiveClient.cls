@@ -84,6 +84,7 @@ public class ValitiveClient {
     public HttpResponse send(HttpRequest request) {
         Http http = new Http();
         request.setHeader('Authorization', 'Bearer ' + getAccessToken());
+        request.setTimeout(120000);
         return http.send(request);
     }
 

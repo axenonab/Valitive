@@ -1,69 +1,74 @@
-public class AddContactToValitiveMonitioringSetBatch implements Database.Batchable<sObject>, Database.AllowsCallouts {
+public class ValitiveEventProcessor implements Queueable, Database.AllowsCallouts {
 
-    @TestVisible
-    private ValitiveService valitiveService = new ValitiveService();
 
-    public Database.QueryLocator start(Database.BatchableContext BC) {
-        return Database.getQueryLocator([
-            SELECT 
-                Id,
-                Personal_Identity_Number__c,
-                IsInMonitoringSet__c,
-                FirstName,
-                LastName,
-                MailingStreet,
-                MailingCity,
-                MailingState, 
-                MailingPostalCode,
-                MailingMunicipality__c,
-                Foreign_Address__c,
-                Phone,
-                MobilePhone,
-                Protected_Identity__c,
-                npsp__Deceased__c,
-                Deceased_Date__c,
-                Has_Trustee__c,
-                Has_Trustee_Since__c
-            FROM Contact
-            WHERE IsInMonitoringSet__c = false
-            AND Personal_Identity_Number__c != null
-        ]);
+    private ValitiveService valitiveService;
+
+    private Map<String, List<ValitiveMonitoring_Event__e>> eventsMap;
+    
+    public ValitiveEventProcessor(Map<String, List<ValitiveMonitoring_Event__e>> eventsMap, ValitiveService valitiveService) {
+        this.eventsMap = eventsMap;
+        this.valitiveService = valitiveService;
     }
 
-    public void execute(Database.BatchableContext BC, List<Contact> contacts) {
-
-        for (Contact contact : contacts) {
-            HttpResponse response = this.valitiveService.addPersonToPrivateMonitoringSet(removeHyphen(contact.Personal_Identity_Number__c));
-            if (response.getStatusCode() < 400) {
-                handleResponse(response, contact);
+    public void execute(QueueableContext context) {
+        System.debug('Executing ValitiveEventProcessor');
+        System.debug('Events: ' + eventsMap);
+        for (String eventType : eventsMap.keySet()) {
+            List<ValitiveMonitoring_Event__e> events = eventsMap.get(eventType);
+            switch on eventType {
+                when 'AddPerson' {
+                    addPersonToMonitorSet(events);
+                }
             }
         }
-        update contacts;
     }
 
-    public void finish(Database.BatchableContext BC) {
+    private void addPersonToMonitorSet(List<ValitiveMonitoring_Event__e> events){
+        List<Contact> contactsToUpdate = new List<Contact>();
+
+        for (ValitiveMonitoring_Event__e event : events) {
+            String ssn = event.Personal_Identity_Number__c;
+            HttpResponse response = this.valitiveService.addPersonToPrivateMonitoringSet(removeHyphen(ssn));
+    
+            if (response.getStatusCode() < 400) {
+                Contact contact = new Contact(Id = event.Record_Id__c);
+                contact = (Contact) handleResponse(response, contact);
+    
+                if (contact != null) {
+                    contactsToUpdate.add(contact);
+                }
+            }
+        }
+
+        if (!contactsToUpdate.isEmpty()) {
+            update contactsToUpdate;
+        }
     }
 
-    public void handleResponse(HttpResponse response, Contact contact) {
+
+
+    private SObject handleResponse(HttpResponse response, Contact contact) {
         if (response.getStatusCode() > 400) {
             System.debug('Error: ' + response.getBody());
+            return null;
         }
         ValitiveMonitoringSetSubjectResponse parsedResponse = ValitiveMonitoringSetSubjectResponse.parse(response.getBody());
         if (parsedResponse.type == 'PERSON') {
-            handlePersonResponse(parsedResponse, contact);
+            return handlePersonResponse(parsedResponse, contact);
         }   
+        return null;
     }
 
     public Contact handlePersonResponse(ValitiveMonitoringSetSubjectResponse response, Contact contact) {
         ValitiveMonitoringSetSubjectResponse.SEPerson person = (ValitiveMonitoringSetSubjectResponse.SEPerson) response.data;
-
+        System.debug('Person: ' + person);
         if (person.guardianShipInfo != null) {
             contact.Has_Trustee__c = true;
             contact.Has_Trustee_Since__c = person.guardianShipInfo.guardedSince;
         }
         if(person.name != null) {
-            contact.FirstName = !isSameValue(contact.FirstName, person.name.givenName) ? contact.FirstName : person.name.givenName != null ? person.name.givenName : String.join(person.name.names, ' ');
-            contact.LastName = !isSameValue(contact.LastName, person.name.lastName) && person.name.lastName != null ? contact.LastName : person.name.lastName;
+            contact.FirstName = person.name.givenName != null ? person.name.givenName : String.join(person.name.names, ' ');
+            contact.LastName = person.name.lastName;
         }
         if(person.registrationStatus == 'PROTECTED_ID'){
             contact.Protected_Identity__c = true;
@@ -80,11 +85,11 @@ public class AddContactToValitiveMonitioringSetBatch implements Database.Batchab
                     continue;
                 }
                 if(se_address.kind == 'OFFICIAL') {
-                    contact.MailingStreet = !isSameValue(contact.MailingStreet, constructAdressSteetString(se_address)) ? contact.MailingStreet : constructAdressSteetString(se_address);
-                    contact.MailingCity = !isSameValue(contact.MailingCity, se_address.city) ? contact.MailingCity : se_address.city.toUpperCase();
-                    contact.MailingState = !isSameValue(contact.MailingState, se_address.county) ? contact.MailingState : se_address.county;
-                    contact.MailingPostalCode = !isSameValue(contact.MailingPostalCode, formatZipCode(se_address.zip)) ? contact.MailingPostalCode : formatZipCode(se_address.zip);
-                    contact.MailingMunicipality__c = !isSameValue(contact.MailingMunicipality__c, se_address.municipality) ? contact.MailingMunicipality__c : se_address.municipality;
+                    contact.MailingStreet = constructAdressSteetString(se_address);
+                    contact.MailingCity = se_address.city.toUpperCase();
+                    contact.MailingState = se_address.county;
+                    contact.MailingPostalCode = formatZipCode(se_address.zip);
+                    contact.MailingMunicipality__c = se_address.municipality;
                 }
                 if(se_address.kind == 'FOREIGN') {
                     contact.Foreign_Address__c = true;
@@ -106,11 +111,6 @@ public class AddContactToValitiveMonitioringSetBatch implements Database.Batchab
 
         return contact;
 
-    }
-
-
-    private Boolean isSameValue(String value1, String value2) {
-        return value1.toLowerCase() == value2.toLowerCase();
     }
 
     private String removeHyphen(String ssn) {
@@ -143,4 +143,6 @@ public class AddContactToValitiveMonitioringSetBatch implements Database.Batchab
 
     }
 
+
+    
 }

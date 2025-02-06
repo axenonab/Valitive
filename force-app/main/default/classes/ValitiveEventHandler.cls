@@ -128,15 +128,15 @@ public class ValitiveEventHandler {
                 return null;
             }
 
-            if (addressType == ValitiveEventResponse.SwedishAddress.class) {
-                ValitiveEventResponse.SwedishAddress swedishAddress = (ValitiveEventResponse.SwedishAddress) personAddrChangedPayload.address;
+            if (addressType == ValitiveAddress.SwedishAddress.class) {
+                ValitiveAddress.SwedishAddress swedishAddress = (ValitiveAddress.SwedishAddress) personAddrChangedPayload.address;
                 baseEvent = ValitiveEventHandler.mapSwedishAddress(baseEvent, swedishAddress);
             }
-            if (oldAddressType == ValitiveEventResponse.SwedishAddress.class) {
-                ValitiveEventResponse.SwedishAddress oldSwedishAddress = (ValitiveEventResponse.SwedishAddress) personAddrChangedPayload.oldAddress;
+            if (oldAddressType == ValitiveAddress.SwedishAddress.class) {
+                ValitiveAddress.SwedishAddress oldSwedishAddress = (ValitiveAddress.SwedishAddress) personAddrChangedPayload.oldAddress;
                 baseEvent = ValitiveEventHandler.mapOldSwedishAddress(baseEvent, oldSwedishAddress);
             } else if (oldAddressType == ValitiveEventResponse.RawAddress.class) {
-                ValitiveEventResponse.RawAddress oldRawAddress = (ValitiveEventResponse.RawAddress) personAddrChangedPayload.oldAddress;
+                ValitiveAddress.RawAddress oldRawAddress = (ValitiveAddress.RawAddress) personAddrChangedPayload.oldAddress;
                 baseEvent = ValitiveEventHandler.mapOldRawAddress(baseEvent, oldRawAddress);
             }
             return baseEvent;
@@ -161,15 +161,15 @@ public class ValitiveEventHandler {
             }
 
             if (addressType == ValitiveEventResponse.SwedishAddress.class) {
-                ValitiveEventResponse.SwedishAddress swedishAddress = (ValitiveEventResponse.SwedishAddress) personAddrCorrectedPayload.address;
+                ValitiveAddress.SwedishAddress swedishAddress = (ValitiveAddress.SwedishAddress) personAddrCorrectedPayload.address;
                 baseEvent = ValitiveEventHandler.mapSwedishAddress(baseEvent, swedishAddress);
             } 
 
             if (oldAddressType == ValitiveEventResponse.SwedishAddress.class) {
-                ValitiveEventResponse.SwedishAddress oldSwedishAddress = (ValitiveEventResponse.SwedishAddress) personAddrCorrectedPayload.oldAddress;
+                ValitiveAddress.SwedishAddress oldSwedishAddress = (ValitiveAddress.SwedishAddress) personAddrCorrectedPayload.oldAddress;
                 baseEvent = ValitiveEventHandler.mapOldSwedishAddress(baseEvent, oldSwedishAddress);
             } else if (oldAddressType == ValitiveEventResponse.RawAddress.class) {
-                ValitiveEventResponse.RawAddress oldRawAddress = (ValitiveEventResponse.RawAddress) personAddrCorrectedPayload.oldAddress;
+                ValitiveAddress.RawAddress oldRawAddress = (ValitiveAddress.RawAddress) personAddrCorrectedPayload.oldAddress;
                 baseEvent = ValitiveEventHandler.mapOldRawAddress(baseEvent, oldRawAddress);
             }
             return baseEvent;
@@ -222,7 +222,7 @@ public class ValitiveEventHandler {
     }
 
 
-    private static Valitive_Event__c mapSwedishAddress(Valitive_Event__c event, ValitiveEventResponse.SwedishAddress swedishAddress){
+    private static Valitive_Event__c mapSwedishAddress(Valitive_Event__c event, ValitiveAddress.SwedishAddress swedishAddress){
         event.Address_Type__c = swedishAddress.type;
         event.Address_Kind__c = swedishAddress.kind;
         event.Country__c = swedishAddress.country;
@@ -245,14 +245,14 @@ public class ValitiveEventHandler {
         return event;
     }
 
-    private static Valitive_Event__c mapRawAddress(Valitive_Event__c event, ValitiveEventResponse.RawAddress rawAddress){
+    private static Valitive_Event__c mapRawAddress(Valitive_Event__c event, ValitiveAddress.RawAddress rawAddress){
         event.Address_Type__c = rawAddress.type;
         event.Country__c = rawAddress.country;
         event.Address_Lines__c = String.join(rawAddress.addressLines, '\n');
         return event;
     }
 
-    private static Valitive_Event__c mapOldSwedishAddress(Valitive_Event__c event, ValitiveEventResponse.SwedishAddress swedishAddress){
+    private static Valitive_Event__c mapOldSwedishAddress(Valitive_Event__c event, ValitiveAddress.SwedishAddress swedishAddress){
         event.Old_Address_Type__c = swedishAddress.type;
         event.Old_Address_Kind__c = swedishAddress.kind;
         event.Old_Country__c = swedishAddress.country;
@@ -276,7 +276,7 @@ public class ValitiveEventHandler {
         return event;
     }
 
-    private static Valitive_Event__c mapOldRawAddress(Valitive_Event__c event, ValitiveEventResponse.RawAddress rawAddress){
+    private static Valitive_Event__c mapOldRawAddress(Valitive_Event__c event, ValitiveAddress.RawAddress rawAddress){
         event.Old_Address_Type__c = rawAddress.type;
         event.Old_Country__c = rawAddress.country;
         event.Old_Address_Lines__c = String.join(rawAddress.addressLines, '\n');

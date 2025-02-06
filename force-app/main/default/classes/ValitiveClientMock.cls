@@ -29,13 +29,62 @@ public class ValitiveClientMock {
             200,
             'OK',
             System.JSON.serialize(new Map<String, Object>{
-                '_type' => 'mock-type',
+                '_type' => 'PERSON',
                 'id' => 'mock-id',
                 'monitoringSetId' => 'mock-monitoring-set-id',
-                'updatedAt' => 'mock-datetime',
-                'data' => new Map<String, Object>{}
+                'updatedAt' => '2021-08-23T14:55:05.327Z',
+                'data' => new Map<String, Object>{
+                    '_type' => 'SE_PERSON',
+                    'id' => 'mock-person-id',
+                    'legalId' => '198403239846',
+                    'country' => 'mock-country',
+                    'birthDate' => '1984-03-23',
+                    'gender' => 'FEMALE',
+                    'name' => new Map<String, Object>{
+                        'givenName' => 'Sven',
+                        'lastName' => 'Svenson',
+                        'names' => new List<String>{'Sven', 'Lars', 'Svenson'}
+                    },
+                    'addresses' => new List<Map<String, Object>>{
+                        new Map<String, Object>{
+                            'country' => 'mock-country',
+                            'street' => 'mock-street',
+                            'postbox' => 'mock-post-box',
+                            'number' => 'mock-number',
+                            'numberSuffix' => 'mock-number-suffix',
+                            'flat' => 'mock-flat',
+                            'zip' => 'mock-zip-code',
+                            'careOf' => 'mock-care-of',
+                            'city' => 'mock-city',
+                            'county' => 'mock-county',
+                            'municipality' => 'mock-municipality',
+                            'kind' => 'OFFICIAL',
+                            '_type' => 'SE_NORMALIZED'
+                        }
+                    },
+                    'phones' => new List<Map<String, Object>>{
+                        new Map<String, Object>{
+                            'type' => 'MOBILE',
+                            'number' => 'mock-number',
+                            'areaCode' => 'mock-area-code',
+                            'provider' => 'mock-provider',
+                            'operator' => 'mock-operator',
+                            'registeredSince' => '2021-08-23T14:55:05.327Z',
+                            'estPortDate' => '2021-08-23',
+                            'kind' => 'MOBILE',
+                            'priority' => 1
+                        }
+                    },
+                    'registrationStatus' => 'PROTECTED_ID',
+                    'guardianShipInfo' => new Map<String, Object>{
+                        'type' => 'GUARDIANSHIP',
+                        'guardedSince' => '2021-08-23',
+                        'decisionDate' => '2021-08-23',
+                        'publicationDate' => '2021-08-23',
+                        'publicationText' => 'mock-publication-text'
+                    }
                 }
-            ),
+            }),
             null
         );
 
