@@ -32,11 +32,11 @@
     </values>
     <values>
         <field>Private_Monitoring_Set_Id__c</field>
-        <value xsi:type="xsd:string">b9b5a4601d204ba6ba7c3914b549ff0f</value>
+        <value xsi:type="xsd:string">7b86aec23e7c4f06ab514459045ac305</value>
     </values>
     <values>
         <field>Token_Endpoint__c</field>
-        <value xsi:type="xsd:string">https://demo-auth.valitive.com/oauth/token</value>
+        <value xsi:type="xsd:string">https://demo-auth.valitive.com</value>
     </values>
     <values>
         <field>Username__c</field>

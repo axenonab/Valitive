@@ -1,40 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
+
 	<types>
-		<members>IValitivePropertiesProvider</members>
-		<members>MockValitivePropertiesProvider</members>
-		<members>ValitivePropertiesProvider</members>
-		<members>MultiRequestMock</members>
-		<members>SingleRequestMock</members>
-		<members>Test_ValitiveService</members>
-		<members>ValitiveClient</members>
-		<members>ValitiveClientMock</members>
-		<members>ValitiveEventResponse</members>
-		<members>ValitiveEventsSyncQueueable</members>
-		<members>ValitivePropertiesProvider</members>
-		<members>ValitiveQueryParams</members>
-		<members>ValitiveResponseHandler</members>
-		<members>ValitiveService</members>
-		<name>ApexClass</name>
-	</types>
-	<types>
-		<members>Valitive_Setting.Production</members>
-		<members>Valitive_Setting.Sandbox</members>
-		<name>CustomMetadata</name>
-	</types>
-	<types>
-		<members>Valitive_Setting__mdt</members>
-		<members>Valitive_Event__c</members>
-		<name>CustomObject</name>
-	</types>
-	<types>
-		<members>Valitive_Event__c</members>
-		<name>CustomTab</name>
-	</types>
-	<types>
-		<members>ValitiveDemo</members>
-		<members>ValitiveDemoAuth</members>
-		<name>remoteSiteSetting</name>
+		<members>Contact_Emit_AddPerson_Valitive_Event_OnUpsert</members>
+		<name>Flow</name>
 	</types>
 	<version>60.0</version>
 </Package>
