@@ -90,6 +90,35 @@ private class Test_ValitiveService {
 
     }
 
+    @IsTest
+    static void should_get_valitive_provider_settings(){
+        Valitive_Setting__mdt settings = new Valitive_Setting__mdt();
+        settings.Base_URL__c = 'https://mock.valitive.com';
+        settings.Token_Endpoint__c = '/mock/token';
+        settings.Grant_Type__c = 'mock_grant_type';
+        settings.Username__c = 'mock_username';
+        settings.Password__c = 'mock_password';
+        settings.Private_Monitoring_Set_Id__c = 'mock_private_monitoring_set_id';
+        settings.Organisation_Monitoring_Set_Id__c = 'mock_organisation_monitoring_set_id';
+        settings.Client_Id__c = 'mock_client_id';
+        settings.Client_Secret__c = 'mock_client_secret';
+        settings.API_Version__c = 'v1';
+        Test.startTest();
+        ValitivePropertiesProvider provider = new ValitivePropertiesProvider();
+        provider.SETTINGS = settings;
+        Assert.areEqual('https://mock.valitive.com', provider.getBaseUrl());
+        Assert.areEqual('/mock/token', provider.getTokenEndpoint());
+        Assert.areEqual('mock_grant_type', provider.getGrantType());
+        Assert.areEqual('mock_username', provider.getUsername());
+        Assert.areEqual('mock_password', provider.getPassword());
+        Assert.areEqual('mock_private_monitoring_set_id', provider.getPrivateMonitoringSetId());
+        Assert.areEqual('mock_organisation_monitoring_set_id', provider.getOrganisationMonitoringSetId());
+        Assert.areEqual('mock_client_id', provider.getClientId());
+        Assert.areEqual('mock_client_secret', provider.getClientSecret());
+        Assert.areEqual('v1', provider.getApiVersion());
+        Test.stopTest();
+    }
+
   
 
 }

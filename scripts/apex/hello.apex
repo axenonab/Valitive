@@ -23,5 +23,6 @@
 // }
 
 // System.debug('Base URL: ' + endpoint); // Outputs: https://mock.valitive.com/pub/api/v1/monitoring-set/mock-private-id/events
-
-Database.executeBatch(new AddContactToValitiveMonitioringSetBatch());
+IValitivePropertiesProvider IPROPERTIES_PROVIDER = new ValitivePropertiesProvider();
+ValitiveClient client = new ValitiveClient(IPROPERTIES_PROVIDER);
+client.getNewAccessToken();

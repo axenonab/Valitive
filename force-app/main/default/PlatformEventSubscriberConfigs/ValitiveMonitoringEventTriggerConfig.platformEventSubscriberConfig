@@ -3,5 +3,5 @@
     <batchSize>100</batchSize>
     <masterLabel>ValitiveMonitoringEventTriggerConfig</masterLabel>
     <platformEventConsumer>ValitiveMonitoringEventTrigger</platformEventConsumer>
-    <user>axenon-uat@unicef.se</user>
+    <user>axenon@unicef.se</user>
 </PlatformEventSubscriberConfig>

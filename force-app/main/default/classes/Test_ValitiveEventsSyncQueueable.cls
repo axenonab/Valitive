@@ -14,4 +14,15 @@ private class Test_ValitiveEventsSyncQueueable {
         System.enqueueJob(queueable);
         Test.stopTest();
     }
+
+    @isTest
+    static void should_run_ValitiveEventsSyncSch() {
+        Test.startTest();
+        String cronExpression = '0 0 0 * * ?';
+        ValitiveEventsSyncSch schedulable = new ValitiveEventsSyncSch();
+        String jobId = System.schedule('Test Job', cronExpression, schedulable);
+        CronTrigger ct = [SELECT Id, CronExpression, TimesTriggered, NextFireTime FROM CronTrigger WHERE id = :jobId];
+        System.assertEquals(cronExpression, ct.CronExpression);
+        Test.stopTest();
+    }
 }

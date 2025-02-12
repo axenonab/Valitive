@@ -2,6 +2,7 @@
 
 public class ValitivePropertiesProvider implements IValitivePropertiesProvider {
 
+    @TestVisible
     private Valitive_Setting__mdt SETTINGS;
 
     public ValitivePropertiesProvider() {

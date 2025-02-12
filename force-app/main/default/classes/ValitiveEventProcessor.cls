@@ -38,12 +38,35 @@ public class ValitiveEventProcessor implements Queueable, Database.AllowsCallout
                     contactsToUpdate.add(contact);
                 }
             }
+            else {
+                Contact contact = new Contact(
+                    Id = event.Record_Id__c,
+                    IsInMonitoringSet__c = false
+                );
+                
+            }
         }
 
         if (!contactsToUpdate.isEmpty()) {
-            update contactsToUpdate;
+            List<Contact> failedContactUpdates = new List<Contact>();
+            List<Database.SaveResult> result = Database.update(contactsToUpdate, false);
+            for (Database.SaveResult sr : result) {
+                if (!sr.isSuccess()) {
+                    Id contactId = sr.getId();
+                    failedContactUpdates.add(
+                        new Contact(
+                            Id = contactId,
+                            IsInMonitoringSet__c = false
+                        )
+                    );
+                }
+            }
+            if (!failedContactUpdates.isEmpty()) {
+                update failedContactUpdates;
+            }
         }
     }
+
 
 
 
@@ -61,7 +84,6 @@ public class ValitiveEventProcessor implements Queueable, Database.AllowsCallout
 
     public Contact handlePersonResponse(ValitiveMonitoringSetSubjectResponse response, Contact contact) {
         ValitiveMonitoringSetSubjectResponse.SEPerson person = (ValitiveMonitoringSetSubjectResponse.SEPerson) response.data;
-        System.debug('Person: ' + person);
         if (person.guardianShipInfo != null) {
             contact.Has_Trustee__c = true;
             contact.Has_Trustee_Since__c = person.guardianShipInfo.guardedSince;

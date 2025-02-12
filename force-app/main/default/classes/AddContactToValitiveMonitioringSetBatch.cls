@@ -80,11 +80,11 @@ public class AddContactToValitiveMonitioringSetBatch implements Database.Batchab
                     continue;
                 }
                 if(se_address.kind == 'OFFICIAL') {
-                    contact.MailingStreet = !isSameValue(contact.MailingStreet, constructAdressSteetString(se_address)) ? contact.MailingStreet : constructAdressSteetString(se_address);
-                    contact.MailingCity = !isSameValue(contact.MailingCity, se_address.city) ? contact.MailingCity : se_address.city.toUpperCase();
-                    contact.MailingState = !isSameValue(contact.MailingState, se_address.county) ? contact.MailingState : se_address.county;
-                    contact.MailingPostalCode = !isSameValue(contact.MailingPostalCode, formatZipCode(se_address.zip)) ? contact.MailingPostalCode : formatZipCode(se_address.zip);
-                    contact.MailingMunicipality__c = !isSameValue(contact.MailingMunicipality__c, se_address.municipality) ? contact.MailingMunicipality__c : se_address.municipality;
+                    contact.MailingStreet = !isSameValue(contact?.MailingStreet, constructAdressSteetString(se_address)) ? contact?.MailingStreet : constructAdressSteetString(se_address);
+                    contact.MailingCity = !isSameValue(contact?.MailingCity, se_address.city) ? contact?.MailingCity : se_address.city.toUpperCase();
+                    contact.MailingState = !isSameValue(contact?.MailingState, se_address.county) ? contact?.MailingState : se_address.county;
+                    contact.MailingPostalCode = !isSameValue(contact?.MailingPostalCode, formatZipCode(se_address.zip)) ? contact?.MailingPostalCode : formatZipCode(se_address.zip);
+                    contact.MailingMunicipality__c = !isSameValue(contact?.MailingMunicipality__c, se_address.municipality) ? contact?.MailingMunicipality__c : se_address.municipality;
                 }
                 if(se_address.kind == 'FOREIGN') {
                     contact.Foreign_Address__c = true;
@@ -110,7 +110,7 @@ public class AddContactToValitiveMonitioringSetBatch implements Database.Batchab
 
 
     private Boolean isSameValue(String value1, String value2) {
-        return value1.toLowerCase() == value2.toLowerCase();
+        return value1?.toLowerCase() == value2?.toLowerCase();
     }
 
     private String removeHyphen(String ssn) {

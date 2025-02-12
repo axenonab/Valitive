@@ -47,21 +47,21 @@ public class ValitiveEventHandler {
         }
     }
 
-    public class PhoneUnboundEvent implements IValitiveEventHandler {
-        public Valitive_Event__c handleEvent(Valitive_Event__c baseEvent, ValitiveEventResponse.Payload payload) {
-            ValitiveEventResponse.PhoneUnboundPayload phoneUnboundPayload = (ValitiveEventResponse.PhoneUnboundPayload) payload;
-            baseEvent.Type__c = phoneUnboundPayload.type;
-            baseEvent.Person_Id__c = phoneUnboundPayload.partyId;
-            baseEvent.Timestamp__c = phoneUnboundPayload.timestamp;
-            baseEvent.Phone_Kind__c = phoneUnboundPayload.kind;
-            baseEvent.Telephone_Number__c = phoneUnboundPayload.telNumber;
-            baseEvent.Country_Code__c = phoneUnboundPayload.countryCode;
-            baseEvent.Area_Code__c = phoneUnboundPayload.areaCode;
-            baseEvent.Registered_Since__c = phoneUnboundPayload.registeredSince;
-            baseEvent.Provider__c = phoneUnboundPayload.provider;
-            return baseEvent;
-        }
-    }
+    // public class PhoneUnboundEvent implements IValitiveEventHandler {
+    //     public Valitive_Event__c handleEvent(Valitive_Event__c baseEvent, ValitiveEventResponse.Payload payload) {
+    //         ValitiveEventResponse.PhoneUnboundPayload phoneUnboundPayload = (ValitiveEventResponse.PhoneUnboundPayload) payload;
+    //         baseEvent.Type__c = phoneUnboundPayload.type;
+    //         baseEvent.Person_Id__c = phoneUnboundPayload.partyId;
+    //         baseEvent.Timestamp__c = phoneUnboundPayload.timestamp;
+    //         baseEvent.Phone_Kind__c = phoneUnboundPayload.kind;
+    //         baseEvent.Telephone_Number__c = phoneUnboundPayload.telNumber;
+    //         baseEvent.Country_Code__c = phoneUnboundPayload.countryCode;
+    //         baseEvent.Area_Code__c = phoneUnboundPayload.areaCode;
+    //         baseEvent.Registered_Since__c = phoneUnboundPayload.registeredSince;
+    //         baseEvent.Provider__c = phoneUnboundPayload.provider;
+    //         return baseEvent;
+    //     }
+    // }
 
     public class PersonProtectionActivatedEvent implements IValitiveEventHandler {
         public Valitive_Event__c handleEvent(Valitive_Event__c baseEvent, ValitiveEventResponse.Payload payload) {
@@ -245,12 +245,12 @@ public class ValitiveEventHandler {
         return event;
     }
 
-    private static Valitive_Event__c mapRawAddress(Valitive_Event__c event, ValitiveAddress.RawAddress rawAddress){
-        event.Address_Type__c = rawAddress.type;
-        event.Country__c = rawAddress.country;
-        event.Address_Lines__c = String.join(rawAddress.addressLines, '\n');
-        return event;
-    }
+    // private static Valitive_Event__c mapRawAddress(Valitive_Event__c event, ValitiveAddress.RawAddress rawAddress){
+    //     event.Address_Type__c = rawAddress.type;
+    //     event.Country__c = rawAddress.country;
+    //     event.Address_Lines__c = String.join(rawAddress.addressLines, '\n');
+    //     return event;
+    // }
 
     private static Valitive_Event__c mapOldSwedishAddress(Valitive_Event__c event, ValitiveAddress.SwedishAddress swedishAddress){
         event.Old_Address_Type__c = swedishAddress.type;

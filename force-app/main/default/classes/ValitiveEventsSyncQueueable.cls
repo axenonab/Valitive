@@ -68,8 +68,8 @@ public class ValitiveEventsSyncQueueable implements Queueable, Database.AllowsCa
         // Check for next page and enqueue if available
         if (service.hasNextPage(response)) {
             String nextIterator = service.getNextPage(response);
+            ValitiveEventsSyncQueueable nextSync = new ValitiveEventsSyncQueueable(nextIterator, true);
             if (!Test.isRunningTest()) {
-                ValitiveEventsSyncQueueable nextSync = new ValitiveEventsSyncQueueable(nextIterator, true);
                 System.enqueueJob(nextSync);
             }
         }

@@ -233,7 +233,28 @@ public class ValitiveClientMock {
                             'floor' => 'mock-floor',
                             'entrance' => 'mock-entrance',
                             'kind' => 'OFFICIAL'
-
+                        },
+                        'oldAddress' => new Map<String, Object>{
+                            '_type' => 'SE_NORMALIZED',
+                            'country' => 'mock-country',
+                            'city' => 'mock-city',
+                            'zipCode' => 'mock-zip-code',
+                            'geoPoint' => new Map<String, Object>{
+                                'lat' => 0.0,
+                                'long' => 0.0
+                            },
+                            'postBox' => 'mock-post-box',
+                            'street' => 'mock-street',
+                            'streetNumber' => 'mock-street-number',
+                            'numberSuffix' => 'mock-number-suffix',
+                            'flat' => 'mock-flat',
+                            'careOf' => 'mock-care-of',
+                            'county' => 'mock-county',
+                            'municiplaity' => 'mock-municipality',
+                            'misc' => 'mock-misc',
+                            'floor' => 'mock-floor',
+                            'entrance' => 'mock-entrance',
+                            'kind' => 'OFFICIAL'
                         }
                     }
                 },
@@ -340,13 +361,13 @@ public class ValitiveClientMock {
                     'monitoringSetId' => 'mock-monitoring-set-id',
                     'subjectIds' => new List<String>{'198505229846'},
                     'payload' => new Map<String, Object>{
-                        '_type' => 'PERSON_DECEASED',
+                        '_type' => 'SE_PERSON_DECEASED',
                         'id' => 'mock-id',
                         'timestamp' => '2021-08-23T14:55:05.327Z',
                         'personId' => 'mock-person-id',
                         'personLegalId' => '198403239846',
                         'deceasedOnMonth' => '2021-08',
-                        'deceasedOnYear' => '2021',
+                        'deceasedOnYear' => 2021,
                         'deceasedOn' => '2021-08-23T14:55:05.327Z'
                     }
                 },
