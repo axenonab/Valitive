@@ -1242,7 +1242,7 @@
                     <criteria>
                         <leftValue>{!Record.Type__c}</leftValue>
                         <operator>EQUAL</operator>
-                        <rightValue>SE_PERSON_DECEASED</rightValue>
+                        <rightValue>PERSON_DECEASED</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>

@@ -176,7 +176,7 @@ private class Test_ContactValitiveEventSyncBatch {
             Event_Id__c = '123',
             Detected_At__c = Datetime.now(),
             Person_Legal_Id__c = newDeceasedContact.Personal_Identity_Number__c.replace('-', ''),
-            Type__c = 'SE_PERSON_DECEASED',
+            Type__c = 'PERSON_DECEASED',
             Person_Id__c = '1',
             Timestamp__c = Datetime.now(),
             Deceased_On__c = Date.today(),
@@ -275,7 +275,7 @@ private class Test_ContactValitiveEventSyncBatch {
         Contact contact = [SELECT npsp__Deceased__c, Deceased_Date__c FROM Contact WHERE Personal_Identity_Number__c = :deceasedContactLegalId];
         System.assertEquals(true, contact.npsp__Deceased__c);
         System.assertEquals(Date.today(), contact.Deceased_Date__c);
-        Valitive_Event__c event = [SELECT Sync_Status__c FROM Valitive_Event__c WHERE Type__c = 'SE_PERSON_DECEASED'];
+        Valitive_Event__c event = [SELECT Sync_Status__c FROM Valitive_Event__c WHERE Type__c = 'PERSON_DECEASED'];
         System.assertEquals('Completed', event.Sync_Status__c);
     }
 

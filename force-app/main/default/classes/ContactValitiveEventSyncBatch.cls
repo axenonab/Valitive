@@ -95,7 +95,7 @@ public class ContactValitiveEventSyncBatch implements Database.Batchable<sObject
                 when 'SE_PERSON_ADDR_CORRECTED' {
                     con = ContactValitiveEventMapping.PersonAddrCorrectedEventToContact(con, event);
                 }
-                when 'SE_PERSON_DECEASED' {
+                when 'PERSON_DECEASED' {
                     con = ContactValitiveEventMapping.mapPersonDeceasedEventToContact(con, event);
                 }
                 when 'SE_PERSON_NAME_CHANGED' {

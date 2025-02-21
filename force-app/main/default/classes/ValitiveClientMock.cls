@@ -361,7 +361,7 @@ public class ValitiveClientMock {
                     'monitoringSetId' => 'mock-monitoring-set-id',
                     'subjectIds' => new List<String>{'198505229846'},
                     'payload' => new Map<String, Object>{
-                        '_type' => 'SE_PERSON_DECEASED',
+                        '_type' => 'PERSON_DECEASED',
                         'id' => 'mock-id',
                         'timestamp' => '2021-08-23T14:55:05.327Z',
                         'personId' => 'mock-person-id',

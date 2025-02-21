@@ -37,7 +37,7 @@ public class ValitiveEventResponse {
                 when 'SE_PERSON_ADDR_CORRECTED' {
                     return new PersonAddrCorrectedPayload(payload);
                 }
-                when 'SE_PERSON_DECEASED' {
+                when 'PERSON_DECEASED' {
                     return new PersonDeceasedPayload(payload);
                 }
                 when 'SE_PERSON_NAME_CHANGED' {

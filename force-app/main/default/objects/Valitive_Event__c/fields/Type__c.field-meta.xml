@@ -20,9 +20,9 @@
                 <label>SE_PERSON_ADDR_CORRECTED</label>
             </value>
             <value>
-                <fullName>SE_PERSON_DECEASED</fullName>
+                <fullName>PERSON_DECEASED</fullName>
                 <default>false</default>
-                <label>SE_PERSON_DECEASED</label>
+                <label>PERSON_DECEASED</label>
             </value>
             <value>
                 <fullName>SE_PERSON_NAME_CHANGED</fullName>
