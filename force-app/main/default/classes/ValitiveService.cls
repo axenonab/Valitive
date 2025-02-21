@@ -191,11 +191,6 @@ public class ValitiveService {
                 params    
             );
         }
-        if(response.getStatusCode() == 200){
-            ValitiveResponseHandler.handleEventsResponse(response);
-        } else {
-
-        }
         return response;
     }
 

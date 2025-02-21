@@ -34,11 +34,13 @@ public class ValitiveAddress {
         public String type;
         public String country;
         public List<String> addressLines;
+        public String kind;
     
         public RawAddress(Map<String, Object> address){
             this.type = (String) address.get('_type');
             this.country = (String) address.get('country');
             this.addressLines = (List<String>) System.JSON.deserialize(System.JSON.serialize(address.get('addressLines')), List<String>.class);
+            this.kind = (String) address.get('kind');
         }
     }
     

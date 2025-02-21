@@ -29,7 +29,7 @@ public class ValitiveEventResponse {
 
         public Payload parsePayload(Map<String, Object> payload){
             String type = (String) payload.get('_type');
-
+            
             switch on type {
                 when 'SE_PERSON_ADDR_CHANGED' {
                     return new PersonAddrChangedPayload(payload);

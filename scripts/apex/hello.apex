@@ -6,23 +6,14 @@
 //     SFDX: Execute Anonymous Apex with Editor Contents
 
 
-// ValitiveService valitiveService = new ValitiveService();
-// HttpResponse response = valitiveService.syncEvents('Private', null);
-// Map<String, Object> params = new Map<String, Object>{
-//     ValitiveQueryParams.ROW_LIMIT => 700
-// };
-// ValitiveEventsSyncQueueable queueable = new ValitiveEventsSyncQueueable('Private', params);
+ValitiveService valitiveService = new ValitiveService();
+Map<String, Object> params = new Map<String, Object>{
+    ValitiveQueryParams.ROW_LIMIT => 3000,
+    ValitiveQueryParams.EVENT_TYPES => 'SE_PERSON_ADDR_CHANGED',
+    ValitiveQueryParams.DETECTED_ON_OR_AFTER => '2021-01-20T00:00:00Z'
+};
 
-// System.enqueueJob(queueable);
+System.enqueueJob(new ValitiveEventsSyncQueueable('Private', params));
+// HttpResponse res = valitiveService.syncEvents('Private', params);
 
-// String endpoint = 'https://mock.valitive.com/pub/api/v1/monitoring-set/mock-private-id/events?limit=700';
-
-// // Split the URL at the "?" and take the part before it
-// if (endpoint.contains('?')) {
-//     endpoint = endpoint.split('\\?')[0];
-// }
-
-// System.debug('Base URL: ' + endpoint); // Outputs: https://mock.valitive.com/pub/api/v1/monitoring-set/mock-private-id/events
-IValitivePropertiesProvider IPROPERTIES_PROVIDER = new ValitivePropertiesProvider();
-ValitiveClient client = new ValitiveClient(IPROPERTIES_PROVIDER);
-client.getNewAccessToken();
+// ValitiveResponseHandler.handleEventsResponse(res);

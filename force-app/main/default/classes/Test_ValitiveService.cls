@@ -91,6 +91,29 @@ private class Test_ValitiveService {
     }
 
     @IsTest
+    static void should_return_header_values_test(){
+        HttpResponse response = new HttpResponse();
+        response.setHeader('Next-Link', 'https://mock.valitive.com');
+        response.setHeader('Prev-Link', 'https://mock.valitive.com');
+        response.setHeader('Current-Link', 'https://mock.valitive.com');
+        response.setHeader('Total-Count', '10');
+        response.setHeader('Result-Count', '5');
+        response.setHeader('Result-Range', '1-5');
+        Test.startTest();
+        ValitiveService service = new ValitiveService();
+        service.setMockIValitivePropertiesProvider(mockProvider);
+        Assert.areEqual(true, service.hasNextPage(response));
+        Assert.areEqual(true, service.hasPreviousPage(response));
+        Assert.areEqual('https://mock.valitive.com', service.getCurrentPage(response));
+        Assert.areEqual('https://mock.valitive.com', service.getNextPage(response));
+        Assert.areEqual('https://mock.valitive.com', service.getPreviousPage(response));
+        Assert.areEqual(10, service.getTotalCount(response));
+        Assert.areEqual(5, service.getResultCount(response));
+        Assert.areEqual('1-5', service.getResultRange(response));
+        Test.stopTest();
+    }
+
+    @IsTest
     static void should_get_valitive_provider_settings(){
         Valitive_Setting__mdt settings = new Valitive_Setting__mdt();
         settings.Base_URL__c = 'https://mock.valitive.com';
