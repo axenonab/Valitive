@@ -138,9 +138,9 @@ public class ValitiveEventResponse {
             this.timestamp = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('timestamp')), Datetime.class);
             this.personId = (String) payload.get('personId');
             this.personLegalId = (String) payload.get('personLegalId');
-            this.deceasedOn = (Date) System.JSON.deserialize((String) payload.get('deceasedOn'), Date.class);
+            this.deceasedOn = payload.containsKey('deceasedOn') ? ((Datetime) System.JSON.deserialize(System.Json.serialize(payload.get('deceasedOn')), Datetime.class)).date() : null;
             this.deceasedOnMonth = (String) payload.get('deceasedOnMonth');
-            this.deceasedOnYear = (Integer) payload.get('deceasedOnYear');
+            this.deceasedOnYear = (Integer) System.JSON.deserialize(System.JSON.serialize(payload.get('deceasedOnYear')), Integer.class);
         }
     }
 

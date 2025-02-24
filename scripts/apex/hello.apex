@@ -6,14 +6,17 @@
 //     SFDX: Execute Anonymous Apex with Editor Contents
 
 
-ValitiveService valitiveService = new ValitiveService();
-Map<String, Object> params = new Map<String, Object>{
-    ValitiveQueryParams.ROW_LIMIT => 3000,
-    ValitiveQueryParams.EVENT_TYPES => 'SE_PERSON_ADDR_CHANGED',
-    ValitiveQueryParams.DETECTED_ON_OR_AFTER => '2021-01-20T00:00:00Z'
-};
+// ValitiveService valitiveService = new ValitiveService();
+// Map<String, Object> params = new Map<String, Object>{
+//     ValitiveQueryParams.ROW_LIMIT => 3000,
+//     ValitiveQueryParams.EVENT_TYPES => 'SE_PERSON_ADDR_CHANGED',
+//     ValitiveQueryParams.DETECTED_ON_OR_AFTER => '2021-01-20T00:00:00Z'
+// };
 
-System.enqueueJob(new ValitiveEventsSyncQueueable('Private', params));
+// System.enqueueJob(new ValitiveEventsSyncQueueable('Private', params));
 // HttpResponse res = valitiveService.syncEvents('Private', params);
 
 // ValitiveResponseHandler.handleEventsResponse(res);
+
+Object test = '2025';
+System.debug(SON.deserialize(JSON.serialize(test), Integer.class));

@@ -367,7 +367,7 @@ public class ValitiveClientMock {
                         'personId' => 'mock-person-id',
                         'personLegalId' => '198403239846',
                         'deceasedOnMonth' => '2021-08',
-                        'deceasedOnYear' => 2021,
+                        'deceasedOnYear' => '2021',
                         'deceasedOn' => '2021-08-23T14:55:05.327Z'
                     }
                 },
