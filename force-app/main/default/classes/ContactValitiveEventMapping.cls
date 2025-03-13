@@ -59,7 +59,7 @@ public class ContactValitiveEventMapping {
             return con;
         }
         con.MailingStreet = constructAdressSteetString(event);
-        con.MailingCity = event.City__c;
+        con.MailingCity = event.City__c.toUpperCase();
         con.MailingState = event.County__c;
         con.MailingPostalCode = formatZipCode(event.Zip__c);
         // con.MailingCountry = event.Country__c;

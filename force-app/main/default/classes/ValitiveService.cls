@@ -26,8 +26,9 @@ public class ValitiveService {
         this.client = new ValitiveClient(provider);
     }
 
-
-
+    public String getPrivateMonitoringSetId() {
+        return this.client.PROPERTIES_PROVIDER.getPrivateMonitoringSetId();
+    }
 
     /**
      * Create an HttpRequest object
@@ -100,6 +101,22 @@ public class ValitiveService {
         HttpRequest request = createHttpRequest('DELETE', url, body);
         return this.client.send(request);
     }
+
+    public HttpResponse queryMonitoringSetScope(Map<String, Object> params) {
+        String template_url = '{0}/pub/api/{1}/monitoring-set/scope';
+        String url = String.format(template_url, new List<String>{
+            this.client.PROPERTIES_PROVIDER.getBaseUrl(), 
+            this.client.PROPERTIES_PROVIDER.getApiVersion()
+        });
+        if (params != null) {
+            url += '?' + generateQueryParamString(params);
+        }
+        HttpRequest request = createHttpRequest('GET', url, null);
+        System.debug('Request: ' + request);
+        return this.client.send(request);
+    }
+
+
 
 
     /**

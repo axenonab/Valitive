@@ -12,4 +12,6 @@ public class ValitiveQueryParams {
         public static final String WITH_TOTAL = 'withTotal';
         public static final String SORT_BY = 'sortBy';
         public static final String ROW_LIMIT = 'limit';
+        public static final String MONITORING_SET_IDS = 'monitoringSetIds';
+        public static final String IDS = 'ids';
 }

@@ -20,6 +20,19 @@ public class ValitiveMonitoringSetSubjectResponse {
     public static ValitiveMonitoringSetSubjectResponse parse(String json){
         return new ValitiveMonitoringSetSubjectResponse(json);
     }
+
+        // Static method to parse a list of responses
+        public static List<ValitiveMonitoringSetSubjectResponse> parseList(String json) {
+            List<ValitiveMonitoringSetSubjectResponse> responseList = new List<ValitiveMonitoringSetSubjectResponse>();
+            List<Object> objList = (List<Object>) System.JSON.deserializeUntyped(json);
+            
+            for (Object obj : objList) {
+                String jsonString = System.JSON.serialize(obj);
+                responseList.add(new ValitiveMonitoringSetSubjectResponse(jsonString));
+            }
+    
+            return responseList;
+        }
     
 
     public static Data parseData(Map<String, Object> data){

@@ -6,10 +6,13 @@ public class MultiRequestMock implements HttpCalloutMock {
     }
 
     public HTTPResponse respond(HTTPRequest req) {
+
+    if(req.getEndpoint().contains('?')) {
+        req.setEndpoint(req.getEndpoint().split('\\?')[0]);
+    }
 	HttpCalloutMock mock = requests.get(req.getEndpoint());
 	    if (mock != null) {
-            String endpoint = req.getEndpoint();
-
+        
 	        return mock.respond(req);
         } 
         CalloutException e = new CalloutException();

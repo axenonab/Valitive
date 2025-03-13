@@ -25,7 +25,129 @@ public class ValitiveClientMock {
             null
         );
 
-        SingleRequestMock addPersonToMonitorSerMock = new SingleRequestMock(
+        SingleRequestMock queryPersonToMonitorSetMock = new SingleRequestMock(
+            200,
+            'OK',
+            System.JSON.serialize(new List<Object>{
+                new Map<String, Object>{
+                    '_type' => 'PERSON',
+                    'id' => 'mockid',
+                    'monitoringSetId' => 'mock-monitoring-set-id',
+                    'updatedAt' => '2021-08-23T14:55:05.327Z',
+                    'data' => new Map<String, Object>{
+                        '_type' => 'SE_PERSON',
+                        'id' => 'mock-person-id',
+                        'legalId' => '198403239846',
+                        'country' => 'mock-country',
+                        'birthDate' => '1984-03-23',
+                        'gender' => 'FEMALE',
+                        'name' => new Map<String, Object>{
+                            'givenName' => 'Sven',
+                            'lastName' => 'Svenson',
+                            'names' => new List<String>{'Sven', 'Lars', 'Svenson'}
+                        },
+                        'addresses' => new List<Map<String, Object>>{
+                            new Map<String, Object>{
+                                'country' => 'mock-country',
+                                'street' => 'mock-street',
+                                'postbox' => 'mock-post-box',
+                                'number' => 'mock-number',
+                                'numberSuffix' => 'mock-number-suffix',
+                                'flat' => 'mock-flat',
+                                'zip' => 'mock-zip-code',
+                                'careOf' => 'mock-care-of',
+                                'city' => 'mock-city',
+                                'county' => 'mock-county',
+                                'municipality' => 'mock-municipality',
+                                'kind' => 'OFFICIAL',
+                                '_type' => 'SE_NORMALIZED'
+                            }
+                        },
+                        'phones' => new List<Map<String, Object>>{
+                            new Map<String, Object>{
+                                'type' => 'MOBILE',
+                                'number' => 'mock-number',
+                                'areaCode' => 'mock-area-code',
+                                'provider' => 'mock-provider',
+                                'operator' => 'mock-operator',
+                                'registeredSince' => '2021-08-23T14:55:05.327Z',
+                                'estPortDate' => '2021-08-23',
+                                'kind' => 'MOBILE',
+                                'priority' => 1
+                            }
+                        },
+                        'registrationStatus' => 'PROTECTED_ID',
+                        'guardianShipInfo' => new Map<String, Object>{
+                            'type' => 'GUARDIANSHIP',
+                            'guardedSince' => '2021-08-23',
+                            'decisionDate' => '2021-08-23',
+                            'publicationDate' => '2021-08-23',
+                            'publicationText' => 'mock-publication-text'
+                        }
+                    }
+                },
+                new Map<String, Object>{
+                    '_type' => 'PERSON',
+                    'id' => 'mockid2',
+                    'monitoringSetId' => 'mock-monitoring-set-id',
+                    'updatedAt' => '2021-08-23T14:55:05.327Z',
+                    'data' => new Map<String, Object>{
+                        '_type' => 'SE_PERSON',
+                        'id' => 'mock-person-id',
+                        'legalId' => '198403239846',
+                        'country' => 'mock-country',
+                        'birthDate' => '1984-03-23',
+                        'gender' => 'FEMALE',
+                        'name' => new Map<String, Object>{
+                            'givenName' => 'Sven',
+                            'lastName' => 'Svenson',
+                            'names' => new List<String>{'Sven', 'Lars', 'Svenson'}
+                        },
+                        'addresses' => new List<Map<String, Object>>{
+                            new Map<String, Object>{
+                                'country' => 'mock-country',
+                                'street' => 'mock-street',
+                                'postbox' => 'mock-post-box',
+                                'number' => 'mock-number',
+                                'numberSuffix' => 'mock-number-suffix',
+                                'flat' => 'mock-flat',
+                                'zip' => 'mock-zip-code',
+                                'careOf' => 'mock-care-of',
+                                'city' => 'mock-city',
+                                'county' => 'mock-county',
+                                'municipality' => 'mock-municipality',
+                                'kind' => 'OFFICIAL',
+                                '_type' => 'SE_NORMALIZED'
+                            }
+                        },
+                        'phones' => new List<Map<String, Object>>{
+                            new Map<String, Object>{
+                                'type' => 'MOBILE',
+                                'number' => 'mock-number',
+                                'areaCode' => 'mock-area-code',
+                                'provider' => 'mock-provider',
+                                'operator' => 'mock-operator',
+                                'registeredSince' => '2021-08-23T14:55:05.327Z',
+                                'estPortDate' => '2021-08-23',
+                                'kind' => 'MOBILE',
+                                'priority' => 1
+                            }
+                        },
+                        'registrationStatus' => 'PROTECTED_ID',
+                        'guardianShipInfo' => new Map<String, Object>{
+                            'type' => 'GUARDIANSHIP',
+                            'guardedSince' => '2021-08-23',
+                            'decisionDate' => '2021-08-23',
+                            'publicationDate' => '2021-08-23',
+                            'publicationText' => 'mock-publication-text'
+                        }
+                    }
+                }
+            }),
+            null
+        );
+
+        SingleRequestMock addPersonToMonitorSetMock = new SingleRequestMock(
             200,
             'OK',
             System.JSON.serialize(new Map<String, Object>{
@@ -420,9 +542,10 @@ public class ValitiveClientMock {
 
         Map<String, HttpCalloutMock> endpoint2TestResp = new Map<String, HttpCalloutMock>{
             this.provider.getTokenEndpoint() => authMock,
-            this.provider.getBaseURL() + '/pub/api/' + this.provider.getApiVersion() + '/monitoring-set/' + this.provider.getPrivateMonitoringSetId() + '/scope/se/person/legalId' => addPersonToMonitorSerMock,
+            this.provider.getBaseURL() + '/pub/api/' + this.provider.getApiVersion() + '/monitoring-set/' + this.provider.getPrivateMonitoringSetId() + '/scope/se/person/legalId' => addPersonToMonitorSetMock,
             this.provider.getBaseURL() + '/pub/api/' + this.provider.getApiVersion() + '/monitoring-set/' + this.provider.getPrivateMonitoringSetId() + '/scope/' => deletePersonFromMonitorSetMock,
-            this.provider.getBaseURL() + '/pub/api/' + this.provider.getApiVersion() + '/monitoring-set/' + this.provider.getPrivateMonitoringSetId() + '/events' => getEventMock
+            this.provider.getBaseURL() + '/pub/api/' + this.provider.getApiVersion() + '/monitoring-set/' + this.provider.getPrivateMonitoringSetId() + '/events' => getEventMock,
+            this.provider.getBaseURL() + '/pub/api/' + this.provider.getApiVersion() + '/monitoring-set/scope' => queryPersonToMonitorSetMock
         };
 
         mockServer.addRequestMock(endpoint2TestResp);

@@ -18,5 +18,18 @@
 
 // ValitiveResponseHandler.handleEventsResponse(res);
 
-Object test = '2025';
-System.debug(SON.deserialize(JSON.serialize(test), Integer.class));
+
+ValitiveService valitiveService = new ValitiveService();
+Set<String> formatedSSNToContact = new Set<String>{
+    '198802057227'
+};
+
+Map<String, String> queryParams = new Map<String, String> {
+    ValitiveQueryParams.IDS => String.join(formatedSSNToContact, ','),
+    ValitiveQueryParams.MONITORING_SET_IDS => valitiveService.getPrivateMonitoringSetId(),
+    ValitiveQueryParams.ROW_LIMIT => '1000'
+};
+
+HttpResponse response = valitiveService.queryMonitoringSetScope(queryParams);
+List<ValitiveMonitoringSetSubjectResponse> result = ValitiveMonitoringSetSubjectResponse.parseList(response.getBody());
+System.debug(result);

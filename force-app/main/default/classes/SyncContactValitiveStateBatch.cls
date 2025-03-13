@@ -1,4 +1,5 @@
-public class AddContactToValitiveMonitioringSetBatch implements Database.Batchable<sObject>, Database.AllowsCallouts {
+public class SyncContactValitiveStateBatch implements Database.Batchable<sObject>, Database.AllowsCallouts {
+
 
     @TestVisible
     private ValitiveService valitiveService = new ValitiveService();
@@ -7,67 +8,56 @@ public class AddContactToValitiveMonitioringSetBatch implements Database.Batchab
         return Database.getQueryLocator([
             SELECT 
                 Id,
-                Personal_Identity_Number__c,
-                IsInMonitoringSet__c,
-                FirstName,
-                LastName,
+                Personal_Identity_Number__c, 
                 MailingStreet,
                 MailingCity,
                 MailingState, 
                 MailingPostalCode,
                 MailingMunicipality__c,
-                Foreign_Address__c,
-                Phone,
-                MobilePhone,
-                Protected_Identity__c,
-                npsp__Deceased__c,
-                Deceased_Date__c,
-                Has_Trustee__c,
-                Has_Trustee_Since__c
+                Foreign_Address__c
             FROM Contact
-            WHERE IsInMonitoringSet__c = false
-            AND Personal_Identity_Number__c != null
+            WHERE IsInMonitoringSet__c = true
         ]);
     }
 
     public void execute(Database.BatchableContext BC, List<Contact> contacts) {
+        List<Contact> contactsToUpdate = new List<Contact>();
+        Map<String, Contact> formatedSSNToContact = new Map<String, Contact>();
 
         for (Contact contact : contacts) {
-            HttpResponse response = this.valitiveService.addPersonToPrivateMonitoringSet(removeHyphen(contact.Personal_Identity_Number__c));
-            if (response.getStatusCode() < 400) {
-                handleResponse(response, contact);
-            }
+            formatedSSNToContact.put(removeHyphen(contact.Personal_Identity_Number__c), contact);
         }
-        update contacts;
+
+        Map<String, String> queryParams = new Map<String, String> {
+            ValitiveQueryParams.MONITORING_SET_IDS => this.valitiveService.getPrivateMonitoringSetId(),
+            ValitiveQueryParams.IDS => String.join(formatedSSNToContact.keySet(), ','),
+            ValitiveQueryParams.ROW_LIMIT => '1000'
+        };
+
+        HttpResponse response = this.valitiveService.queryMonitoringSetScope(queryParams);
+
+        List<ValitiveMonitoringSetSubjectResponse> parsedResponse = ValitiveMonitoringSetSubjectResponse.parseList(response.getBody());
+        for(ValitiveMonitoringSetSubjectResponse monitoringSetSubjectResponse : parsedResponse) {
+            Contact contact = formatedSSNToContact.get(monitoringSetSubjectResponse.id);
+            if(contact == null) {
+                continue;
+            }
+            contactsToUpdate.add(handlePersonResponse(monitoringSetSubjectResponse, contact));
+        }
+
+        if(!contactsToUpdate.isEmpty()) {
+            update contactsToUpdate;
+        }
     }
 
     public void finish(Database.BatchableContext BC) {
     }
 
-    public void handleResponse(HttpResponse response, Contact contact) {
-        if (response.getStatusCode() > 400) {
-            System.debug('Error: ' + response.getBody());
-        }
-        ValitiveMonitoringSetSubjectResponse parsedResponse = ValitiveMonitoringSetSubjectResponse.parse(response.getBody());
-        if (parsedResponse.type == 'PERSON') {
-            handlePersonResponse(parsedResponse, contact);
-        }   
-    }
 
     public Contact handlePersonResponse(ValitiveMonitoringSetSubjectResponse response, Contact contact) {
         ValitiveMonitoringSetSubjectResponse.SEPerson person = (ValitiveMonitoringSetSubjectResponse.SEPerson) response.data;
 
-        if (person.guardianShipInfo != null) {
-            contact.Has_Trustee__c = true;
-            contact.Has_Trustee_Since__c = person.guardianShipInfo.guardedSince;
-        }
-        if(person.name != null) {
-            contact.FirstName = !isSameValue(contact.FirstName, person.name.givenName) ? contact.FirstName : person.name.givenName != null ? person.name.givenName : String.join(person.name.names, ' ');
-            contact.LastName = !isSameValue(contact.LastName, person.name.lastName) && person.name.lastName != null ? contact.LastName : person.name.lastName;
-        }
-        if(person.registrationStatus == 'PROTECTED_ID'){
-            contact.Protected_Identity__c = true;
-        }
+
         if(!person.addresses.isEmpty()) {
             for(ValitiveAddress.Address address : person.addresses) {
                 if(address.getClassType() != ValitiveAddress.SwedishAddress.class) {
@@ -91,26 +81,15 @@ public class AddContactToValitiveMonitioringSetBatch implements Database.Batchab
                 }
             }
         }
-        if(!person.phones.isEmpty()) {
-            for(ValitiveMonitoringSetSubjectResponse.PersonalPhone phone : person.phones) {
-                if(phone.kind == 'MOBILE') {
-                    contact.MobilePhone = formatPhoneNumber(phone);
-                }
-                if(phone.kind == 'LANDLINE') {
-                    contact.Phone = formatPhoneNumber(phone);
-                }
-            }
-        }
-
-        contact.IsInMonitoringSet__c = true;
-
+        
         return contact;
 
     }
 
 
     private Boolean isSameValue(String value1, String value2) {
-        return value1?.toLowerCase() == value2?.toLowerCase();
+        Boolean result = value1?.toLowerCase() == value2?.toLowerCase();
+        return result;  
     }
 
     private String removeHyphen(String ssn) {
@@ -133,14 +112,6 @@ public class AddContactToValitiveMonitioringSetBatch implements Database.Batchab
             street += ' lgh ' + address.flat;
         }
         return street;
-    }
-
-    private static String formatPhoneNumber(ValitiveMonitoringSetSubjectResponse.PersonalPhone phone) {
-        String telNumber = phone.telNumber;
-        string regexReplace = '^46';
-        String formatedNumber = telNumber.replaceAll(regexReplace, '0');
-        return formatedNumber;
-
     }
 
 }
