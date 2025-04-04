@@ -6,7 +6,7 @@ private class Test_ValitiveEventsSyncQueueable {
 
     @IsTest
     static void should_sync_events() {
-
+        mock.buildMockServer();
         Test.setMock(HttpCalloutMock.class, mock.mockServer);
         Test.startTest();
         ValitiveEventsSyncQueueable queueable = new ValitiveEventsSyncQueueable('Private');

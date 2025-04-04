@@ -86,10 +86,11 @@ public class ValitiveMonitoringSetSubjectResponse {
         public List<String> names;
 
         public Name(Map<String, Object> name){
-            this.country = (String) name.get('country');
-            this.lastName = (String) name.get('lastName');
-            this.givenName = (String) name.get('givenName');
-            this.names = (List<String>) System.JSON.deserialize(System.JSON.serialize(name.get('names')), List<String>.class);
+            
+            this.country = (String) name?.get('country');
+            this.lastName = (String) name?.get('lastName');
+            this.givenName = (String) name?.get('givenName');
+            this.names = name != null ? (List<String>) System.JSON.deserialize(System.JSON.serialize(name.get('names')), List<String>.class) : new List<String>();
         }
     }
 
@@ -143,7 +144,7 @@ public class ValitiveMonitoringSetSubjectResponse {
             this.birthDate = data.containsKey('birthDate') ? (Date) System.JSON.deserialize(System.JSON.serialize(data.get('birthDate')), Date.class) : null;
             this.deceasedDate = data.containsKey('deceasedDate') ? (Date) System.JSON.deserialize(System.JSON.serialize(data.get('deceasedDate')), Date.class) : null;
             this.gender = (String) data.get('gender');
-            this.name = ValitiveMonitoringSetSubjectResponse.parseName((Map<String, Object>) data.get('name'));
+            this.name = data.containsKey('name') ? ValitiveMonitoringSetSubjectResponse.parseName((Map<String, Object>) data.get('name')) : null;
             this.tempId = (String) data.get('tempId');
             for (Object address : (List<Object>) data.get('addresses')) {
                 this.addresses.add(ValitiveAddress.parseAddress((Map<String, Object>) address));

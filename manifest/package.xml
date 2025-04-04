@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
-		<members>ContactValitiveEventMapping</members>
-		<members>SyncContactValitiveStateBatch</members>
+		<members>Test_SyncContactValitiveState</members>
+		<members>Test_ValitiveEventsSyncQueueable</members>
+		<members>Test_ValitiveMonitoringEventTrigger</members>
+		<members>Test_ValitiveService</members>
+		<members>ValitiveClientMock</members>
+		<members>ValitiveMonitoringSetSubjectResponse</members>
 		<name>ApexClass</name>
 	</types>
 	<version>60.0</version>

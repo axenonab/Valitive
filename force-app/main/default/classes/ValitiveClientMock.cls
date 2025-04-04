@@ -1,19 +1,21 @@
 public class ValitiveClientMock {
 
     private IValitivePropertiesProvider provider;
+    private Boolean noNameQueryScopeResponse = false;
     public MultiRequestMock mockServer = new MultiRequestMock(new Map<String, HttpCalloutMock>());
     
 
     public ValitiveClientMock(IValitivePropertiesProvider provider) {
         this.provider = provider;
-        buildMockServer();
     }
 
-    
-
-    public void buildMockServer(){
+    public void setNoNameQueryScopeResponse(Boolean noNameQueryScopeResponse){
+        this.noNameQueryScopeResponse = noNameQueryScopeResponse;
         
-        SingleRequestMock authMock = new SingleRequestMock(
+    }
+
+    private SingleRequestMock createAuthMockResponse200(){
+        return new SingleRequestMock(
             200, 
             'OK',
             System.JSON.serialize(new Map<String, Object>{
@@ -24,8 +26,10 @@ public class ValitiveClientMock {
             }),
             null
         );
+    }
 
-        SingleRequestMock queryPersonToMonitorSetMock = new SingleRequestMock(
+    private SingleRequestMock createQueryScopeResponse(){
+        return new SingleRequestMock(
             200,
             'OK',
             System.JSON.serialize(new List<Object>{
@@ -146,6 +150,47 @@ public class ValitiveClientMock {
             }),
             null
         );
+    }
+
+    private SingleRequestMock createQueryScopeResponseNoName(){
+            return new SingleRequestMock(
+                200,
+                'OK',
+                System.JSON.serialize(new List<Object>{
+                    new Map<String, Object>{
+                        '_type' => 'PERSON',
+                        'id' => 'mockid',
+                        'monitoringSetId' => 'mock-monitoring-set-id',
+                        'updatedAt' => '2021-08-23T14:55:05.327Z',
+                        'data' => new Map<String, Object>{
+                            '_type' => 'SE_PERSON',
+                            'id' => 'mock-person-id',
+                            'legalId' => '198403239846',
+                            'country' => 'mock-country',
+                            'birthDate' => '1984-03-23',
+                            'gender' => 'FEMALE',
+                            'addresses' => new List<Map<String, Object>>{},
+                            'phones' => new List<Map<String, Object>>{},
+                            'registrationStatus' => 'PROTECTED_ID',
+                            'guardianShipInfo' => new Map<String, Object>{
+                                'type' => 'GUARDIANSHIP',
+                                'guardedSince' => '2021-08-23',
+                                'decisionDate' => '2021-08-23',
+                                'publicationDate' => '2021-08-23',
+                                'publicationText' => 'mock-publication-text'
+                            }
+                        }
+                    }
+                }),
+                null
+            );
+    }
+
+    public void buildMockServer(){
+        
+        SingleRequestMock authMock = createAuthMockResponse200();
+
+        SingleRequestMock queryPersonToMonitorSetMock = this.noNameQueryScopeResponse ? createQueryScopeResponseNoName(): createQueryScopeResponse();
 
         SingleRequestMock addPersonToMonitorSetMock = new SingleRequestMock(
             200,

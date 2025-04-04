@@ -23,6 +23,7 @@ private class Test_SyncContactValitiveState {
 
     @IsTest
     static void should_sync_contact_valitive_state_test(){
+        mock.buildMockServer();
         Test.setMock(HttpCalloutMock.class, mock.mockServer);
         Test.startTest();
         SyncContactValitiveStateBatch batch = new SyncContactValitiveStateBatch();
@@ -48,5 +49,28 @@ private class Test_SyncContactValitiveState {
             System.assertEquals('mock-zip-code', contact.MailingPostalCode);
             System.assertEquals('mock-municipality', contact.MailingMunicipality__c);
         }
+    }
+
+    @IsTest
+    static void should_sync_contact_valitive_state_protected_id_test(){
+        mock.setNoNameQueryScopeResponse(true);
+        mock.buildMockServer();
+        Test.setMock(HttpCalloutMock.class, mock.mockServer);
+        Test.startTest();
+        SyncContactValitiveStateBatch batch = new SyncContactValitiveStateBatch();
+        batch.valitiveService.setMockIValitivePropertiesProvider(mockProvider);
+        Database.executeBatch(batch);
+        Test.stopTest();
+        List<Contact> contacts = [
+            SELECT 
+                Personal_Identity_Number__c, 
+                MailingStreet,
+                MailingCity,
+                MailingState, 
+                MailingPostalCode,
+                MailingMunicipality__c
+            FROM Contact
+            WHERE IsInMonitoringSet__c = true
+        ];
     }
 }

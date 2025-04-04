@@ -7,6 +7,7 @@ private class Test_ValitiveService {
 
     @IsTest
     static void should_add_person_to_monitorset_test(){
+        mock.buildMockServer();
         Test.setMock(HttpCalloutMock.class, mock.mockServer);
         Test.startTest();
 
@@ -21,6 +22,7 @@ private class Test_ValitiveService {
 
     @IsTest
     static void should_delete_person_from_monitorset_test(){
+        mock.buildMockServer();
         Test.setMock(HttpCalloutMock.class, mock.mockServer);
         Test.startTest();
 
@@ -36,6 +38,7 @@ private class Test_ValitiveService {
 
     @IsTest
     static void should_delete_persons_from_monitorset_test(){
+        mock.buildMockServer();
         Test.setMock(HttpCalloutMock.class, mock.mockServer);
         Test.startTest();
 
@@ -51,6 +54,7 @@ private class Test_ValitiveService {
 
     @IsTest
     static void should_get_events_from_monitorset_test(){
+        mock.buildMockServer();
         Test.setMock(HttpCalloutMock.class, mock.mockServer);
         Test.startTest();
 
@@ -67,7 +71,7 @@ private class Test_ValitiveService {
 
     @IsTest
     static void should_get_events_from_monitorset_w_params_test(){
-
+        mock.buildMockServer();
         mock.setRequestMock(
             mockProvider.getBaseURL() + '/pub/api/' + mockProvider.getApiVersion() + '/monitoring-set/' + mockProvider.getPrivateMonitoringSetId() + '/events?eventTypes=mock-event-type', 
             new SingleRequestMock(200, 'OK', '{"mock": "response"}', new Map<String, String>{'Content-Type' => 'application/json'})

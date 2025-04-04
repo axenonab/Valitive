@@ -14,7 +14,8 @@ private class Test_AddContactToValitiveMonitioringSet {
         contact.Personal_Identity_Number__c = legalId;
         contact.IsInMonitoringSet__c = false;
         insert contact;
-
+        
+        mock.buildMockServer();
         Test.setMock(HttpCalloutMock.class, mock.mockServer);
         Test.startTest();
         AddContactToValitiveMonitioringSetBatch batch = new AddContactToValitiveMonitioringSetBatch();

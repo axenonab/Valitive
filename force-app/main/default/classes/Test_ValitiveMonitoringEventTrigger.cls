@@ -9,6 +9,7 @@ private class Test_ValitiveMonitoringEventTrigger {
     
     @IsTest
     static void should_create_valitive_monitoring_event_when_contact_is_created(){
+        mock.buildMockServer();
         Test.setMock(HttpCalloutMock.class, mock.mockServer);
         Test.startTest();
         Contact contact = new Contact(
