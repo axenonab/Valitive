@@ -30,6 +30,10 @@ public class ValitiveService {
         return this.client.PROPERTIES_PROVIDER.getPrivateMonitoringSetId();
     }
 
+    public String getOrganisationMonitoringSetId() {
+        return this.client.PROPERTIES_PROVIDER.getOrganisationMonitoringSetId();
+    }
+
     /**
      * Create an HttpRequest object
      * @param method The HTTP method to use
@@ -71,12 +75,36 @@ public class ValitiveService {
         return this.client.send(request);
     }
 
+    private HttpResponse bulkAddOrganisationToMonitoringSet(String monitorSetId, List<String> organisationIds) {
+        String template_url = '{0}/pub/api/{1}/monitoring-set/{2}/scope';
+        String url = String.format(template_url, new List<String>{
+            this.client.PROPERTIES_PROVIDER.getBaseUrl(), 
+            this.client.PROPERTIES_PROVIDER.getApiVersion(),
+            monitorSetId
+        });
+
+        String body = JSON.serialize(new List<Object>{
+            new Map<String, Object>{
+                '_type' => 'ADD',
+                'filter' => new Map<String, Object>{
+                    '_type' => 'SPLIT',
+                    'legalIds' => organisationIds,
+                    'partyType' => 'ORG',
+                    'country' => 'SE'
+                }
+            }
+        });
+
+        HttpRequest request = createHttpRequest('POST', url, body);
+        return this.client.send(request);
+    }
+
     public HttpResponse addPersonToPrivateMonitoringSet(String personId) {
         return addPersonToMonitorSet(this.client.PROPERTIES_PROVIDER.getPrivateMonitoringSetId(), personId);
     }
 
-    public HttpResponse addOrganisationToOrganisationMonitoringSet(String personId) {
-        return addPersonToMonitorSet(this.client.PROPERTIES_PROVIDER.getOrganisationMonitoringSetId(), personId);
+    public HttpResponse bulkAddOrganisationToMonitoringSet(List<String> organisationIds) {
+        return bulkAddOrganisationToMonitoringSet(this.client.PROPERTIES_PROVIDER.getOrganisationMonitoringSetId(), organisationIds);
     }
 
     /**
@@ -112,7 +140,18 @@ public class ValitiveService {
             url += '?' + generateQueryParamString(params);
         }
         HttpRequest request = createHttpRequest('GET', url, null);
-        System.debug('Request: ' + request);
+        return this.client.send(request);
+    }
+
+    public HttpResponse getImportProcessStatus(String processId){
+        string templateUrl = '{0}/pub/api/{1}/monitoring-set/scope/import-process/{2}';
+        string url = String.format(templateUrl, new List<String>{
+            this.client.PROPERTIES_PROVIDER.getBaseUrl(),
+            this.client.PROPERTIES_PROVIDER.getApiVersion(),
+            processId
+        });
+
+        HttpRequest request = createHttpRequest('GET', url, null);
         return this.client.send(request);
     }
 

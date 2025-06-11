@@ -2,6 +2,7 @@ public class AddContactToValitiveMonitioringSetBatch implements Database.Batchab
 
     @TestVisible
     private ValitiveService valitiveService = new ValitiveService();
+    private ValitiveUtils valitiveUtils = new ValitiveUtils();
 
     public Database.QueryLocator start(Database.BatchableContext BC) {
         return Database.getQueryLocator([
@@ -62,8 +63,8 @@ public class AddContactToValitiveMonitioringSetBatch implements Database.Batchab
             contact.Has_Trustee_Since__c = person.guardianShipInfo.guardedSince;
         }
         if(person.name != null) {
-            contact.FirstName = !isSameValue(contact.FirstName, person.name.givenName) ? contact.FirstName : person.name.givenName != null ? person.name.givenName : String.join(person.name.names, ' ');
-            contact.LastName = !isSameValue(contact.LastName, person.name.lastName) && person.name.lastName != null ? contact.LastName : person.name.lastName;
+            contact.FirstName = !valitiveUtils.isSameValue(contact.FirstName, person.name.givenName) ? contact.FirstName : person.name.givenName != null ? person.name.givenName : String.join(person.name.names, ' ');
+            contact.LastName = !valitiveUtils.isSameValue(contact.LastName, person.name.lastName) && person.name.lastName != null ? contact.LastName : person.name.lastName;
         }
         if(person.registrationStatus == 'PROTECTED_ID'){
             contact.Protected_Identity__c = true;
@@ -80,11 +81,11 @@ public class AddContactToValitiveMonitioringSetBatch implements Database.Batchab
                     continue;
                 }
                 if(se_address.kind == 'OFFICIAL') {
-                    contact.MailingStreet = isSameValue(contact?.MailingStreet, constructAdressSteetString(se_address)) ? contact?.MailingStreet : constructAdressSteetString(se_address);
-                    contact.MailingCity = isSameValue(contact?.MailingCity, se_address.city) ? contact?.MailingCity : se_address.city.toUpperCase();
-                    contact.MailingState = isSameValue(contact?.MailingState, se_address.county) ? contact?.MailingState : se_address.county;
-                    contact.MailingPostalCode = isSameValue(contact?.MailingPostalCode, formatZipCode(se_address.zip)) ? contact?.MailingPostalCode : formatZipCode(se_address.zip);
-                    contact.MailingMunicipality__c = isSameValue(contact?.MailingMunicipality__c, se_address.municipality) ? contact?.MailingMunicipality__c : se_address.municipality;
+                    contact.MailingStreet = valitiveUtils.isSameValue(contact?.MailingStreet, constructAdressSteetString(se_address)) ? contact?.MailingStreet : constructAdressSteetString(se_address);
+                    contact.MailingCity = valitiveUtils.isSameValue(contact?.MailingCity, se_address.city) ? contact?.MailingCity : se_address.city.toUpperCase();
+                    contact.MailingRegion__c = valitiveUtils.isSameValue(contact?.MailingState, se_address.county) ? contact?.MailingRegion__c : se_address.county;
+                    contact.MailingPostalCode = valitiveUtils.isSameValue(contact?.MailingPostalCode, formatZipCode(se_address.zip)) ? contact?.MailingPostalCode : formatZipCode(se_address.zip);
+                    contact.MailingMunicipality__c = valitiveUtils.isSameValue(contact?.MailingMunicipality__c, se_address.municipality) ? contact?.MailingMunicipality__c : se_address.municipality;
                 }
                 if(se_address.kind == 'FOREIGN') {
                     contact.Foreign_Address__c = true;
@@ -93,11 +94,12 @@ public class AddContactToValitiveMonitioringSetBatch implements Database.Batchab
         }
         if(!person.phones.isEmpty()) {
             for(ValitiveMonitoringSetSubjectResponse.PersonalPhone phone : person.phones) {
+                String formattedNumber = valitiveUtils.formatPhoneNumber(phone);
                 if(phone.kind == 'MOBILE') {
-                    contact.MobilePhone = formatPhoneNumber(phone);
+                    contact.MobilePhone = formattedNumber;
                 }
                 if(phone.kind == 'LANDLINE') {
-                    contact.Phone = formatPhoneNumber(phone);
+                    contact.Phone = formattedNumber;
                 }
             }
         }

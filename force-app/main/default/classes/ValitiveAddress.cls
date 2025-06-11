@@ -9,6 +9,9 @@ public class ValitiveAddress {
             when 'RAW' {
                 return new ValitiveAddress.RawAddress(address);
             }
+            when 'SE_ORG_NORMALIZED' {
+                return new ValitiveAddress.SwedishAddress(address);
+            }
             when else {
                 return null;
             }

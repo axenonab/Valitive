@@ -46,7 +46,7 @@ public class ContactValitiveEventMapping {
         }
         con.MailingStreet = constructAdressSteetString(event);
         con.MailingCity = event.City__c != null ? event.City__c.toUpperCase() : null;
-        con.MailingState = event.County__c;
+        con.MailingRegion__c = event.County__c;
         con.MailingPostalCode = formatZipCode(event.Zip__c);
         // con.MailingCountry = event.Country__c;
         con.MailingMunicipality__c = event.Municipality__c;
@@ -60,7 +60,7 @@ public class ContactValitiveEventMapping {
         }
         con.MailingStreet = constructAdressSteetString(event);
         con.MailingCity = event.City__c.toUpperCase();
-        con.MailingState = event.County__c;
+        con.MailingRegion__c = event.County__c;
         con.MailingPostalCode = formatZipCode(event.Zip__c);
         // con.MailingCountry = event.Country__c;
         con.MailingMunicipality__c = event.Municipality__c;

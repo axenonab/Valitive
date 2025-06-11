@@ -2,6 +2,7 @@ public class ValitiveEventProcessor implements Queueable, Database.AllowsCallout
 
 
     private ValitiveService valitiveService;
+    private ValitiveUtils valitiveUtils = new ValitiveUtils();
 
     private Map<String, List<ValitiveMonitoring_Event__e>> eventsMap;
     
@@ -11,14 +12,64 @@ public class ValitiveEventProcessor implements Queueable, Database.AllowsCallout
     }
 
     public void execute(QueueableContext context) {
-        System.debug('Executing ValitiveEventProcessor');
-        System.debug('Events: ' + eventsMap);
+
         for (String eventType : eventsMap.keySet()) {
             List<ValitiveMonitoring_Event__e> events = eventsMap.get(eventType);
             switch on eventType {
                 when 'AddPerson' {
                     addPersonToMonitorSet(events);
                 }
+                when 'AddOrg' {
+                    addOrgToMonitorSet(events);
+                }
+            }
+        }
+    }
+
+    private void addOrgToMonitorSet(List<ValitiveMonitoring_Event__e> events){
+        List<Account> accountsToUpdate = new List<Account>();
+
+        for (ValitiveMonitoring_Event__e event : events) {
+            String orgNumber = event.Legal_Id__c;
+            HttpResponse response = this.valitiveService.bulkAddOrganisationToMonitoringSet(new List<String>{valitiveUtils.removeHyphen(orgNumber)});
+            
+            Account account = new Account(Id = event.Record_Id__c);
+
+            if (response.getStatusCode() < 400) {
+                
+                Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
+                if (responseMap.containsKey('processId')) {
+                    account.Valitive_Import_Process_Id__c = (String) responseMap.get('processId');
+                    account.Valitive_Import_Process_Status__c = 'Pending';
+                }
+                else {
+                    account.IsInMonitoringSet__c = false;
+                    account.Valitive_Import_Process_Status__c = 'Failed';
+                }
+            }
+            else {
+                account.IsInMonitoringSet__c = false;
+                account.Valitive_Import_Process_Status__c = 'Failed';
+            }
+            accountsToUpdate.add(account);
+        }
+
+        if (!accountsToUpdate.isEmpty()) {
+            List<Database.SaveResult> result = Database.update(accountsToUpdate, false);
+            List<Account> failedAccountUpdates = new List<Account>();
+            for (Database.SaveResult sr : result) {
+                if (!sr.isSuccess()) {
+                    Id accountId = sr.getId();
+                    failedAccountUpdates.add(
+                        new Account(
+                            Id = accountId,
+                            IsInMonitoringSet__c = false
+                        )
+                    );
+                }
+            }
+            if (!failedAccountUpdates.isEmpty()) {
+                update failedAccountUpdates;
             }
         }
     }
@@ -27,8 +78,8 @@ public class ValitiveEventProcessor implements Queueable, Database.AllowsCallout
         List<Contact> contactsToUpdate = new List<Contact>();
 
         for (ValitiveMonitoring_Event__e event : events) {
-            String ssn = event.Personal_Identity_Number__c;
-            HttpResponse response = this.valitiveService.addPersonToPrivateMonitoringSet(removeHyphen(ssn));
+            String ssn = event.Legal_Id__c;
+            HttpResponse response = this.valitiveService.addPersonToPrivateMonitoringSet(ValitiveUtils.removeHyphen(ssn));
     
             if (response.getStatusCode() < 400) {
                 Contact contact = new Contact(Id = event.Record_Id__c);
@@ -71,16 +122,16 @@ public class ValitiveEventProcessor implements Queueable, Database.AllowsCallout
 
 
     private SObject handleResponse(HttpResponse response, Contact contact) {
-        if (response.getStatusCode() > 400) {
-            System.debug('Error: ' + response.getBody());
-            return null;
-        }
+
         ValitiveMonitoringSetSubjectResponse parsedResponse = ValitiveMonitoringSetSubjectResponse.parse(response.getBody());
+
         if (parsedResponse.type == 'PERSON') {
             return handlePersonResponse(parsedResponse, contact);
-        }   
+        }  
+
         return null;
     }
+
 
     public Contact handlePersonResponse(ValitiveMonitoringSetSubjectResponse response, Contact contact) {
         ValitiveMonitoringSetSubjectResponse.SEPerson person = (ValitiveMonitoringSetSubjectResponse.SEPerson) response.data;
@@ -107,10 +158,10 @@ public class ValitiveEventProcessor implements Queueable, Database.AllowsCallout
                     continue;
                 }
                 if(se_address.kind == 'OFFICIAL') {
-                    contact.MailingStreet = constructAdressSteetString(se_address);
+                    contact.MailingStreet = ValitiveUtils.constructAdressSteetString(se_address);
                     contact.MailingCity = se_address.city.toUpperCase();
-                    contact.MailingState = se_address.county;
-                    contact.MailingPostalCode = formatZipCode(se_address.zip);
+                    contact.MailingRegion__c = se_address.county;
+                    contact.MailingPostalCode = ValitiveUtils.formatZipCode(se_address.zip);
                     contact.MailingMunicipality__c = se_address.municipality;
                 }
                 if(se_address.kind == 'FOREIGN') {
@@ -121,10 +172,10 @@ public class ValitiveEventProcessor implements Queueable, Database.AllowsCallout
         if(!person.phones.isEmpty()) {
             for(ValitiveMonitoringSetSubjectResponse.PersonalPhone phone : person.phones) {
                 if(phone.kind == 'MOBILE') {
-                    contact.MobilePhone = formatPhoneNumber(phone);
+                    contact.MobilePhone = valitiveUtils.formatPhoneNumber(phone);
                 }
                 if(phone.kind == 'LANDLINE') {
-                    contact.Phone = formatPhoneNumber(phone);
+                    contact.Phone = valitiveUtils.formatPhoneNumber(phone);
                 }
             }
         }
@@ -134,37 +185,5 @@ public class ValitiveEventProcessor implements Queueable, Database.AllowsCallout
         return contact;
 
     }
-
-    private String removeHyphen(String ssn) {
-        return ssn.replaceAll('-', '');
-    }
-
-    private static String formatZipCode(String zipCode) {
-        if (zipCode.length() == 5) {
-            return zipCode.substring(0, 3) + ' ' + zipCode.substring(3, 5);
-        }
-        return zipCode;
-    }
-
-    private static String constructAdressSteetString(ValitiveAddress.SwedishAddress address) {
-        String street = address.street + ' ' + address.streetNumber;
-        if(!String.isBlank(address.numberSuffix)){
-            street += address.numberSuffix;
-        }
-        if (!String.isBlank(address.flat)){
-            street += ' lgh ' + address.flat;
-        }
-        return street;
-    }
-
-    private static String formatPhoneNumber(ValitiveMonitoringSetSubjectResponse.PersonalPhone phone) {
-        String telNumber = phone.telNumber;
-        string regexReplace = '^46';
-        String formatedNumber = telNumber.replaceAll(regexReplace, '0');
-        return formatedNumber;
-
-    }
-
-
     
 }

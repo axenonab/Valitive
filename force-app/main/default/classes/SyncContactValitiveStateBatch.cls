@@ -3,6 +3,7 @@ public class SyncContactValitiveStateBatch implements Database.Batchable<sObject
 
     @TestVisible
     private ValitiveService valitiveService = new ValitiveService();
+    private ValitiveUtils valitiveUtils = new ValitiveUtils();
 
     public Database.QueryLocator start(Database.BatchableContext BC) {
         return Database.getQueryLocator([
@@ -11,7 +12,7 @@ public class SyncContactValitiveStateBatch implements Database.Batchable<sObject
                 Personal_Identity_Number__c, 
                 MailingStreet,
                 MailingCity,
-                MailingState, 
+                MailingRegion__c, 
                 MailingPostalCode,
                 MailingMunicipality__c,
                 Foreign_Address__c
@@ -25,7 +26,7 @@ public class SyncContactValitiveStateBatch implements Database.Batchable<sObject
         Map<String, Contact> formatedSSNToContact = new Map<String, Contact>();
 
         for (Contact contact : contacts) {
-            formatedSSNToContact.put(removeHyphen(contact.Personal_Identity_Number__c), contact);
+            formatedSSNToContact.put(valitiveUtils.removeHyphen(contact.Personal_Identity_Number__c), contact);
         }
 
         Map<String, String> queryParams = new Map<String, String> {
@@ -70,11 +71,11 @@ public class SyncContactValitiveStateBatch implements Database.Batchable<sObject
                     continue;
                 }
                 if(se_address.kind == 'OFFICIAL') {
-                    contact.MailingStreet = isSameValue(contact?.MailingStreet, constructAdressSteetString(se_address)) ? contact?.MailingStreet : constructAdressSteetString(se_address);
-                    contact.MailingCity = isSameValue(contact?.MailingCity, se_address.city) ? contact?.MailingCity : se_address.city.toUpperCase();
-                    contact.MailingState = isSameValue(contact?.MailingState, se_address.county) ? contact?.MailingState : se_address.county;
-                    contact.MailingPostalCode = isSameValue(contact?.MailingPostalCode, formatZipCode(se_address.zip)) ? contact?.MailingPostalCode : formatZipCode(se_address.zip);
-                    contact.MailingMunicipality__c = isSameValue(contact?.MailingMunicipality__c, se_address.municipality) ? contact?.MailingMunicipality__c : se_address.municipality;
+                    contact.MailingStreet = valitiveUtils.isSameValue(contact?.MailingStreet, valitiveUtils.constructAdressSteetString(se_address)) ? contact?.MailingStreet : valitiveUtils.constructAdressSteetString(se_address);
+                    contact.MailingCity = valitiveUtils.isSameValue(contact?.MailingCity, se_address.city) ? contact?.MailingCity : se_address.city.toUpperCase();
+                    contact.MailingRegion__c = valitiveUtils.isSameValue(contact?.MailingRegion__c, se_address.county) ? contact?.MailingRegion__c : se_address.county;
+                    contact.MailingPostalCode = valitiveUtils.isSameValue(contact?.MailingPostalCode, valitiveUtils.formatZipCode(se_address.zip)) ? contact?.MailingPostalCode : valitiveUtils.formatZipCode(se_address.zip);
+                    contact.MailingMunicipality__c = valitiveUtils.isSameValue(contact?.MailingMunicipality__c, se_address.municipality) ? contact?.MailingMunicipality__c : se_address.municipality;
                 }
                 if(se_address.kind == 'FOREIGN') {
                     contact.Foreign_Address__c = true;
@@ -84,34 +85,6 @@ public class SyncContactValitiveStateBatch implements Database.Batchable<sObject
         
         return contact;
 
-    }
-
-
-    private Boolean isSameValue(String value1, String value2) {
-        Boolean result = value1?.toLowerCase() == value2?.toLowerCase();
-        return result;  
-    }
-
-    private String removeHyphen(String ssn) {
-        return ssn.replaceAll('-', '');
-    }
-
-    private static String formatZipCode(String zipCode) {
-        if (zipCode.length() == 5) {
-            return zipCode.substring(0, 3) + ' ' + zipCode.substring(3, 5);
-        }
-        return zipCode;
-    }
-
-    private static String constructAdressSteetString(ValitiveAddress.SwedishAddress address) {
-        String street = address.street + ' ' + address.streetNumber;
-        if(!String.isBlank(address.numberSuffix)){
-            street += address.numberSuffix;
-        }
-        if (!String.isBlank(address.flat)){
-            street += ' lgh ' + address.flat;
-        }
-        return street;
     }
 
 }

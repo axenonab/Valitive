@@ -28,6 +28,149 @@ public class ValitiveClientMock {
         );
     }
 
+    private SingleRequestMock createOrganisationSubjectResponse(){
+        return new SingleRequestMock(
+            200,
+            'OK',
+            System.JSON.serialize(new List<Object>{new Map<String, Object>{
+                'id' => '123456789',
+                'monitoringSetId' => 'mock-monitoring-set-id',
+                'addedAt' => '2021-08-23T14:55:05.327Z',
+                'updatedAt' => '2021-08-23T14:55:05.327Z',
+                'data' => new Map<String, Object>{
+                    '_type' => 'SE_ORG',
+                    'id' => 'mock-id',
+                    'country' => 'mock-country',
+                    'legalId' => 'mock-legal-id',
+                    'addresses' => new List<Map<String, Object>>{
+                        new Map<String, Object>{
+                            '_type' => 'SE_ORG_NORMALIZED',
+                            'kind' => 'VISIT',
+                            'country' => 'mock-country',
+                            'street' => 'mock-street',
+                            'number' => 'mock-number',
+                            'zip' => 'mock-zip-code',
+                            'city' => 'mock-city',
+                            'county' => 'mock-county',
+                            'municipality' => 'mock-municipality'
+                        },
+                        new Map<String, Object>{
+                            '_type' => 'SE_ORG_NORMALIZED',
+                            'kind' => 'MAIL',
+                            'country' => 'mock-country',
+                            'street' => 'mock-street-mail',
+                            'number' => 'mock-number',
+                            'zip' => 'mock-zip-code',
+                            'city' => 'mock-city',
+                            'county' => 'mock-county',
+                            'municipality' => 'mock-municipality'
+                        }
+                    },
+                    'urls' => new List<String>{},
+                    'emails' => new List<String>{},
+                    'phones' => new List<String>{},
+                    'orgName' => new Map<String, Object>{
+                        'name' => 'mock-name',
+                        'rawName' => 'mock-raw-name'
+                    },
+                    'lifecycle' => new Map<String, Object>{
+                        'status' => new Map<String, Object>{
+                            'value' => 'ACTIVE'
+                        },
+                        'establishedInYear' => 2021,
+                        'establishedOn' => '2021-08-23'
+                    },
+                    'historicalAddressess' => new List<Object>(),
+                    'businessActivity' => 'mock-business-activity',
+                    'primaryBusinessCategory' => new Map<String, Object>{
+                        'code' => 'mock-code',
+                        'description' => 'mock-description'
+                    },
+                    'otherBusinessCategories' => new List<Map<String, Object>>{
+                        new Map<String, Object>{
+                            'code' => 'mock-code',
+                            'description' => 'mock-description'
+                        }
+                    },
+                    'legalForm' => new Map<String, Object>{
+                        'code' => 'mock-code',
+                        'description' => 'mock-description'
+                    },
+                    'financials' => new Map<String, Object>{
+                        'stockExchangeListed' => false,
+                        'shareCapital' => '100000',
+                        'turnoverGroup' => '1 - 49 tkr',
+                        'financialStatements' => new List<Map<String, Object>>{
+                            new Map<String, Object>{
+                                'period' => '2018-04-01',
+                                'durationMonths' => 12,
+                                'equityRatio' => '70.1',
+                                'liquidityRatio' => '406.6',
+                                'returnOnEquity' => '53.0',
+                                'returnOnAssets' => '37.3',
+                                'debtRatio' => '0.4',
+                                'profitMargin' => '34.2',
+                                'totalTurnover' => '1409',
+                                'yearResult' => '282'
+                            },
+                            new Map<String, Object>{
+                                'period' => '2019-04-01',
+                                'durationMonths' => 12,
+                                'equityRatio' => '70.1',
+                                'liquidityRatio' => '406.6',
+                                'returnOnEquity' => '53.0',
+                                'returnOnAssets' => '37.3',
+                                'debtRatio' => '0.4',
+                                'profitMargin' => '34.2',
+                                'totalTurnover' => '1409',
+                                'yearResult' => '300'
+                            }
+                        }
+                    },
+                    'manpower' => new Map<String, Object>{
+                        'minNrOfEmployeesHQ' => 1,
+                        'maxNrOfEmployeesHQ' => 10,
+                        'minNrOfEmployeesOrg' => 1,
+                        'maxNrOfEmployeesOrg' => 10,
+                        'nrOfEmployeesOrg' => 1
+                    }
+                }
+            }}),
+            null
+        );
+    }
+
+    private SingleRequestMock createImportProcessStatusResponse(){
+        return new SingleRequestMock(
+            200,
+            'OK',
+            System.JSON.serialize(new Map<String, Object>{
+                'id' => 'mock-id',
+                'postedAt' => '2021-08-23T14:55:05.327Z',
+                'startedAt' => '2021-08-23T14:55:05.327Z',
+                'completedAt' => '2021-08-23T14:55:05.327Z',
+                'status' => 'COMPLETED',
+                'monitoringSetId' => 'mock-monitoring-set-id',
+                'processedCount' => 100,
+                'failedToProcessCount' => 0,
+                'issues' => new List<Object>{}
+            }),
+            null
+        );
+    }
+
+    private SingleRequestMock createImportRequestPresponse(){
+        return new SingleRequestMock(
+            200,
+            'OK',
+            System.JSON.serialize(new Map<String, Object>{
+                'id' => 'mock-id'
+            }),
+            null
+        );
+    }
+
+
     private SingleRequestMock createQueryScopeResponse(){
         return new SingleRequestMock(
             200,
@@ -595,6 +738,24 @@ public class ValitiveClientMock {
 
         mockServer.addRequestMock(endpoint2TestResp);
 
+    }
+
+    public void addImportProcessStatusRequestMock(String importId){
+        SingleRequestMock importProcessStatusMock = createImportProcessStatusResponse();
+        String url = this.provider.getBaseURL() + '/pub/api/' + this.provider.getApiVersion() + '/monitoring-set/scope/import-process/' + importId;
+        this.mockServer.addRequestMock(url, importProcessStatusMock);
+    }
+
+    public void addImportRequestPresponse(){
+        SingleRequestMock importProcessStatusMock = createImportRequestPresponse();
+        String url = this.provider.getBaseURL() + '/pub/api/' + this.provider.getApiVersion() + '/monitoring-set/' + this.provider.getOrganisationMonitoringSetId() + '/scope';
+        this.mockServer.addRequestMock(url, importProcessStatusMock);
+    }
+
+    public void addOrgQueryResponse(){
+        SingleRequestMock orgSubjectResponse = createOrganisationSubjectResponse();
+        String url = this.provider.getBaseURL() + '/pub/api/' + this.provider.getApiVersion() + '/monitoring-set/scope';
+        this.mockServer.addRequestMock(url, orgSubjectResponse);
     }
 
 

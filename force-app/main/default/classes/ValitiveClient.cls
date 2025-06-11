@@ -13,7 +13,8 @@ public class ValitiveClient {
      * @return String The access token
      */
     public String fetchAccessToken() {
-        String accessToken = (String) Cache.Org.get('local.AccessTokenCache.ValitiveAuthToken');
+        Cache.OrgPartition partition = Cache.Org.getPartition('local.AccessTokenCache');
+        String accessToken = (String) partition.get('ValitiveAuthToken');
         return accessToken;
     }
 
@@ -44,7 +45,8 @@ public class ValitiveClient {
      * @param expiresIn The time in seconds until the token expires
      */
     public void setAccessToken(String accessToken, Integer expiresIn) {
-        Cache.Org.put('local.AccessTokenCache.ValitiveAuthToken', accessToken, expiresIn);
+        Cache.OrgPartition partition = Cache.Org.getPartition('local.AccessTokenCache');
+        partition.put('ValitiveAuthToken', accessToken, expiresIn);
     }
 
     /**

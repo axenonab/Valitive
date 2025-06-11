@@ -35,7 +35,7 @@ private class Test_SyncContactValitiveState {
                 Personal_Identity_Number__c, 
                 MailingStreet,
                 MailingCity,
-                MailingState, 
+                MailingRegion__c, 
                 MailingPostalCode,
                 MailingMunicipality__c
             FROM Contact
@@ -45,7 +45,7 @@ private class Test_SyncContactValitiveState {
         for(Contact contact : contacts){
             System.assertEquals('mock-street mock-numbermock-number-suffix lgh mock-flat', contact.MailingStreet);
             System.assertEquals('MOCK-CITY', contact.MailingCity);
-            System.assertEquals('mock-county', contact.MailingState);
+            System.assertEquals('mock-county', contact.MailingRegion__c);
             System.assertEquals('mock-zip-code', contact.MailingPostalCode);
             System.assertEquals('mock-municipality', contact.MailingMunicipality__c);
         }
@@ -66,7 +66,7 @@ private class Test_SyncContactValitiveState {
                 Personal_Identity_Number__c, 
                 MailingStreet,
                 MailingCity,
-                MailingState, 
+                MailingRegion__c, 
                 MailingPostalCode,
                 MailingMunicipality__c
             FROM Contact

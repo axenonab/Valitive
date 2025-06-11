@@ -19,17 +19,27 @@
 // ValitiveResponseHandler.handleEventsResponse(res);
 
 
-ValitiveService valitiveService = new ValitiveService();
-Set<String> formatedSSNToContact = new Set<String>{
-    '198802057227'
-};
+// ValitiveService valitiveService = new ValitiveService();
+// Set<String> formatedSSNToContact = new Set<String>{
+//     '5560495649'
+// };
 
-Map<String, String> queryParams = new Map<String, String> {
-    ValitiveQueryParams.IDS => String.join(formatedSSNToContact, ','),
-    ValitiveQueryParams.MONITORING_SET_IDS => valitiveService.getPrivateMonitoringSetId(),
-    ValitiveQueryParams.ROW_LIMIT => '1000'
-};
+// Map<String, String> queryParams = new Map<String, String> {
+//     ValitiveQueryParams.IDS => String.join(formatedSSNToContact, ','),
+//     ValitiveQueryParams.MONITORING_SET_IDS => valitiveService.getOrganisationMonitoringSetId(),
+//     ValitiveQueryParams.ROW_LIMIT => '1000'
+// };
 
-HttpResponse response = valitiveService.queryMonitoringSetScope(queryParams);
-List<ValitiveMonitoringSetSubjectResponse> result = ValitiveMonitoringSetSubjectResponse.parseList(response.getBody());
+// HttpResponse response = valitiveService.queryMonitoringSetScope(queryParams);
+// List<ValitiveMonitoringSetSubjectResponse> result = ValitiveMonitoringSetSubjectResponse.parseList(response.getBody());
+// System.debug(result);
+
+// Database.executeBatch(new ValitiveImportProcessBatch());
+// Database.executeBatch(new ValitiveQuerySubjectsBatch('Awaiting Initial Sync'));
+// ValitivePropertiesProvider valitivePropertiesProvider = new ValitivePropertiesProvider();
+// ValitiveClient valitiveClient = new ValitiveClient(valitivePropertiesProvider);
+// System.debug(valitiveClient.fetchAccessToken());
+
+String a = null;
+String result = a?.equalsIgnoreCase('b') ? 'true' : 'false';
 System.debug(result);

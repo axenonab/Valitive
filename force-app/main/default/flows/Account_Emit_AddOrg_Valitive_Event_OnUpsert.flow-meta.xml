@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>62.0</apiVersion>
-    <description>- Change mapping on event to legal Id instead of personal number</description>
     <environments>Default</environments>
-    <interviewLabel>Contact - Emit AddPerson Valitive Event - OnUpsert {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Contact - Emit AddPerson Valitive Event - OnUpsert</label>
+    <interviewLabel>Account - Emit AddOrg Valitive Event - OnUpsert {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Account - Emit AddOrg Valitive Event - OnUpsert</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -32,13 +31,13 @@
         <inputAssignments>
             <field>Action__c</field>
             <value>
-                <stringValue>AddPerson</stringValue>
+                <stringValue>AddOrg</stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>Legal_Id__c</field>
             <value>
-                <elementReference>$Record.Personal_Identity_Number__c</elementReference>
+                <elementReference>$Record.Company_Number__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -65,7 +64,14 @@
                 <booleanValue>true</booleanValue>
             </value>
         </filters>
-        <object>Contact</object>
+        <filters>
+            <field>Company_Number__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>Account</object>
         <recordTriggerType>CreateAndUpdate</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>

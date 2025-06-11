@@ -91,7 +91,6 @@ public class ValitiveEventHandler {
             baseEvent.Type__c = personLegalIdChangedPayload.type;
             baseEvent.Old_Legal_Id__c = personLegalIdChangedPayload.oldLegalId;
             baseEvent.Valid_Since__c = personLegalIdChangedPayload.validSince;
-            baseEvent.Old_Legal_Id__c = personLegalIdChangedPayload.oldLegalId;
             baseEvent.Person_Id__c = personLegalIdChangedPayload.personId;
             baseEvent.Timestamp__c = personLegalIdChangedPayload.timestamp;
             baseEvent.Sync_Status__c = 'Awaiting Manual Review';
