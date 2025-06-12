@@ -164,7 +164,8 @@ public class ValitiveClientMock {
             200,
             'OK',
             System.JSON.serialize(new Map<String, Object>{
-                'id' => 'mock-id'
+                'id' => 'mock-id',
+                'processId' => 'mock-process-id'
             }),
             null
         );
@@ -207,6 +208,21 @@ public class ValitiveClientMock {
                                 'county' => 'mock-county',
                                 'municipality' => 'mock-municipality',
                                 'kind' => 'OFFICIAL',
+                                '_type' => 'SE_NORMALIZED'
+                            },
+                            new Map<String, Object>{
+                                'country' => 'mock-country',
+                                'street' => 'mock-street',
+                                'postbox' => 'mock-post-box',
+                                'number' => 'mock-number',
+                                'numberSuffix' => 'mock-number-suffix',
+                                'flat' => 'mock-flat',
+                                'zip' => 'mock-zip-code',
+                                'careOf' => 'mock-care-of',
+                                'city' => 'mock-city',
+                                'county' => 'mock-county',
+                                'municipality' => 'mock-municipality',
+                                'kind' => 'FORWARD_MAIL',
                                 '_type' => 'SE_NORMALIZED'
                             }
                         },
@@ -370,7 +386,22 @@ public class ValitiveClientMock {
                             'municipality' => 'mock-municipality',
                             'kind' => 'OFFICIAL',
                             '_type' => 'SE_NORMALIZED'
-                        }
+                        },
+                        new Map<String, Object>{
+                                'country' => 'mock-country',
+                                'street' => 'mock-street',
+                                'postbox' => 'mock-post-box',
+                                'number' => 'mock-number',
+                                'numberSuffix' => 'mock-number-suffix',
+                                'flat' => 'mock-flat',
+                                'zip' => 'mock-zip-code',
+                                'careOf' => 'mock-care-of',
+                                'city' => 'mock-city',
+                                'county' => 'mock-county',
+                                'municipality' => 'mock-municipality',
+                                'kind' => 'FORWARD_MAIL',
+                                '_type' => 'SE_NORMALIZED'
+                            }
                     },
                     'phones' => new List<Map<String, Object>>{
                         new Map<String, Object>{

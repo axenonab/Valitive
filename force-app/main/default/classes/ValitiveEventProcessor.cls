@@ -60,8 +60,7 @@ public class ValitiveEventProcessor implements Queueable, Database.AllowsCallout
             for (Database.SaveResult sr : result) {
                 if (!sr.isSuccess()) {
                     Id accountId = sr.getId();
-                    failedAccountUpdates.add(
-                        new Account(
+                    failedAccountUpdates.add(new Account(
                             Id = accountId,
                             IsInMonitoringSet__c = false
                         )
@@ -104,8 +103,7 @@ public class ValitiveEventProcessor implements Queueable, Database.AllowsCallout
             for (Database.SaveResult sr : result) {
                 if (!sr.isSuccess()) {
                     Id contactId = sr.getId();
-                    failedContactUpdates.add(
-                        new Contact(
+                    failedContactUpdates.add(new Contact(
                             Id = contactId,
                             IsInMonitoringSet__c = false
                         )
@@ -163,6 +161,14 @@ public class ValitiveEventProcessor implements Queueable, Database.AllowsCallout
                     contact.MailingRegion__c = se_address.county;
                     contact.MailingPostalCode = ValitiveUtils.formatZipCode(se_address.zip);
                     contact.MailingMunicipality__c = se_address.municipality;
+                }
+                if(se_address.kind == 'FORWARD_MAIL') {
+                    contact.MailingStreet = ValitiveUtils.constructAdressSteetString(se_address);
+                    contact.MailingCity = se_address.city.toUpperCase();
+                    contact.MailingRegion__c = se_address.county;
+                    contact.MailingPostalCode = ValitiveUtils.formatZipCode(se_address.zip);
+                    contact.MailingMunicipality__c = se_address.municipality;
+                    break;
                 }
                 if(se_address.kind == 'FOREIGN') {
                     contact.Foreign_Address__c = true;

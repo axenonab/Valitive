@@ -77,6 +77,14 @@ public class SyncContactValitiveStateBatch implements Database.Batchable<sObject
                     contact.MailingPostalCode = valitiveUtils.isSameValue(contact?.MailingPostalCode, valitiveUtils.formatZipCode(se_address.zip)) ? contact?.MailingPostalCode : valitiveUtils.formatZipCode(se_address.zip);
                     contact.MailingMunicipality__c = valitiveUtils.isSameValue(contact?.MailingMunicipality__c, se_address.municipality) ? contact?.MailingMunicipality__c : se_address.municipality;
                 }
+                if(se_address.kind == 'FORWARD_MAIL'){
+                    contact.MailingStreet = valitiveUtils.isSameValue(contact?.MailingStreet, valitiveUtils.constructAdressSteetString(se_address)) ? contact?.MailingStreet : valitiveUtils.constructAdressSteetString(se_address);
+                    contact.MailingCity = valitiveUtils.isSameValue(contact?.MailingCity, se_address.city) ? contact?.MailingCity : se_address.city.toUpperCase();
+                    contact.MailingRegion__c = valitiveUtils.isSameValue(contact?.MailingRegion__c, se_address.county) ? contact?.MailingRegion__c : se_address.county;
+                    contact.MailingPostalCode = valitiveUtils.isSameValue(contact?.MailingPostalCode, valitiveUtils.formatZipCode(se_address.zip)) ? contact?.MailingPostalCode : valitiveUtils.formatZipCode(se_address.zip);
+                    contact.MailingMunicipality__c = valitiveUtils.isSameValue(contact?.MailingMunicipality__c, se_address.municipality) ? contact?.MailingMunicipality__c : se_address.municipality;
+                    break;
+                }
                 if(se_address.kind == 'FOREIGN') {
                     contact.Foreign_Address__c = true;
                 }
