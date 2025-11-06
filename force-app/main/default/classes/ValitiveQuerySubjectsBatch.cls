@@ -77,14 +77,23 @@ public class ValitiveQuerySubjectsBatch implements Database.Batchable<sObject>, 
 
         Map<String, String> queryParams = new Map<String, String> {
             ValitiveQueryParams.MONITORING_SET_IDS => this.valitiveService.getOrganisationMonitoringSetId(),
-            ValitiveQueryParams.IDS => String.join(formatedOrgNumberToAccount.keySet(), ','),
+            ValitiveQueryParams.LEGAL_IDS => String.join(formatedOrgNumberToAccount.keySet(), ','),
             ValitiveQueryParams.ROW_LIMIT => '1000'
         };
 
         HttpResponse response = this.valitiveService.queryMonitoringSetScope(queryParams);
+        if(response.getStatusCode() != 200) {
+            return;
+        }
+        
 
         List<ValitiveMonitoringSetSubjectResponse> parsedResponse = ValitiveMonitoringSetSubjectResponse.parseList(response.getBody());
         for(ValitiveMonitoringSetSubjectResponse monitoringSetSubjectResponse : parsedResponse) {
+            if(monitoringSetSubjectResponse.id.startsWith('19')){
+                //remove the leading '19' from the id to match the Company_Number__c format
+                monitoringSetSubjectResponse.id = monitoringSetSubjectResponse.id.substring(2);
+            }
+            System.debug('Processing monitoring set subject response: ' + monitoringSetSubjectResponse.id);
             Account account = formatedOrgNumberToAccount.get(monitoringSetSubjectResponse.id);
             if(account == null) {
                 continue;
@@ -135,7 +144,11 @@ public class ValitiveQuerySubjectsBatch implements Database.Batchable<sObject>, 
                     account.BillingState = valitiveUtils.isSameValue(account?.BillingState, swedishAddress.county) ? account?.BillingState : swedishAddress.county;
                     account.BillingPostalCode = valitiveUtils.isSameValue(account?.BillingPostalCode, swedishAddress.zip) ? account?.BillingPostalCode : valitiveUtils.formatZipCode(swedishAddress.zip);
                     account.Billing_Municipality__c = valitiveUtils.isSameValue(account?.Billing_Municipality__c, swedishAddress.municipality) ? account?.Billing_Municipality__c : swedishAddress.municipality;
-                    account.BillingStreet = valitiveUtils.isSameValue(account?.BillingStreet, valitiveUtils.constructAdressSteetString(swedishAddress)) ? account?.BillingStreet : valitiveUtils.constructAdressSteetString(swedishAddress);
+                    if(swedishAddress.postbox != null) {
+                        account.BillingStreet = valitiveUtils.isSameValue(account?.BillingStreet, swedishAddress.postbox) ? account?.BillingStreet : swedishAddress.postbox;
+                    } else {
+                        account.BillingStreet = valitiveUtils.isSameValue(account?.BillingStreet, valitiveUtils.constructAdressSteetString(swedishAddress)) ? account?.BillingStreet : valitiveUtils.constructAdressSteetString(swedishAddress);
+                    }
                 }
 
             }

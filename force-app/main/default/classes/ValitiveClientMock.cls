@@ -98,7 +98,7 @@ public class ValitiveClientMock {
                     },
                     'financials' => new Map<String, Object>{
                         'stockExchangeListed' => false,
-                        'shareCapital' => '100000',
+                        'shareCapital' => '1234567891',
                         'turnoverGroup' => '1 - 49 tkr',
                         'financialStatements' => new List<Map<String, Object>>{
                             new Map<String, Object>{

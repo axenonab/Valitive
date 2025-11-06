@@ -70,6 +70,33 @@ public class ValitiveEventResponse {
                 when 'SE_GUARD_CHANGED' {
                     return new PersonGuardPayload(payload);
                 }
+                when 'SE_ORG_STATUS_CHANGED' {
+                    return new SeOrgStatusChangedPayload(payload);
+                }
+                when 'SE_ORG_NAME_CHANGED' {
+                    return new SeOrgNameChangedPayload(payload);
+                }
+                when 'SE_ORG_ADDR_CHANGED' {
+                    return new SeOrgAddressChangedPayload(payload);
+                }
+                when 'SE_ORG_ADDR_CORRECTED' {
+                    return new SeOrgAddressCorrectedPayload(payload);
+                }
+                when 'SE_ORG_ARCHIVED' {
+                    return new OrgArchivedPayload(payload);
+                }
+                when 'SE_CONTACT_INFO_CHANGED' {
+                    return new SeOrgContactInfoChangedPayload(payload);
+                }
+                when 'SE_ORG_KPI_YEAR_RESULT_CHANGED' {
+                    return new SeOrgKpiYearResultChangedPayload(payload);
+                }
+                when 'SE_BUSINESS_CATEGORY_ADDED' {
+                    return new SeBusinessCategoryAddedPayload(payload);
+                }
+                when 'SE_BUSINESS_CATEGORY_REMOVED' {
+                    return new SeBusinessCategoryRemovedPayload(payload);
+                }
                 when else {
                     return null;
                 }
@@ -115,6 +142,33 @@ public class ValitiveEventResponse {
             }
             if (this instanceof ValitiveEventResponse.PersonDeceasedPayload) {
                 return ValitiveEventResponse.PersonDeceasedPayload.class;
+            }
+            if (this instanceof ValitiveEventResponse.SeOrgStatusChangedPayload) {
+                return ValitiveEventResponse.SeOrgStatusChangedPayload.class;
+            }
+            if (this instanceof ValitiveEventResponse.SeOrgNameChangedPayload) {
+                return ValitiveEventResponse.SeOrgNameChangedPayload.class;
+            }
+            if (this instanceof ValitiveEventResponse.SeOrgAddressChangedPayload) {
+                return ValitiveEventResponse.SeOrgAddressChangedPayload.class;
+            }
+            if (this instanceof ValitiveEventResponse.SeOrgAddressCorrectedPayload) {
+                return ValitiveEventResponse.SeOrgAddressCorrectedPayload.class;
+            }
+            if (this instanceof ValitiveEventResponse.OrgArchivedPayload) {
+                return ValitiveEventResponse.OrgArchivedPayload.class;
+            }
+            if (this instanceof ValitiveEventResponse.SeOrgContactInfoChangedPayload) {
+                return ValitiveEventResponse.SeOrgContactInfoChangedPayload.class;
+            }
+            if (this instanceof ValitiveEventResponse.SeOrgKPIYearResultChangedPayload) {
+                return ValitiveEventResponse.SeOrgKPIYearResultChangedPayload.class;
+            }
+            if (this instanceof ValitiveEventResponse.SeBusinessCategoryAddedPayload) {
+                return ValitiveEventResponse.SeBusinessCategoryAddedPayload.class;
+            }
+            if (this instanceof ValitiveEventResponse.SeBusinessCategoryRemovedPayload) {
+                return ValitiveEventResponse.SeBusinessCategoryRemovedPayload.class;
             }
             return null;
         }
@@ -387,6 +441,195 @@ public class ValitiveEventResponse {
         }
     }
 
-  
+    public class SeOrgStatusChangedPayload extends Payload {
+        public String type;
+        public String id;
+        public Datetime timestamp;
+        public String orgId;
+        public String orgLegalId;
+        public String status;
+        public String oldStatus;
+        public Datetime activatedOn;
 
+        public SeOrgStatusChangedPayload(Map<String, Object> payload){
+            this.type = (String) payload.get('_type');
+            this.id = (String) payload.get('id');
+            this.timestamp = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('timestamp')), Datetime.class);
+            this.orgId = (String) payload.get('orgId');
+            this.orgLegalId = (String) payload.get('orgLegalId');
+            this.status = (String) payload.get('status');
+            this.oldStatus = (String) payload.get('oldStatus');
+            this.activatedOn = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('activatedOn')), Datetime.class);
+        }
+    }
+
+    public class SeOrgNameChangedPayload extends Payload {
+        public String type;
+        public String id;
+        public Datetime timestamp;
+        public String orgId;
+        public String orgLegalId;
+        public String name;
+        public String rawName;
+        public String oldRawName;
+        public String oldName;
+
+        public SeOrgNameChangedPayload(Map<String, Object> payload){
+            this.type = (String) payload.get('_type');
+            this.id = (String) payload.get('id');
+            this.timestamp = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('timestamp')), Datetime.class);
+            this.orgId = (String) payload.get('orgId');
+            this.orgLegalId = (String) payload.get('orgLegalId');
+            this.name = (String) payload.get('name');
+            this.oldName = (String) payload.get('oldName');
+            this.rawName = (String) payload.get('rawName');
+            this.oldRawName = (String) payload.get('oldRawName');
+        }
+    }
+
+    public class SeOrgAddressChangedPayload extends Payload {
+        public String type;
+        public String id;
+        public Datetime timestamp;
+        public String orgId;
+        public String orgLegalId;
+        public Date validSince;
+        public ValitiveAddress.Address address;
+        public ValitiveAddress.Address oldAddress;
+        public String addressKind;
+
+        public SeOrgAddressChangedPayload(Map<String, Object> payload){
+            this.type = (String) payload.get('_type');
+            this.id = (String) payload.get('id');
+            this.timestamp = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('timestamp')), Datetime.class);
+            this.orgId = (String) payload.get('orgId');
+            this.orgLegalId = (String) payload.get('orgLegalId');
+            this.validSince = payload.containsKey('validSince') ? ((Datetime) System.JSON.deserialize(System.Json.serialize(payload.get('validSince')), Datetime.class)).date() : null;
+            this.address = ValitiveAddress.parseAddress((Map<String, Object>) payload.get('address'));
+            this.oldAddress = ValitiveAddress.parseAddress((Map<String, Object>) payload.get('oldAddress'));
+            this.addressKind = (String) payload.get('addressKind');
+        }
+    }
+
+    public class SeOrgAddressCorrectedPayload extends Payload {
+        public String type;
+        public String id;
+        public Datetime timestamp;
+        public String orgId;
+        public String orgLegalId;
+        public Date validSince;
+        public ValitiveAddress.Address address;
+        public ValitiveAddress.Address oldAddress;
+        public String addressKind;
+
+        public SeOrgAddressCorrectedPayload(Map<String, Object> payload){
+            this.type = (String) payload.get('_type');
+            this.id = (String) payload.get('id');
+            this.timestamp = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('timestamp')), Datetime.class);
+            this.orgId = (String) payload.get('orgId');
+            this.orgLegalId = (String) payload.get('orgLegalId');
+            this.validSince = payload.containsKey('validSince') ? ((Datetime) System.JSON.deserialize(System.Json.serialize(payload.get('validSince')), Datetime.class)).date() : null;
+            this.address = ValitiveAddress.parseAddress((Map<String, Object>) payload.get('address'));
+            this.oldAddress = ValitiveAddress.parseAddress((Map<String, Object>) payload.get('oldAddress'));
+            this.addressKind = (String) payload.get('addressKind');
+        }
+    }
+
+    public class OrgArchivedPayload extends Payload {
+        public String type;
+        public String id;
+        public Datetime timestamp;
+        public String orgId;
+        public String orgLegalId;
+
+        public OrgArchivedPayload(Map<String, Object> payload){
+            this.type = (String) payload.get('_type');
+            this.id = (String) payload.get('id');
+            this.timestamp = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('timestamp')), Datetime.class);
+            this.orgId = (String) payload.get('orgId');
+            this.orgLegalId = (String) payload.get('orgLegalId');
+        }
+    }
+    
+    public class SeOrgContactInfoChangedPayload extends Payload {
+        public String type;
+        public String id;
+        public Datetime timestamp;
+        public String orgId;
+        public String orgLegalId;
+        public Map<String, Object> contactInfo;
+        public Map<String, Object> oldContactInfo;
+
+        public SeOrgContactInfoChangedPayload(Map<String, Object> payload){
+            this.type = (String) payload.get('_type');
+            this.id = (String) payload.get('id');
+            this.timestamp = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('timestamp')), Datetime.class);
+            this.orgId = (String) payload.get('orgId');
+            this.orgLegalId = (String) payload.get('orgLegalId');
+            this.contactInfo = (Map<String, Object>) payload.get('contactInfo');
+            this.oldContactInfo = (Map<String, Object>) payload.get('oldContactInfo');
+        }
+    }
+
+    public class SeOrgKPIYearResultChangedPayload extends Payload {
+        public String type;
+        public String id;
+        public Datetime timestamp;
+        public String orgId;
+        public String orgLegalId;
+        public Date period;
+        public Integer durationInMonths;
+        public Decimal value;
+
+        public SeOrgKPIYearResultChangedPayload(Map<String, Object> payload){
+            this.type = (String) payload.get('_type');
+            this.id = (String) payload.get('id');
+            this.timestamp = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('timestamp')), Datetime.class);
+            this.orgId = (String) payload.get('orgId');
+            this.orgLegalId = (String) payload.get('orgLegalId');
+            this.period = payload.containsKey('period') ? (Date) System.JSON.deserialize((String) payload.get('period'), Date.class) : null;
+            this.durationInMonths = (Integer) System.JSON.deserialize(System.JSON.serialize(payload.get('durationInMonths')), Integer.class);
+            this.value = (Decimal) System.JSON.deserialize(System.JSON.serialize(payload.get('value')), Decimal.class);
+        }
+    }
+
+    public class SeBusinessCategoryAddedPayload extends Payload {
+        public String type;
+        public String id;
+        public Datetime timestamp;
+        public String orgId;
+        public String orgLegalId;
+        public String code;
+        public Boolean isPrimary;
+
+        public SeBusinessCategoryAddedPayload(Map<String, Object> payload){
+            this.type = (String) payload.get('_type');
+            this.id = (String) payload.get('id');
+            this.timestamp = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('timestamp')), Datetime.class);
+            this.orgId = (String) payload.get('orgId');
+            this.orgLegalId = (String) payload.get('orgLegalId');
+            this.code = (String) payload.get('code');
+            this.isPrimary = (Boolean) payload.get('isPrimary');
+        }
+    }
+
+    public class SeBusinessCategoryRemovedPayload extends Payload {
+        public String type;
+        public String id;
+        public Datetime timestamp;
+        public String orgId;
+        public String orgLegalId;
+        public String code;
+        public Boolean isPrimary;
+
+        public SeBusinessCategoryRemovedPayload(Map<String, Object> payload){
+            this.type = (String) payload.get('_type');
+            this.id = (String) payload.get('id');
+            this.timestamp = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('timestamp')), Datetime.class);
+            this.orgId = (String) payload.get('orgId');
+            this.orgLegalId = (String) payload.get('orgLegalId');
+            this.code = (String) payload.get('code');
+            this.isPrimary = (Boolean) payload.get('isPrimary');
+        }
+    }
 }

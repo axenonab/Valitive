@@ -22,6 +22,11 @@ public class ValitiveUtils {
         return street;
     }
 
+    public String constructAdressPostBoxString(ValitiveAddress.SwedishAddress address) {
+        String postBox = 'Box ' + address.postbox;
+        return postBox;
+    }
+
     public String formatPhoneNumber(ValitiveMonitoringSetSubjectResponse.PersonalPhone phone) {
         String telNumber = phone.telNumber;
         string regexReplace = '^46';

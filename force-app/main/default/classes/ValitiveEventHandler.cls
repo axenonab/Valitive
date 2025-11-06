@@ -11,7 +11,16 @@ public class ValitiveEventHandler {
         ValitiveEventResponse.PersonAddrCorrectedPayload.class => new PersonAddrCorrectedEvent(),
         ValitiveEventResponse.PersonNameChangedPayload.class => new PersonNameChangedEvent(),
         ValitiveEventResponse.PersonDeceasedPayload.class => new PersonDeceasedEvent(),
-        ValitiveEventResponse.PersonGuardPayload.class => new PersonGuardEvent()
+        ValitiveEventResponse.PersonGuardPayload.class => new PersonGuardEvent(),
+        ValitiveEventResponse.SeOrgStatusChangedPayload.class => new SeOrgStatusChangedEvent(),
+        ValitiveEventResponse.SeOrgNameChangedPayload.class => new SeOrgNameChangedEvent(),
+        ValitiveEventResponse.SeOrgAddressChangedPayload.class => new SeOrgAddressChangedEvent(),
+        ValitiveEventResponse.SeOrgAddressCorrectedPayload.class => new SeOrgAddressCorrectedEvent(),
+        ValitiveEventResponse.OrgArchivedPayload.class => new OrgArchivedEvent(),
+        ValitiveEventResponse.SeOrgContactInfoChangedPayload.class => new SeOrgContactInfoChangedEvent(),
+        ValitiveEventResponse.SeOrgKpiYearResultChangedPayload.class => new SeOrgKpiYearResultChangedEvent(),
+        ValitiveEventResponse.SeBusinessCategoryAddedPayload.class => new SeBusinessCategoryAddedEvent(),
+        ValitiveEventResponse.SeBusinessCategoryRemovedPayload.class => new SeBusinessCategoryRemovedEvent()
     };
 
     public static IValitiveEventHandler getEventHandler(ValitiveEventResponse.Payload payload){
@@ -228,6 +237,160 @@ public class ValitiveEventHandler {
             baseEvent.Timestamp__c = personGuardPayload.timestamp;
             baseEvent.Guardianship_Type__c = personGuardPayload.guardianshipInfo.type;
             baseEvent.Guarded_Since__c = personGuardPayload.guardianshipInfo.guardedSince;
+            return baseEvent;
+        }
+    }
+
+    public class SeOrgStatusChangedEvent implements IValitiveEventHandler {
+        public Valitive_Event__c handleEvent(Valitive_Event__c baseEvent, ValitiveEventResponse.Payload payload) {
+            ValitiveEventResponse.SeOrgStatusChangedPayload seOrgStatusChangedPayload = (ValitiveEventResponse.SeOrgStatusChangedPayload) payload;
+            baseEvent.Type__c = seOrgStatusChangedPayload.type;
+            baseEvent.Organization_Legal_Id__c = seOrgStatusChangedPayload.orgLegalId;
+            baseEvent.Timestamp__c = seOrgStatusChangedPayload.timestamp;
+            baseEvent.Org_Status__c = seOrgStatusChangedPayload.status;
+            baseEvent.Old_Org_Status__c = seOrgStatusChangedPayload.oldStatus;
+            return baseEvent;
+        }
+    }
+
+    public class SeOrgNameChangedEvent implements IValitiveEventHandler {
+        public Valitive_Event__c handleEvent(Valitive_Event__c baseEvent, ValitiveEventResponse.Payload payload) {
+            ValitiveEventResponse.SeOrgNameChangedPayload seOrgNameChangedPayload = (ValitiveEventResponse.SeOrgNameChangedPayload) payload;
+            baseEvent.Type__c = seOrgNameChangedPayload.type;
+            baseEvent.Organization_Legal_Id__c = seOrgNameChangedPayload.orgLegalId;
+            baseEvent.Timestamp__c = seOrgNameChangedPayload.timestamp;
+            baseEvent.Org_Name__c = seOrgNameChangedPayload.name;
+            baseEvent.Old_Org_Name__c = seOrgNameChangedPayload.oldName;
+            return baseEvent;
+        }
+    }
+
+    public class SeOrgAddressChangedEvent implements IValitiveEventHandler {
+        public Valitive_Event__c handleEvent(Valitive_Event__c baseEvent, ValitiveEventResponse.Payload payload) {
+            ValitiveEventResponse.SeOrgAddressChangedPayload seOrgAddressChangedPayload = (ValitiveEventResponse.SeOrgAddressChangedPayload) payload;
+            baseEvent.Type__c = seOrgAddressChangedPayload.type;
+            baseEvent.Organization_Legal_Id__c = seOrgAddressChangedPayload.orgLegalId;
+            baseEvent.Timestamp__c = seOrgAddressChangedPayload.timestamp;
+            //WE DO NOT CARE FOR NEW RAW ADDRESSES OR NULL ADDRESSES
+            Type addressType = seOrgAddressChangedPayload.address != null ? seOrgAddressChangedPayload.address.getClassType() : null;
+            Type oldAddressType = seOrgAddressChangedPayload.oldAddress != null ? seOrgAddressChangedPayload.oldAddress.getClassType() : null;
+
+            if(addressType == null){
+                return null;
+            }
+
+            if (addressType == ValitiveAddress.SwedishAddress.class) {
+                ValitiveAddress.SwedishAddress swedishAddress = (ValitiveAddress.SwedishAddress) seOrgAddressChangedPayload.address;
+                baseEvent = ValitiveEventHandler.mapSwedishAddress(baseEvent, swedishAddress);
+            } else if (addressType == ValitiveAddress.RawAddress.class) {
+                ValitiveAddress.RawAddress rawAddress = (ValitiveAddress.RawAddress) seOrgAddressChangedPayload.address;
+                if(rawAddress.kind != 'FOREIGN'){
+                    return null;
+                }
+                baseEvent = ValitiveEventHandler.mapRawAddress(baseEvent, rawAddress);
+            }
+
+            if (oldAddressType == ValitiveAddress.SwedishAddress.class) {
+                ValitiveAddress.SwedishAddress oldSwedishAddress = (ValitiveAddress.SwedishAddress) seOrgAddressChangedPayload.oldAddress;
+                baseEvent = ValitiveEventHandler.mapOldSwedishAddress(baseEvent, oldSwedishAddress);
+            } else if (oldAddressType == ValitiveAddress.RawAddress.class) {
+                ValitiveAddress.RawAddress oldRawAddress = (ValitiveAddress.RawAddress) seOrgAddressChangedPayload.oldAddress;
+                baseEvent = ValitiveEventHandler.mapOldRawAddress(baseEvent, oldRawAddress);
+            }
+            return baseEvent;
+        }
+    }
+
+    public class SeOrgAddressCorrectedEvent implements IValitiveEventHandler {
+        public Valitive_Event__c handleEvent(Valitive_Event__c baseEvent, ValitiveEventResponse.Payload payload) {
+            ValitiveEventResponse.SeOrgAddressCorrectedPayload seOrgAddressCorrectedPayload = (ValitiveEventResponse.SeOrgAddressCorrectedPayload) payload;
+            baseEvent.Type__c = seOrgAddressCorrectedPayload.type;
+            baseEvent.Organization_Legal_Id__c = seOrgAddressCorrectedPayload.orgLegalId;
+            baseEvent.Timestamp__c = seOrgAddressCorrectedPayload.timestamp;
+
+            Type addressType = seOrgAddressCorrectedPayload.address != null ? seOrgAddressCorrectedPayload.address.getClassType() : null;
+            Type oldAddressType = seOrgAddressCorrectedPayload.oldAddress != null ? seOrgAddressCorrectedPayload.oldAddress.getClassType() : null;
+            
+            //WE DO NOT CARE FOR NEW RAW ADDRESSES OR NULL ADDRESSES
+            if(addressType == null){
+                return null;
+            }
+
+            if (addressType == ValitiveAddress.SwedishAddress.class) {
+                ValitiveAddress.SwedishAddress swedishAddress = (ValitiveAddress.SwedishAddress) seOrgAddressCorrectedPayload.address;
+                baseEvent = ValitiveEventHandler.mapSwedishAddress(baseEvent, swedishAddress);
+            } else if (addressType == ValitiveAddress.RawAddress.class) {
+                ValitiveAddress.RawAddress rawAddress = (ValitiveAddress.RawAddress) seOrgAddressCorrectedPayload.address;
+                if(rawAddress.kind != 'FOREIGN'){
+                    return null;
+                }
+                baseEvent = ValitiveEventHandler.mapRawAddress(baseEvent, rawAddress);
+            }
+
+            if (oldAddressType == ValitiveAddress.SwedishAddress.class) {
+                ValitiveAddress.SwedishAddress oldSwedishAddress = (ValitiveAddress.SwedishAddress) seOrgAddressCorrectedPayload.oldAddress;
+                baseEvent = ValitiveEventHandler.mapOldSwedishAddress(baseEvent, oldSwedishAddress);
+            } else if (oldAddressType == ValitiveAddress.RawAddress.class) {
+                ValitiveAddress.RawAddress oldRawAddress = (ValitiveAddress.RawAddress) seOrgAddressCorrectedPayload.oldAddress;
+                baseEvent = ValitiveEventHandler.mapOldRawAddress(baseEvent, oldRawAddress);
+            }
+            return baseEvent;
+        }
+    }
+
+    public class OrgArchivedEvent implements IValitiveEventHandler {
+        public Valitive_Event__c handleEvent(Valitive_Event__c baseEvent, ValitiveEventResponse.Payload payload) {
+            ValitiveEventResponse.OrgArchivedPayload orgArchivedPayload = (ValitiveEventResponse.OrgArchivedPayload) payload;
+            baseEvent.Type__c = orgArchivedPayload.type;
+            baseEvent.Organization_Legal_Id__c = orgArchivedPayload.orgLegalId;
+            baseEvent.Timestamp__c = orgArchivedPayload.timestamp;
+            return baseEvent;
+        }
+    }
+
+    public class SeOrgContactInfoChangedEvent implements IValitiveEventHandler {
+        public Valitive_Event__c handleEvent(Valitive_Event__c baseEvent, ValitiveEventResponse.Payload payload) {
+            ValitiveEventResponse.SeOrgContactInfoChangedPayload seOrgContactInfoChangedPayload = (ValitiveEventResponse.SeOrgContactInfoChangedPayload) payload;
+            baseEvent.Type__c = seOrgContactInfoChangedPayload.type;
+            baseEvent.Organization_Legal_Id__c = seOrgContactInfoChangedPayload.orgLegalId;
+            baseEvent.Timestamp__c = seOrgContactInfoChangedPayload.timestamp;
+            baseEvent.New_Contact_Info__c = seOrgContactInfoChangedPayload.newContactInfo;
+            baseEvent.Old_Contact_Info__c = seOrgContactInfoChangedPayload.oldContactInfo;
+            return baseEvent;
+        }
+    }
+
+    public class SeOrgKpiYearResultChangedEvent implements IValitiveEventHandler {
+        public Valitive_Event__c handleEvent(Valitive_Event__c baseEvent, ValitiveEventResponse.Payload payload) {
+            ValitiveEventResponse.SeOrgKpiYearResultChangedPayload seOrgKpiYearResultChangedPayload = (ValitiveEventResponse.SeOrgKpiYearResultChangedPayload) payload;
+            baseEvent.Type__c = seOrgKpiYearResultChangedPayload.type;
+            baseEvent.Organization_Legal_Id__c = seOrgKpiYearResultChangedPayload.orgLegalId;
+            baseEvent.Timestamp__c = seOrgKpiYearResultChangedPayload.timestamp;
+            baseEvent.Period__c = seOrgKpiYearResultChangedPayload.period;
+            baseEvent.Duration_In_Months__c = seOrgKpiYearResultChangedPayload.durationInMonths;
+            baseEvent.New_KPI_Result_Value__c = seOrgKpiYearResultChangedPayload.value;
+            return baseEvent;
+        }
+    }
+
+    public class SeBusinessCategoryAddedEvent implements IValitiveEventHandler {
+        public Valitive_Event__c handleEvent(Valitive_Event__c baseEvent, ValitiveEventResponse.Payload payload) {
+            ValitiveEventResponse.SeBusinessCategoryAddedPayload seBusinessCategoryAddedPayload = (ValitiveEventResponse.SeBusinessCategoryAddedPayload) payload;
+            baseEvent.Type__c = seBusinessCategoryAddedPayload.type;
+            baseEvent.Organization_Legal_Id__c = seBusinessCategoryAddedPayload.orgLegalId;
+            baseEvent.Timestamp__c = seBusinessCategoryAddedPayload.timestamp;
+            baseEvent.Business_Category__c = seBusinessCategoryAddedPayload.businessCategory;
+            return baseEvent;
+        }
+    }
+
+    public class SeBusinessCategoryRemovedEvent implements IValitiveEventHandler {
+        public Valitive_Event__c handleEvent(Valitive_Event__c baseEvent, ValitiveEventResponse.Payload payload) {
+            ValitiveEventResponse.SeBusinessCategoryRemovedPayload seBusinessCategoryRemovedPayload = (ValitiveEventResponse.SeBusinessCategoryRemovedPayload) payload;
+            baseEvent.Type__c = seBusinessCategoryRemovedPayload.type;
+            baseEvent.Organization_Legal_Id__c = seBusinessCategoryRemovedPayload.orgLegalId;
+            baseEvent.Timestamp__c = seBusinessCategoryRemovedPayload.timestamp;
+            baseEvent.Business_Category__c = seBusinessCategoryRemovedPayload.businessCategory;
             return baseEvent;
         }
     }

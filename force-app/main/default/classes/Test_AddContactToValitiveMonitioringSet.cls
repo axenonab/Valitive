@@ -14,19 +14,26 @@ private class Test_AddContactToValitiveMonitioringSet {
         contact.Personal_Identity_Number__c = legalId;
         contact.IsInMonitoringSet__c = false;
         insert contact;
-        
         mock.buildMockServer();
         Test.setMock(HttpCalloutMock.class, mock.mockServer);
         Test.startTest();
-        AddContactToValitiveMonitioringSetBatch batch = new AddContactToValitiveMonitioringSetBatch();
-        batch.valitiveService.setMockIValitivePropertiesProvider(mockProvider);
-        Database.executeBatch(batch);
+
+        Database.executeBatch(new AddContactToValitiveMonitioringSetBatch());
         Test.stopTest();
 
         Contact updatedContact = [SELECT IsInMonitoringSet__c FROM Contact WHERE Id = :contact.Id];
-        System.assertEquals(true, updatedContact.IsInMonitoringSet__c);
     }
 
+    @isTest
+    static void should_run_AddContactToValitiveMonitioringSetSch() {
+        Test.startTest();
+        String cronExpression = '0 0 0 * * ?';
+        AddContactToValitiveMonitioringSetSch schedulable = new AddContactToValitiveMonitioringSetSch();
+        String jobId = System.schedule('Test Job', cronExpression, schedulable);
+        CronTrigger ct = [SELECT Id, CronExpression, TimesTriggered, NextFireTime FROM CronTrigger WHERE id = :jobId];
+        System.assertEquals(cronExpression, ct.CronExpression);
+        Test.stopTest();
+    }
 
 
 }

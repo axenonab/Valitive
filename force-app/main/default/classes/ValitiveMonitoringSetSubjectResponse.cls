@@ -154,7 +154,7 @@ public class ValitiveMonitoringSetSubjectResponse {
 
     public class Financials {
         public Boolean stockExchangeListed = false;
-        public integer shareCapital;
+        public Long shareCapital;
         public List<FinancialStatement> financialStatements = new List<FinancialStatement>(); 
         public String turnoverGroup;
 
@@ -162,7 +162,9 @@ public class ValitiveMonitoringSetSubjectResponse {
 
         public Financials(Map<String, Object> financials){
             this.stockExchangeListed = (Boolean) financials.get('stockExchangeListed');
-            this.shareCapital = financials.containsKey('shareCapital') ? (Integer) System.JSON.deserialize(System.JSON.serialize(financials.get('shareCapital')), Integer.class) : null;
+            this.shareCapital = financials.containsKey('shareCapital') && financials.get('shareCapital') != null
+                ? Long.valueOf(String.valueOf(financials.get('shareCapital')))
+                : null;
             this.financialStatements = financials.containsKey('financialStatements') ? (List<FinancialStatement>) System.JSON.deserialize(System.JSON.serialize(financials.get('financialStatements')), List<FinancialStatement>.class) : new List<FinancialStatement>();
             this.turnoverGroup = (String) financials.get('turnoverGroup');
         }
