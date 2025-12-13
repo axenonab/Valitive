@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
-		<members>AddContactToValitiveMonitioringSetSch</members>
-		<members>AddContactToValitiveMonitioringSetBatch</members>
-		<members>Test_AddContactToValitiveMonitioringSet</members>
+		<members>ValitiveMonitoringSetSubjectResponse</members>
+		<members>ValitiveClientMock</members>
+		<members>ValitiveUtils</members>
+		<members>Test_SyncContactValitiveState</members>
 		<name>ApexClass</name>
 	</types>
 	<version>60.0</version>

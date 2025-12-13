@@ -1,3 +1,10 @@
+/**
+ * @description       : 
+ * @author            : Jesper Eriksson
+ * @group             : 
+ * @last modified on  : 11-05-2025
+ * @last modified by  : Jesper Eriksson
+**/
 //https://apidoc.valitive.com/v1/?urls.primaryName=Valitive%20API#/Monitoring/getEventsForMonitoringSet
 
 public class ValitiveService {
@@ -76,24 +83,56 @@ public class ValitiveService {
     }
 
     private HttpResponse bulkAddOrganisationToMonitoringSet(String monitorSetId, List<String> organisationIds) {
+
         String template_url = '{0}/pub/api/{1}/monitoring-set/{2}/scope';
+
         String url = String.format(template_url, new List<String>{
             this.client.PROPERTIES_PROVIDER.getBaseUrl(), 
             this.client.PROPERTIES_PROVIDER.getApiVersion(),
             monitorSetId
         });
 
+        List<String> partyTypes = new List<String>{'ORGANIZATION'};
+
+        // MIGHT NEED CHANGES HERE
         String body = JSON.serialize(new List<Object>{
             new Map<String, Object>{
                 '_type' => 'ADD',
                 'filter' => new Map<String, Object>{
                     '_type' => 'SPLIT',
                     'legalIds' => organisationIds,
-                    'partyType' => 'ORG',
+                    'partyTypes' => partyTypes,
                     'country' => 'SE'
                 }
             }
         });
+
+        // Latest JSON structure
+        /**
+         * [
+
+                {
+
+                    "_type" : "ADD",
+
+                    "id": "1",
+
+                    "filter" : {
+
+                        "_type" : "SPLIT",
+
+                        "legalIds" : [ "555555-5555" ],
+
+                        "countries" : [ "SE" ],
+
+                        "partyTypes" : [ "ORGANIZATION" ]
+
+                    }
+
+                }
+
+            ]
+         */
 
         HttpRequest request = createHttpRequest('POST', url, body);
         return this.client.send(request);

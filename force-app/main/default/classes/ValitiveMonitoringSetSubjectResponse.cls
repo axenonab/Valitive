@@ -42,7 +42,7 @@ public class ValitiveMonitoringSetSubjectResponse {
                 when 'SE_PERSON' {
                     return new SEPerson(data);
                 }
-                when 'SE_ORG' {
+                when 'SE_ORGANIZATION' {
                     return new SEOrg(data);
                 }
                 when else {
@@ -175,6 +175,8 @@ public class ValitiveMonitoringSetSubjectResponse {
         public Integer establishedOnYear;
         public Date establishedOn;
         
+        public LifeCycle(){}
+
         public LifeCycle(Map<String, Object> lifeCycle){
             this.status = lifeCycle.containsKey('status') ? (String) ((Map<String, Object>) lifeCycle.get('status')).get('value') : null;
             this.establishedOnYear = (Integer) lifeCycle.get('establishedInYear');
@@ -308,21 +310,30 @@ public class ValitiveMonitoringSetSubjectResponse {
             this.type = (String) data.get('_type');
             this.country = (String) data.get('country');
             this.legalId = (String) data.get('legalId');
-            for (Object phone : (List<Object>) data.get('phones')) {
-                this.phones.add(parseBasicPhone((Map<String, Object>) phone));
+
+            for(Object phoneObj : (List<Object>) data.get('phones')) {
+                Map<String, Object> phoneMap = (Map<String, Object>) phoneObj;
+                this.phones.add(parseBasicPhone(phoneMap));
             }
+            
             this.urls = data.containsKey('urls') ? (List<String>) JSON.deserialize(System.JSON.serialize(data.get('urls')), List<String>.class) : new List<String>();
             this.emails = data.containsKey('emails') ? (List<String>) System.JSON.deserialize(System.JSON.serialize(data.get('emails')), List<String>.class) : new List<String>();
-            this.orgName = parseOrgName((Map<String, Object>) data.get('orgName'));
-            for (Object address : (List<Object>) data.get('addresses')) {
-                this.addresses.add(ValitiveAddress.parseAddress((Map<String, Object>) address));
+            List<Object> nameList = data.containsKey('names') ? (List<Object>) data.get('names') : new List<Object>();
+
+            this.orgName = !nameList.isEmpty() ? parseOrgName((Map<String, Object>) nameList[0]) : null;
+
+
+            for(Object addressObj : (List<Object>) data.get('addresses')) {
+                Map<String, Object> addressMap = (Map<String, Object>) addressObj;
+                this.addresses.add(ValitiveAddress.parseAddress(addressMap));
             }
+
             this.businessActivity = (String) data.get('businessActivity');
             this.primaryBusinessCategory = data.containsKey('primaryBusinessCategory') ? (BusinessCategory) JSON.deserialize(JSON.serialize(data.get('primaryBusinessCategory')), BusinessCategory.class) : new BusinessCategory();
             this.otherBusinessCategories = data.containsKey('otherBusinessCategories') ? (List<BusinessCategory>) JSON.deserialize(JSON.serialize(data.get('otherBusinessCategories')), List<BusinessCategory>.class) : new List<BusinessCategory>();
             this.legalForm = data.containsKey('legalForm') ? (LegalForm) JSON.deserialize(JSON.serialize(data.get('legalForm')), LegalForm.class) : new LegalForm();
             this.financials = data.containsKey('financials') ? new Financials((Map<String, Object>) data.get('financials')) : new Financials();
-            this.lifeCycle = new LifeCycle((Map<String, Object>) data.get('lifecycle'));
+            this.lifeCycle = data.containsKey('lifecycle') ? new LifeCycle((Map<String, Object>) data.get('lifecycle')) : new LifeCycle();
             this.manPowerInfo = data.containsKey('manpower') ? (ManPowerInfo) JSON.deserialize(JSON.serialize(data.get('manpower')), ManPowerInfo.class) : new ManpowerInfo();
 
         }

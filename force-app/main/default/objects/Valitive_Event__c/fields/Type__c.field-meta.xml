@@ -59,6 +59,61 @@
                 <default>false</default>
                 <label>PERSON_GENDER_CHANGED</label>
             </value>
+            <value>
+                <fullName>SE_GUARD_REMOVED</fullName>
+                <default>false</default>
+                <label>SE_GUARD_REMOVED</label>
+            </value>
+            <value>
+                <fullName>SE_GUARD_ADDED</fullName>
+                <default>false</default>
+                <label>SE_GUARD_ADDED</label>
+            </value>
+            <value>
+                <fullName>SE_ORG_STATUS_CHANGED</fullName>
+                <default>false</default>
+                <label>SE_ORG_STATUS_CHANGED</label>
+            </value>
+            <value>
+                <fullName>SE_ORG_NAME_CHANGED</fullName>
+                <default>false</default>
+                <label>SE_ORG_NAME_CHANGED</label>
+            </value>
+            <value>
+                <fullName>SE_ORG_ADDR_CHANGED</fullName>
+                <default>false</default>
+                <label>SE_ORG_ADDR_CHANGED</label>
+            </value>
+            <value>
+                <fullName>SE_ORG_ADDR_CORRECTED</fullName>
+                <default>false</default>
+                <label>SE_ORG_ADDR_CORRECTED</label>
+            </value>
+            <value>
+                <fullName>SE_ORG_ARCHIVED</fullName>
+                <default>false</default>
+                <label>SE_ORG_ARCHIVED</label>
+            </value>
+            <value>
+                <fullName>SE_CONTACT_INFO_CHANGED</fullName>
+                <default>false</default>
+                <label>SE_CONTACT_INFO_CHANGED</label>
+            </value>
+            <value>
+                <fullName>SE_ORG_KPI_YEAR_RESULT_CHANGED</fullName>
+                <default>false</default>
+                <label>SE_ORG_KPI_YEAR_RESULT_CHANGED</label>
+            </value>
+            <value>
+                <fullName>SE_BUSINESS_CATEGORY_ADDED</fullName>
+                <default>false</default>
+                <label>SE_BUSINESS_CATEGORY_ADDED</label>
+            </value>
+            <value>
+                <fullName>SE_BUSINESS_CATEGORY_REMOVED</fullName>
+                <default>false</default>
+                <label>SE_BUSINESS_CATEGORY_REMOVED</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

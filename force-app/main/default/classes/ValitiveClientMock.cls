@@ -1,3 +1,10 @@
+/**
+ * @description       : 
+ * @author            : Jesper Eriksson
+ * @group             : 
+ * @last modified on  : 11-05-2025
+ * @last modified by  : Jesper Eriksson
+**/
 public class ValitiveClientMock {
 
     private IValitivePropertiesProvider provider;
@@ -38,7 +45,7 @@ public class ValitiveClientMock {
                 'addedAt' => '2021-08-23T14:55:05.327Z',
                 'updatedAt' => '2021-08-23T14:55:05.327Z',
                 'data' => new Map<String, Object>{
-                    '_type' => 'SE_ORG',
+                    '_type' => 'SE_ORGANIZATION',
                     'id' => 'mock-id',
                     'country' => 'mock-country',
                     'legalId' => 'mock-legal-id',
@@ -69,9 +76,11 @@ public class ValitiveClientMock {
                     'urls' => new List<String>{},
                     'emails' => new List<String>{},
                     'phones' => new List<String>{},
-                    'orgName' => new Map<String, Object>{
-                        'name' => 'mock-name',
-                        'rawName' => 'mock-raw-name'
+                    'names' => new List<Map<String, Object>>{
+                        new Map<String, Object>{
+                            'name' => 'mock-name',
+                            'rawName' => 'mock-raw-name'
+                        }
                     },
                     'lifecycle' => new Map<String, Object>{
                         'status' => new Map<String, Object>{
@@ -98,7 +107,7 @@ public class ValitiveClientMock {
                     },
                     'financials' => new Map<String, Object>{
                         'stockExchangeListed' => false,
-                        'shareCapital' => '1234567891',
+                        'shareCapital' => '100000',
                         'turnoverGroup' => '1 - 49 tkr',
                         'financialStatements' => new List<Map<String, Object>>{
                             new Map<String, Object>{
@@ -164,8 +173,7 @@ public class ValitiveClientMock {
             200,
             'OK',
             System.JSON.serialize(new Map<String, Object>{
-                'id' => 'mock-id',
-                'processId' => 'mock-process-id'
+                'id' => 'mock-id'
             }),
             null
         );
@@ -208,21 +216,6 @@ public class ValitiveClientMock {
                                 'county' => 'mock-county',
                                 'municipality' => 'mock-municipality',
                                 'kind' => 'OFFICIAL',
-                                '_type' => 'SE_NORMALIZED'
-                            },
-                            new Map<String, Object>{
-                                'country' => 'mock-country',
-                                'street' => 'mock-street',
-                                'postbox' => 'mock-post-box',
-                                'number' => 'mock-number',
-                                'numberSuffix' => 'mock-number-suffix',
-                                'flat' => 'mock-flat',
-                                'zip' => 'mock-zip-code',
-                                'careOf' => 'mock-care-of',
-                                'city' => 'mock-city',
-                                'county' => 'mock-county',
-                                'municipality' => 'mock-municipality',
-                                'kind' => 'FORWARD_MAIL',
                                 '_type' => 'SE_NORMALIZED'
                             }
                         },
@@ -386,22 +379,7 @@ public class ValitiveClientMock {
                             'municipality' => 'mock-municipality',
                             'kind' => 'OFFICIAL',
                             '_type' => 'SE_NORMALIZED'
-                        },
-                        new Map<String, Object>{
-                                'country' => 'mock-country',
-                                'street' => 'mock-street',
-                                'postbox' => 'mock-post-box',
-                                'number' => 'mock-number',
-                                'numberSuffix' => 'mock-number-suffix',
-                                'flat' => 'mock-flat',
-                                'zip' => 'mock-zip-code',
-                                'careOf' => 'mock-care-of',
-                                'city' => 'mock-city',
-                                'county' => 'mock-county',
-                                'municipality' => 'mock-municipality',
-                                'kind' => 'FORWARD_MAIL',
-                                '_type' => 'SE_NORMALIZED'
-                            }
+                        }
                     },
                     'phones' => new List<Map<String, Object>>{
                         new Map<String, Object>{
@@ -434,6 +412,13 @@ public class ValitiveClientMock {
             'OK',
             System.JSON.serialize(new Map<String, Object>{}),
             null    
+        );
+
+        SingleRequestMock addedOrgToMonitorSet = new SingleRequestMock(
+            200,
+            'OK',
+            '{"processId": "123"}',
+            null
         );
 
         SingleRequestMock getEventMock = new SingleRequestMock(
@@ -746,8 +731,191 @@ public class ValitiveClientMock {
                             'publicationText' => 'mock-publication-text'
                         }
                     }
-                }
+                },
+                new Map<String, Object>{
+                    'id' => 'mock-id-SE_ORG_STATUS_CHANGED',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
+                    'monitoringSetId' => 'mock-monitoring-set-id',
+                    'subjectIds' => new List<String>{'5555555551'},
+                    'payload' => new Map<String, Object>{
+                        '_type' => 'SE_ORG_STATUS_CHANGED',
+                        'id' => 'mock-id',
+                        'timestamp' => '2021-08-23T14:55:05.327Z',
+                        'orgId' => 'mock-org-id',
+                        'orgLegalId' => '5555555551',
+                        'status' => 'INACTIVE'
+                    }
+                },
+                new Map<String, Object>{
+                    'id' => 'mock-id-SE_ORG_NAME_CHANGED',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
+                    'monitoringSetId' => 'mock-monitoring-set-id',
+                    'subjectIds' => new List<String>{'5555555552'},
+                    'payload' => new Map<String, Object>{
+                        '_type' => 'SE_ORG_STATUS_CHANGED',
+                        'id' => 'mock-id',
+                        'timestamp' => '2021-08-23T14:55:05.327Z',
+                        'orgId' => 'mock-org-id',
+                        'orgLegalId' => '5555555552',
+                        'name' => 'New Org Name',
+                        'oldName' => 'Old Org Name',
+                        'rawName' => 'Raw Org Name',
+                        'oldRawName' => 'Old Raw Org Name'
+                    }
+                },
+                new Map<String, Object>{
+                    'id' => 'mock-id-SE_ORG_ADDR_CHANGED',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
+                    'monitoringSetId' => 'mock-monitoring-set-id',
+                    'subjectIds' => new List<String>{'5555555553'},
+                    'payload' => new Map<String, Object>{
+                        '_type' => 'SE_ORG_ADDR_CHANGED',
+                        'id' => 'mock-id',
+                        'timestamp' => '2021-08-23T14:55:05.327Z',
+                        'orgId' => 'mock-org-id',
+                        'orgLegalId' => '5555555553',
+                        'address' => new Map<String, Object>{
+                            '_type' => 'SE_NORMALIZED',
+                            'country' => 'mock-country',
+                            'city' => 'mock-city',
+                            'zipCode' => 'mock-zip-code',
+                            'geoPoint' => new Map<String, Object>{
+                                'lat' => 0.0,
+                                'long' => 0.0
+                            },
+                            'postBox' => 'mock-post-box',
+                            'street' => 'mock-street',
+                            'street2' => 'mock-street',
+                            'streetNumber' => 'mock-street-number',
+                            'numberSuffix' => 'mock-number-suffix',
+                            'flat' => 'mock-flat',
+                            'careOf' => 'mock-care-of',
+                            'county' => 'mock-county',
+                            'municiplaity' => 'mock-municipality',
+                            'misc' => 'mock-misc',
+                            'floor' => 'mock-floor',
+                            'entrance' => 'mock-entrance',
+                            'kind' => 'MAIL'
+                        }
+                    }
+                },
+                new Map<String, Object>{
+                    'id' => 'mock-id-SE_ORG_ADDR_CORRECTED',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
+                    'monitoringSetId' => 'mock-monitoring-set-id',
+                    'subjectIds' => new List<String>{'5555555554'},
+                    'payload' => new Map<String, Object>{
+                        '_type' => 'SE_ORG_ADDR_CORRECTED',
+                        'id' => 'mock-id',
+                        'timestamp' => '2021-08-23T14:55:05.327Z',
+                        'orgId' => 'mock-org-id',
+                        'orgLegalId' => '5555555554',
+                        'address' => new Map<String, Object>{
+                            '_type' => 'SE_NORMALIZED',
+                            'country' => 'mock-country',
+                            'city' => 'mock-city',
+                            'zipCode' => 'mock-zip-code',
+                            'geoPoint' => new Map<String, Object>{
+                                'lat' => 0.0,
+                                'long' => 0.0
+                            },
+                            'postBox' => 'mock-post-box',
+                            'street' => 'mock-street',
+                            'street2' => 'mock-street',
+                            'streetNumber' => 'mock-street-number',
+                            'numberSuffix' => 'mock-number-suffix',
+                            'flat' => 'mock-flat',
+                            'careOf' => 'mock-care-of',
+                            'county' => 'mock-county',
+                            'municiplaity' => 'mock-municipality',
+                            'misc' => 'mock-misc',
+                            'floor' => 'mock-floor',
+                            'entrance' => 'mock-entrance',
+                            'kind' => 'MAIL'
+                        }
+                    }
+                },
+                new Map<String, Object>{
+                    'id' => 'mock-id-SE_ORG_ARCHIVED',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
+                    'monitoringSetId' => 'mock-monitoring-set-id',
+                    'subjectIds' => new List<String>{'5555555555'},
+                    'payload' => new Map<String, Object>{
+                        '_type' => 'SE_ORG_ARCHIVED',
+                        'id' => 'mock-id',
+                        'timestamp' => '2021-08-23T14:55:05.327Z',
+                        'orgId' => 'mock-org-id',
+                        'orgLegalId' => '5555555555'
+                    }
+                },
+                new Map<String, Object>{
+                    'id' => 'mock-id-SE_CONTACT_INFO_CHANGED',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
+                    'monitoringSetId' => 'mock-monitoring-set-id',
+                    'subjectIds' => new List<String>{'5555555556'},
+                    'payload' => new Map<String, Object>{
+                        '_type' => 'SE_CONTACT_INFO_CHANGED',
+                        'id' => 'mock-id',
+                        'timestamp' => '2021-08-23T14:55:05.327Z',
+                        'orgId' => 'mock-org-id',
+                        'orgLegalId' => '5555555556',
+                        'contactInfo' => new Map<String, Object>{
+                            'partyId' => 'mock-party-id',
+                            'legalId' => '199001011234'
+                        },
+                        'oldContactInfo' => new Map<String, Object>{
+                            'partyId' => 'mock-old-party-id',
+                            'legalId' => '198505229847'
 
+                        }
+                    }
+                },
+                new Map<String, Object>{
+                    'id' => 'mock-id-SE_ORG_KPI_YEAR_RESULT_CHANGED',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
+                    'monitoringSetId' => 'mock-monitoring-set-id',
+                    'subjectIds' => new List<String>{'5555555557'},
+                    'payload' => new Map<String, Object>{
+                        '_type' => 'SE_ORG_KPI_YEAR_RESULT_CHANGED',
+                        'id' => 'mock-id',
+                        'timestamp' => '2021-08-23T14:55:05.327Z',
+                        'orgId' => 'mock-org-id',
+                        'orgLegalId' => '5555555557',
+                        'period' => '2025-01-01',
+                        'durationMonths' => 12,
+                        'value' => 1000000.0
+                    }
+                },
+                new Map<String, Object>{
+                    'id' => 'mock-id-SE_BUSINESS_CATEGORY_ADDED',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
+                    'monitoringSetId' => 'mock-monitoring-set-id',
+                    'subjectIds' => new List<String>{'5555555558'},
+                    'payload' => new Map<String, Object>{
+                        '_type' => 'SE_BUSINESS_CATEGORY_ADDED',
+                        'id' => 'mock-id',
+                        'timestamp' => '2021-08-23T14:55:05.327Z',
+                        'orgId' => 'mock-org-id',
+                        'orgLegalId' => '5555555558',
+                        'code' => 'mock-business-category-code',
+                        'isPrimary' => true
+                    }
+                },
+                new Map<String, Object>{
+                    'id' => 'mock-id-SE_BUSINESS_CATEGORY_REMOVED',
+                    'detectedAt' => '2021-08-23T14:55:05.327Z',
+                    'monitoringSetId' => 'mock-monitoring-set-id',
+                    'subjectIds' => new List<String>{'5555555559'},
+                    'payload' => new Map<String, Object>{
+                        '_type' => 'SE_BUSINESS_CATEGORY_REMOVED',
+                        'id' => 'mock-id',
+                        'timestamp' => '2021-08-23T14:55:05.327Z',
+                        'orgId' => 'mock-org-id',
+                        'orgLegalId' => '5555555559',
+                        'code' => 'mock-business-category-code',
+                        'isPrimary' => true
+                    }
+                }
             }),
             new Map<String, String>{ 
                 'Next-Link' => this.provider.getBaseURL() + '/pub/api/' + this.provider.getApiVersion() + '/monitoring-set/b9b5a4601d204ba6ba7c3914b549ff0f/events?iterator=ewogICJkaXJlY3Rpb24iIDogIkZPUldBUkQiLAogICJzb3J0VmFsdWVzIiA6IFsgMTczNDMzMjEyNDg1MSwgImI5YjVhNDYwMWQyMDRiYTZiYTdjMzkxNGI1NDlmZjBmPC0-MjBjODkwZGU0LTkzMzgtNGYwMS04ZGMxLTRhYzE5OTFhZWIzYWFjYmRlZDM4LTAxMTUtNDUzYi05NDZiLTExMzY0NGU1M2E5MTEiIF0sCiAgInN0YXJ0SW5kZXgiIDogMTAwLAogICJzZWFyY2hDcml0ZXJpYUNoZWNrc3VtIiA6ICI1NjMwOGJkZDhiM2U2MTlmZWQyMzE0NTY3NDhkZDY5NyIKfQ',
@@ -761,6 +929,8 @@ public class ValitiveClientMock {
 
         Map<String, HttpCalloutMock> endpoint2TestResp = new Map<String, HttpCalloutMock>{
             this.provider.getTokenEndpoint() => authMock,
+            'https://demo-auth.valitive.com' => addedOrgToMonitorSet,
+            'https://demo-credit.valitive.com/pub/api/v1/monitoring-set/null/scope' => addedOrgToMonitorSet,
             this.provider.getBaseURL() + '/pub/api/' + this.provider.getApiVersion() + '/monitoring-set/' + this.provider.getPrivateMonitoringSetId() + '/scope/se/person/legalId' => addPersonToMonitorSetMock,
             this.provider.getBaseURL() + '/pub/api/' + this.provider.getApiVersion() + '/monitoring-set/' + this.provider.getPrivateMonitoringSetId() + '/scope/' => deletePersonFromMonitorSetMock,
             this.provider.getBaseURL() + '/pub/api/' + this.provider.getApiVersion() + '/monitoring-set/' + this.provider.getPrivateMonitoringSetId() + '/events' => getEventMock,

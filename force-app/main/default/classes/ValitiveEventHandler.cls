@@ -27,6 +27,10 @@ public class ValitiveEventHandler {
         return eventHandlers.get(payload.getClassType());
     }
 
+    public static String getPayloadSubjectType(ValitiveEventResponse.Payload payload){
+        return (String) payload.getSubjectType();
+    }
+
     public static Valitive_Event__c handleEvent(Valitive_Event__c baseEvent, ValitiveEventResponse.Payload payload) {
         IValitiveEventHandler handler = getEventHandler(payload);
         if(handler != null) {
@@ -310,7 +314,7 @@ public class ValitiveEventHandler {
 
             Type addressType = seOrgAddressCorrectedPayload.address != null ? seOrgAddressCorrectedPayload.address.getClassType() : null;
             Type oldAddressType = seOrgAddressCorrectedPayload.oldAddress != null ? seOrgAddressCorrectedPayload.oldAddress.getClassType() : null;
-            
+
             //WE DO NOT CARE FOR NEW RAW ADDRESSES OR NULL ADDRESSES
             if(addressType == null){
                 return null;
@@ -354,8 +358,10 @@ public class ValitiveEventHandler {
             baseEvent.Type__c = seOrgContactInfoChangedPayload.type;
             baseEvent.Organization_Legal_Id__c = seOrgContactInfoChangedPayload.orgLegalId;
             baseEvent.Timestamp__c = seOrgContactInfoChangedPayload.timestamp;
-            baseEvent.New_Contact_Info__c = seOrgContactInfoChangedPayload.newContactInfo;
-            baseEvent.Old_Contact_Info__c = seOrgContactInfoChangedPayload.oldContactInfo;
+            baseEvent.Org_Contact_Legal_Id__c = (String) seOrgContactInfoChangedPayload.contactInfo.get('legalId');
+            baseEvent.Org_Contact_Party_Id__c = (String) seOrgContactInfoChangedPayload.contactInfo.get('partyId');
+            baseEvent.Old_Org_Contact_Legal_Id__c = (String) seOrgContactInfoChangedPayload.oldContactInfo.get('legalId');
+            baseEvent.Old_Org_Contact_Party_Id__c = (String) seOrgContactInfoChangedPayload.oldContactInfo.get('partyId');
             return baseEvent;
         }
     }
@@ -379,7 +385,8 @@ public class ValitiveEventHandler {
             baseEvent.Type__c = seBusinessCategoryAddedPayload.type;
             baseEvent.Organization_Legal_Id__c = seBusinessCategoryAddedPayload.orgLegalId;
             baseEvent.Timestamp__c = seBusinessCategoryAddedPayload.timestamp;
-            baseEvent.Business_Category__c = seBusinessCategoryAddedPayload.businessCategory;
+            baseEvent.Business_Category_Code__c = seBusinessCategoryAddedPayload.code;
+            baseEvent.Is_Primary_Business_Category__c = seBusinessCategoryAddedPayload.isPrimary;
             return baseEvent;
         }
     }
@@ -390,7 +397,8 @@ public class ValitiveEventHandler {
             baseEvent.Type__c = seBusinessCategoryRemovedPayload.type;
             baseEvent.Organization_Legal_Id__c = seBusinessCategoryRemovedPayload.orgLegalId;
             baseEvent.Timestamp__c = seBusinessCategoryRemovedPayload.timestamp;
-            baseEvent.Business_Category__c = seBusinessCategoryRemovedPayload.businessCategory;
+            baseEvent.Business_Category_Code__c = seBusinessCategoryRemovedPayload.code;
+            baseEvent.Is_Primary_Business_Category__c = seBusinessCategoryRemovedPayload.isPrimary;
             return baseEvent;
         }
     }

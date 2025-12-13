@@ -108,6 +108,34 @@ public class ValitiveEventResponse {
 
     public abstract class Payload {
 
+        public String getSubjectType(){
+            if (this instanceof PersonDeceasedPayload ||
+                this instanceof PersonNameChangedPayload ||
+                this instanceof PhoneBoundPayload ||
+                this instanceof PhoneUnboundPayload ||
+                this instanceof PersonProtectionActivatedPayload ||
+                this instanceof PersonProtectionDeactivatedPayload ||
+                this instanceof PersonLegalIdChangedPayload ||
+                this instanceof PersonGenderChangedPayload ||
+                this instanceof PersonGuardPayload ||
+                this instanceof PersonAddrChangedPayload ||
+                this instanceof PersonAddrCorrectedPayload) {
+                    return 'PERSON';
+            }
+            else if (this instanceof SeOrgStatusChangedPayload ||
+                     this instanceof SeOrgNameChangedPayload ||
+                     this instanceof SeOrgAddressChangedPayload ||
+                     this instanceof SeOrgAddressCorrectedPayload ||
+                     this instanceof OrgArchivedPayload ||
+                     this instanceof SeOrgContactInfoChangedPayload ||
+                     this instanceof SeOrgKpiYearResultChangedPayload ||
+                     this instanceof SeBusinessCategoryAddedPayload ||
+                     this instanceof SeBusinessCategoryRemovedPayload) {
+                return 'ORGANIZATION';
+            }
+            return null;
+        }
+
         public Type getClassType(){
 
             if (this instanceof ValitiveEventResponse.PhoneBoundPayload) {
@@ -459,7 +487,7 @@ public class ValitiveEventResponse {
             this.orgLegalId = (String) payload.get('orgLegalId');
             this.status = (String) payload.get('status');
             this.oldStatus = (String) payload.get('oldStatus');
-            this.activatedOn = (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('activatedOn')), Datetime.class);
+            this.activatedOn = payload.containsKey('activatedOn') ? (Datetime) System.JSON.deserialize(System.JSON.serialize(payload.get('activatedOn')), Datetime.class) : null;
         }
     }
 
@@ -588,7 +616,7 @@ public class ValitiveEventResponse {
             this.orgId = (String) payload.get('orgId');
             this.orgLegalId = (String) payload.get('orgLegalId');
             this.period = payload.containsKey('period') ? (Date) System.JSON.deserialize((String) payload.get('period'), Date.class) : null;
-            this.durationInMonths = (Integer) System.JSON.deserialize(System.JSON.serialize(payload.get('durationInMonths')), Integer.class);
+            this.durationInMonths = (Integer) System.JSON.deserialize(System.JSON.serialize(payload.get('durationMonth')), Integer.class);
             this.value = (Decimal) System.JSON.deserialize(System.JSON.serialize(payload.get('value')), Decimal.class);
         }
     }

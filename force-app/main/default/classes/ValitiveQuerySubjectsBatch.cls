@@ -1,6 +1,7 @@
 public class ValitiveQuerySubjectsBatch implements Database.Batchable<sObject>, Database.AllowsCallouts {
 
     private String importStatus;
+    private Set<String> accountIds;
 
     @TestVisible
     private final ValitiveService valitiveService = new ValitiveService();
@@ -55,10 +56,17 @@ public class ValitiveQuerySubjectsBatch implements Database.Batchable<sObject>, 
     
     public ValitiveQuerySubjectsBatch(String importStatus) {
         this.importStatus = importStatus;
+            
     }
 
     public ValitiveQuerySubjectsBatch() {
         
+    }
+
+    public static ValitiveQuerySubjectsBatch withAccountIds(Set<String> accountIds) {
+        ValitiveQuerySubjectsBatch batch = new ValitiveQuerySubjectsBatch();
+        batch.accountIds = accountIds;
+        return batch;
     }
 
     public Database.QueryLocator start(Database.BatchableContext BC) {
@@ -115,6 +123,9 @@ public class ValitiveQuerySubjectsBatch implements Database.Batchable<sObject>, 
         if(importStatus != null) {
             return 'SELECT ' + fields + ' FROM Account WHERE ' + baseFilter + ' AND Valitive_Import_Process_Status__c = :importStatus';
         } 
+        else if(accountIds != null) {
+            return 'SELECT ' + fields + ' FROM Account WHERE ' + baseFilter + ' AND Id IN :accountIds';
+        }
         else {
             return 'SELECT ' + fields + ' FROM Account WHERE ' + baseFilter;
         }
@@ -225,4 +236,3 @@ public class ValitiveQuerySubjectsBatch implements Database.Batchable<sObject>, 
 
 
 }
-

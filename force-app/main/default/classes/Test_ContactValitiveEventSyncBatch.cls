@@ -380,5 +380,16 @@ private class Test_ContactValitiveEventSyncBatch {
         Test.stopTest();
     }
 
+    @isTest
+    static void should_run_AccountValitiveEventSyncSch() {
+        Test.startTest();
+        String cronExpression = '0 0 0 * * ?';
+        AccountValitiveEventSyncSch schedulable = new AccountValitiveEventSyncSch();
+        String jobId = System.schedule('Test Job', cronExpression, schedulable);
+        CronTrigger ct = [SELECT Id, CronExpression, TimesTriggered, NextFireTime FROM CronTrigger WHERE id = :jobId];
+        System.assertEquals(cronExpression, ct.CronExpression);
+        Test.stopTest();
+    }
+
 
 }
