@@ -42,9 +42,14 @@ public class ValitiveMonitoringSetSubjectResponse {
                 when 'SE_PERSON' {
                     return new SEPerson(data);
                 }
-                when 'SE_ORG' {
-                    return new SEOrg(data);
+                // new type.
+                when 'SE_ORGANIZATION' {
+                    return new SEOrganization(data);
                 }
+                // keep support for old type.
+                /*when 'SE_ORG' {
+                    return new SEOrg(data);
+                }*/
                 when else {
                     return null;
             }
@@ -110,6 +115,7 @@ public class ValitiveMonitoringSetSubjectResponse {
         }
     }
 
+    
     public class LegalForm {
         public String code;
         public String name;
@@ -282,7 +288,212 @@ public class ValitiveMonitoringSetSubjectResponse {
         }
     }
 
-    public class SEOrg extends Data {
+    // new SE_ORGANIZATION related class.
+    public class PrimaryIndustry {
+        public Industry primary;
+        public List<Industry> altClassifications = new List<Industry>();
+
+        public PrimaryIndustry(Map<String, Object> data) {
+            this.primary = new Industry((Map<String, Object>) data.get('primary'));
+            for (Object alt : (List<Object>) data.get('altClassifications')) {
+                this.altClassifications.add(new Industry((Map<String, Object>) alt));
+            }
+        }
+    }
+
+    // new SE_ORGANIZATION related class.
+    public class Industry {
+        public String standardName;
+        public String code;
+        public String description;
+
+        public Industry(Map<String, Object> data) {
+            this.standardName = (String) data.get('standardName');
+            this.code = (String) data.get('code');
+            this.description = (String) data.get('description');
+        }
+    }
+
+    // new SE_ORGANIZATION related class.
+    public class StatusInfo {
+        public String status;
+        public Date validFrom;
+        public String bvStatus;
+        public String bvStatusText;
+
+        public StatusInfo(Map<String, Object> data) {
+
+            if (data.containsKey('status')) {
+                Map<String, Object> s = (Map<String, Object>) data.get('status');
+                this.status = (String) s.get('value');
+                this.validFrom = s.containsKey('validFrom') ? (Date) JSON.deserialize(JSON.serialize(s.get('validFrom')), Date.class) : null;
+            }
+
+            this.bvStatus = (String) data.get('bvStatus');
+            this.bvStatusText = (String) data.get('bvStatusText');
+        }
+    }
+
+    // new SE_ORGANIZATION related class.
+    public class RelatedParty {
+        public String name;
+        public String legalId;
+        public String partyId;
+        public String function;
+        public String partyType;
+
+        public Decimal minShares;
+        public Decimal maxShares;
+
+        public RelatedParty(Map<String, Object> data) {
+            this.name = (String) data.get('name');
+            this.legalId = (String) data.get('legalId');
+            this.partyId = (String) data.get('partyId');
+            this.function = (String) data.get('function');
+            this.partyType = (String) data.get('partyType');
+
+            if (data.containsKey('shares')) {
+                Map<String, Object> shares = (Map<String, Object>) data.get('shares');
+                this.minShares = (Decimal) shares.get('min');
+                this.maxShares = (Decimal) shares.get('max');
+            }
+        }
+    }
+
+    // new SE_ORGANIZATION related class.
+    public class EmploymentHistory {
+        public Date date_x;
+        public String period;
+        public Integer count;
+        public Integer min;
+        public Integer max;
+
+        public EmploymentHistory(Map<String, Object> data) {
+            this.date_x = (Date) JSON.deserialize(JSON.serialize(data.get('date')), Date.class);
+            this.period = (String) data.get('period');
+            this.count = (Integer) data.get('count');
+
+            if (data.containsKey('interval')) {
+                Map<String, Object> i = (Map<String, Object>) data.get('interval');
+                this.min = (Integer) i.get('min');
+                this.max = (Integer) i.get('max');
+            }
+        }
+    }
+
+    public class Phone {
+        public String id_x;   
+        public String country;
+        public String type;
+        public String phoneNumber;
+
+        public Phone(Map<String, Object> data) {
+            this.id_x = (String) data.get('id');
+            this.country = (String) data.get('country');
+            this.type = (String) data.get('type');
+            this.phoneNumber = (String) data.get('number');
+        }
+    }
+
+    // New class for new structure.
+    public class SEOrganization extends Data {
+
+        public String id_x;
+        public String type;
+        public String country;
+        public String legalId;
+
+        public List<OrgName> names = new List<OrgName>();
+        public List<ValitiveAddress.Address> addresses = new List<ValitiveAddress.Address>();
+
+        public List<String> urls = new List<String>();
+        public List<String> emails = new List<String>();
+        //public List<String> phones = new List<String>();
+
+        public Boolean adProtection;
+        public Boolean operational;
+
+        public PrimaryIndustry primaryIndustry;
+        public StatusInfo statusInfo;
+        public LegalForm legalForm;
+
+        public Date incorpDate;
+        public String capital;
+        public String currency_x;
+        public String signatory;
+        public String businessDescription;
+
+        public List<RelatedParty> relatedParties = new List<RelatedParty>();
+        public List<EmploymentHistory> employmentHistory = new List<EmploymentHistory>();
+        public List<Phone> phones = new List<Phone>();
+
+        public SEOrganization(Map<String, Object> data) {
+
+            this.id_x = (String) data.get('id');
+            this.type = (String) data.get('_type');
+            this.country = (String) data.get('country');
+            this.legalId = (String) data.get('legalId');
+
+            for (Object n : (List<Object>) data.get('names')) {
+                this.names.add(new OrgName((Map<String, Object>) n));
+            }
+
+            for (Object a : (List<Object>) data.get('addresses')) {
+                this.addresses.add(
+                    ValitiveAddress.parseAddress((Map<String, Object>) a)
+                );
+            }
+
+            this.adProtection = (Boolean) data.get('adProtection');
+            this.operational = (Boolean) data.get('operational');
+
+            this.primaryIndustry = data.containsKey('primaryIndustry')
+                ? new PrimaryIndustry((Map<String, Object>) data.get('primaryIndustry'))
+                : null;
+
+            this.statusInfo = data.containsKey('statusInfo')
+                ? new StatusInfo((Map<String, Object>) data.get('statusInfo'))
+                : null;
+
+            this.legalForm = data.containsKey('legalForm')
+                ? new LegalForm((Map<String, Object>) data.get('legalForm'))
+                : null;
+
+            this.incorpDate = data.containsKey('incorpDate')
+                ? (Date) JSON.deserialize(JSON.serialize(data.get('incorpDate')), Date.class)
+                : null;
+
+            this.capital = (String) data.get('capital');
+            this.currency_x = (String) data.get('currency');
+            this.signatory = (String) data.get('signatory');
+            this.businessDescription = (String) data.get('businessDescription');
+
+            // Handle lists.
+            for (Object rp : (List<Object>) data.get('relatedParties')) {
+                this.relatedParties.add(new RelatedParty((Map<String, Object>) rp));
+            }
+
+            for (Object eh : (List<Object>) data.get('employmentHistory')) {
+                this.employmentHistory.add(new EmploymentHistory((Map<String, Object>) eh));
+            }
+
+            for (Object pn : (List<Object>) data.get('phones')) {
+                this.phones.add(new Phone((Map<String, Object>) pn));
+            }
+
+            this.urls = data.containsKey('urls')
+                ? (List<String>) JSON.deserialize(JSON.serialize(data.get('urls')), List<String>.class)
+                : new List<String>();
+
+            this.emails = data.containsKey('emails')
+                ? (List<String>) JSON.deserialize(JSON.serialize(data.get('emails')), List<String>.class)
+                : new List<String>();
+
+        }
+    }
+
+
+    /* public class SEOrg extends Data {
 
         public String id;
         public String type;
@@ -324,7 +535,7 @@ public class ValitiveMonitoringSetSubjectResponse {
             this.manPowerInfo = data.containsKey('manpower') ? (ManPowerInfo) JSON.deserialize(JSON.serialize(data.get('manpower')), ManPowerInfo.class) : new ManpowerInfo();
 
         }
-    }
+    } */
 
 
 }

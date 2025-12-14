@@ -22,7 +22,7 @@ private class Test_SyncContactValitiveState {
     }
 
     @IsTest
-    static void should_sync_contact_valitive_state_test(){
+    static void should_sync_contact_valitive_state_test() {
         mock.buildMockServer();
         Test.setMock(HttpCalloutMock.class, mock.mockServer);
         Test.startTest();
@@ -43,7 +43,7 @@ private class Test_SyncContactValitiveState {
         ];
         System.assertEquals(2, contacts.size());
         for(Contact contact : contacts){
-            System.assertEquals('mock-street mock-numbermock-number-suffix lgh mock-flat', contact.MailingStreet);
+            System.assertEquals('mock-street mock-number mock-number-suffix lgh mock-flat', contact.MailingStreet);
             System.assertEquals('MOCK-CITY', contact.MailingCity);
             System.assertEquals('mock-county', contact.MailingRegion__c);
             System.assertEquals('mock-zip-code', contact.MailingPostalCode);

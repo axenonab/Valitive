@@ -17,7 +17,7 @@ private class Test_ValitiveQuerySubjectsBatch {
             Valitive_Import_Process_Id__c = '12345',
             Valitive_Import_Process_Status__c = 'Awaiting Initial Sync',
             IsInMonitoringSet__c = true,
-            Company_Number__c = '123456789'
+            Company_Number__c = '9947009438'
         );
         insert account;
         ValitiveQuerySubjectsBatch batch = new ValitiveQuerySubjectsBatch('Awaiting Initial Sync');

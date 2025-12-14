@@ -1,6 +1,7 @@
 public class ValitiveQuerySubjectsBatch implements Database.Batchable<sObject>, Database.AllowsCallouts {
 
     private String importStatus;
+    private Set<String> accountIds;
 
     @TestVisible
     private final ValitiveService valitiveService = new ValitiveService();
@@ -61,6 +62,12 @@ public class ValitiveQuerySubjectsBatch implements Database.Batchable<sObject>, 
         
     }
 
+    public static ValitiveQuerySubjectsBatch withAccountIds(Set<String> accountIds) {
+        ValitiveQuerySubjectsBatch batch = new ValitiveQuerySubjectsBatch();
+        batch.accountIds = accountIds;
+        return batch;
+    }
+
     public Database.QueryLocator start(Database.BatchableContext BC) {
         String query = buildQuery();
         System.debug('Query: ' + query);
@@ -102,18 +109,291 @@ public class ValitiveQuerySubjectsBatch implements Database.Batchable<sObject>, 
     }
 
     public String buildQuery() {
+        
         String fields = String.join(fieldsToSelect, ',');
         if(importStatus != null) {
             return 'SELECT ' + fields + ' FROM Account WHERE ' + baseFilter + ' AND Valitive_Import_Process_Status__c = :importStatus';
         } 
+        else if(accountIds != null) {
+            return 'SELECT ' + fields + ' FROM Account WHERE ' + baseFilter + ' AND Id IN :accountIds';
+        }
         else {
             return 'SELECT ' + fields + ' FROM Account WHERE ' + baseFilter;
         }
 
     }
 
-    public Account handleOrgResponse(ValitiveMonitoringSetSubjectResponse response, Account account){
-        ValitiveMonitoringSetSubjectResponse.SEOrg organisation = (ValitiveMonitoringSetSubjectResponse.SEOrg) response.data;
+    public Account handleOrgResponse( ValitiveMonitoringSetSubjectResponse response,Account account) {
+
+        // 🔁 CHANGED: SEOrg → SEOrganization - OK
+        ValitiveMonitoringSetSubjectResponse.SEOrganization organisation = (ValitiveMonitoringSetSubjectResponse.SEOrganization) response.data;
+
+        /* ============================================================
+        NAME
+        ============================================================ */
+
+        // CHANGED: orgName → names[]
+        // DECIDE: which name kind to use (OFFICIAL assumed here)
+        if(organisation.names != null && !organisation.names.isEmpty()) {
+            for(ValitiveMonitoringSetSubjectResponse.OrgName n : organisation.names) {
+                if(n.kind == 'OFFICIAL') {
+                    account.Name = valitiveUtils.isSameValue(account.Name, n.name) ? account.Name : n.name;
+                    break;
+                }
+            }
+        }
+
+        /* ============================================================
+        ADDRESSES
+        ============================================================ */
+
+        if(organisation.addresses != null && !organisation.addresses.isEmpty()) {
+
+            for(ValitiveAddress.Address address : organisation.addresses) {
+
+                if(address.getClassType() != ValitiveAddress.SwedishAddress.class) {
+                    continue;
+                }
+
+                    ValitiveAddress.SwedishAddress swedishAddress = (ValitiveAddress.SwedishAddress) address;
+
+                    // CHANGED: type discriminator value
+                    // DECIDE: confirm correct _type comparison, only react on SE_NORMALIZED?
+                    if(swedishAddress._type != 'SE_NORMALIZED') {
+                        continue;
+                    }
+
+                    if(swedishAddress.kind == 'MAIL') {
+                        account.BillingCountry =
+                            valitiveUtils.isSameValue(account.BillingCountry, swedishAddress.country)
+                                ? account.BillingCountry
+                                : swedishAddress.country;
+
+                        account.BillingCity =
+                            valitiveUtils.isSameValue(account.BillingCity, swedishAddress.city)
+                                ? account.BillingCity
+                                : swedishAddress.city.toUpperCase();
+
+                        account.BillingState =
+                            valitiveUtils.isSameValue(account.BillingState, swedishAddress.county)
+                                ? account.BillingState
+                                : swedishAddress.county;
+
+                        account.BillingPostalCode =
+                            valitiveUtils.isSameValue(account.BillingPostalCode, swedishAddress.zip)
+                                ? account.BillingPostalCode
+                                : valitiveUtils.formatZipCode(swedishAddress.zip);
+
+                        // Doublecheck if we are using this.
+                        account.Billing_Municipality__c =
+                            valitiveUtils.isSameValue(account.Billing_Municipality__c, swedishAddress.municipality)
+                                ? account.Billing_Municipality__c
+                                : swedishAddress.municipality;
+
+                        account.BillingStreet =
+                            valitiveUtils.isSameValue(
+                                account.BillingStreet,
+                                valitiveUtils.constructAdressSteetString(swedishAddress)
+                            )
+                                ? account.BillingStreet
+                                : valitiveUtils.constructAdressSteetString(swedishAddress);
+                    }
+                }
+            }
+
+            /* ============================================================
+            CONTACT DETAILS
+            ============================================================ */
+
+            // CHANGED: phones are now List<String>
+            if(organisation.phones != null && !organisation.phones.isEmpty()) {
+
+                account.Phone =
+                    valitiveUtils.isSameValue(account.Phone, organisation.phones[0])
+                        ? account.Phone
+                        : organisation.phones[0].number;
+            }
+
+            // Still valid
+            if(organisation.emails != null && !organisation.emails.isEmpty()) {
+                account.Email__c =
+                    valitiveUtils.isSameValue(account.Email__c, organisation.emails[0])
+                        ? account.Email__c
+                        : organisation.emails[0];
+            }
+
+            // Still valid
+            if(organisation.urls != null && !organisation.urls.isEmpty()) {
+
+                account.Website =
+                    valitiveUtils.isSameValue(account.Website, organisation.urls[0])
+                        ? account.Website
+                        : organisation.urls[0];
+            }
+
+            /* ============================================================
+            DESCRIPTION
+            ============================================================ */
+
+            // CHANGED: businessActivity → businessDescription
+            // DECIDE: semantic equivalence
+            account.Description =
+                valitiveUtils.isSameValue(account.Description, organisation.businessDescription)
+                    ? account.Description
+                    : organisation.businessDescription;
+
+            /* ============================================================
+            INDUSTRY / BUSINESS CATEGORY
+            ============================================================ */
+
+            // ⚠️ CHANGED: primaryBusinessCategory → primaryIndustry.primary
+            // 🤔 DECIDE: classification system (SNI vs NACE)
+            if(organisation.primaryIndustry != null && organisation.primaryIndustry.primary != null) {
+
+                account.Primary_Business_Category__c =
+                    valitiveUtils.isSameValue(
+                        account.Primary_Business_Category__c,
+                        organisation.primaryIndustry.primary.description
+                    )
+                        ? account.Primary_Business_Category__c
+                        : organisation.primaryIndustry.primary.description;
+
+                account.Primary_Business_Category_Code__c =
+                    valitiveUtils.isSameValue(
+                        account.Primary_Business_Category_Code__c,
+                        organisation.primaryIndustry.primary.code
+                    )
+                        ? account.Primary_Business_Category_Code__c
+                        : organisation.primaryIndustry.primary.code;
+            }
+
+            // CHANGED: otherBusinessCategories → altClassifications
+            // Concatenate all altClassifications with semicolon separator
+            // TODO: Confirm field size in SF.
+            if (organisation.primaryIndustry != null && organisation.primaryIndustry.altClassifications != null && !organisation.primaryIndustry.altClassifications.isEmpty()) {
+
+                List<String> altDescriptions = new List<String>();
+                List<String> altCodes = new List<String>();
+
+                for (ValitiveMonitoringSetSubjectResponse.Industry alt : organisation.primaryIndustry.altClassifications) {
+
+                    if (alt.description != null) {
+                        altDescriptions.add(alt.description);
+                    }
+
+                    if (alt.code != null) {
+                        altCodes.add(alt.code);
+                    }
+                }
+
+                String concatenatedDescriptions = String.join(altDescriptions, ';');
+                String concatenatedCodes = String.join(altCodes, ';');
+
+                account.Other_Business_Category__c =
+                valitiveUtils.isSameValue(account.Other_Business_Category__c, concatenatedDescriptions)
+                    ? account.Other_Business_Category__c
+                    : concatenatedDescriptions;
+
+                account.Other_Business_Category_Code__c =
+                valitiveUtils.isSameValue(account.Other_Business_Category_Code__c, concatenatedCodes)
+                    ? account.Other_Business_Category_Code__c
+                    : concatenatedCodes;
+            }
+
+            /* ============================================================
+            STATUS / ESTABLISHMENT
+            ============================================================ */
+
+            // CHANGED: lifecycle → statusInfo
+            if(organisation.statusInfo != null) {
+                account.Status__c =
+                    valitiveUtils.isSameValue(account.Status__c, organisation.statusInfo.status)
+                        ? account.Status__c
+                        : organisation.statusInfo.status;
+            }
+
+            // CHANGED: establishedOn → incorpDate
+            account.Established__c =
+                valitiveUtils.isSameValue(account.Established__c, organisation.incorpDate)
+                    ? account.Established__c
+                    : organisation.incorpDate;
+
+            // DECIDE: derive year
+            if(organisation.incorpDate != null) {
+                Integer incorpYear = organisation.incorpDate.year();
+                account.Year_Established__c =
+                    valitiveUtils.isSameValue(account.Year_Established__c, incorpYear)
+                        ? account.Year_Established__c
+                        : incorpYear;
+            }
+
+            /* ============================================================
+            LEGAL FORM
+            ============================================================ */
+
+            // ✅ Still valid
+            if(organisation.legalForm != null) {
+                account.Legalform__c =
+                    valitiveUtils.isSameValue(account.Legalform__c, organisation.legalForm.name)
+                        ? account.Legalform__c
+                        : organisation.legalForm.name;
+
+                account.Legalform_Code__c =
+                    valitiveUtils.isSameValue(account.Legalform_Code__c, organisation.legalForm.code)
+                        ? account.Legalform_Code__c
+                        : organisation.legalForm.code;
+            }
+
+            /* ============================================================
+            FINANCIALS (NO LONGER PRESENT)
+            ============================================================ */
+
+            // REMOVED:
+            // organisation.financials.*
+            // Latest_* fields
+            // getLatestFinancialStatement()
+
+            /* ============================================================
+            EMPLOYEES / MANPOWER
+            ============================================================ */
+
+            // CHANGED: manPowerInfo → employmentHistory
+            // DECIDE: aggregation strategy
+            if(organisation.employmentHistory != null && !organisation.employmentHistory.isEmpty()) {
+
+                // Fetch the lastest entry due to sorting. We want the latest updated data on employees.
+                ValitiveMonitoringSetSubjectResponse.EmploymentHistory latest = organisation.employmentHistory[0];
+
+                // DECIDE: which entry is "latest"
+                if(latest.min != null && latest.max != null) {
+                    account.Min_Nr_Of_Employees_Org__c =
+                        valitiveUtils.isSameValue(account.Min_Nr_Of_Employees_Org__c, latest.min)
+                            ? account.Min_Nr_Of_Employees_Org__c
+                            : latest.min;
+
+                    account.Max_Nr_Of_Employees_Org__c =
+                        valitiveUtils.isSameValue(account.Max_Nr_Of_Employees_Org__c, latest.max)
+                            ? account.Max_Nr_Of_Employees_Org__c
+                            : latest.max;
+                }
+
+                // DECIDE: count vs interval
+                if(latest.count != null) {
+                    account.NumberOfEmployees =
+                        valitiveUtils.isSameValue(account.NumberOfEmployees, latest.count)
+                            ? account.NumberOfEmployees
+                            : latest.count;
+                }
+            }
+
+        return account;
+    }
+
+    // OLD CODE FOR ORG HANDLER - KEEP FOR REFERENCE
+    /* public Account handleOrgResponse(ValitiveMonitoringSetSubjectResponse response, Account account){
+
+        // SE ORGANIZATION response structure. 20251213.
+        ValitiveMonitoringSetSubjectResponse.SEOrganization organisation = (ValitiveMonitoringSetSubjectResponse.SEOrganization) response.data;
 
         if(organisation.orgName != null) {
             account.Name = valitiveUtils.isSameValue(account.Name, organisation.orgName.name) ? account.Name : organisation.orgName.name;
@@ -208,7 +488,7 @@ public class ValitiveQuerySubjectsBatch implements Database.Batchable<sObject>, 
             }
         }
         return latestFinancialStatement;
-    }
+    } */
 
 
 }

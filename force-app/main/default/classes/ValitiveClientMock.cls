@@ -28,117 +28,148 @@ public class ValitiveClientMock {
         );
     }
 
-    private SingleRequestMock createOrganisationSubjectResponse(){
+    private SingleRequestMock createOrganisationSubjectResponse() {
         return new SingleRequestMock(
             200,
             'OK',
-            System.JSON.serialize(new List<Object>{new Map<String, Object>{
-                'id' => '123456789',
-                'monitoringSetId' => 'mock-monitoring-set-id',
-                'addedAt' => '2021-08-23T14:55:05.327Z',
-                'updatedAt' => '2021-08-23T14:55:05.327Z',
-                'data' => new Map<String, Object>{
-                    '_type' => 'SE_ORG',
-                    'id' => 'mock-id',
-                    'country' => 'mock-country',
-                    'legalId' => 'mock-legal-id',
-                    'addresses' => new List<Map<String, Object>>{
-                        new Map<String, Object>{
-                            '_type' => 'SE_ORG_NORMALIZED',
-                            'kind' => 'VISIT',
-                            'country' => 'mock-country',
-                            'street' => 'mock-street',
-                            'number' => 'mock-number',
-                            'zip' => 'mock-zip-code',
-                            'city' => 'mock-city',
-                            'county' => 'mock-county',
-                            'municipality' => 'mock-municipality'
-                        },
-                        new Map<String, Object>{
-                            '_type' => 'SE_ORG_NORMALIZED',
-                            'kind' => 'MAIL',
-                            'country' => 'mock-country',
-                            'street' => 'mock-street-mail',
-                            'number' => 'mock-number',
-                            'zip' => 'mock-zip-code',
-                            'city' => 'mock-city',
-                            'county' => 'mock-county',
-                            'municipality' => 'mock-municipality'
-                        }
-                    },
-                    'urls' => new List<String>{},
-                    'emails' => new List<String>{},
-                    'phones' => new List<String>{},
-                    'orgName' => new Map<String, Object>{
-                        'name' => 'mock-name',
-                        'rawName' => 'mock-raw-name'
-                    },
-                    'lifecycle' => new Map<String, Object>{
-                        'status' => new Map<String, Object>{
-                            'value' => 'ACTIVE'
-                        },
-                        'establishedInYear' => 2021,
-                        'establishedOn' => '2021-08-23'
-                    },
-                    'historicalAddressess' => new List<Object>(),
-                    'businessActivity' => 'mock-business-activity',
-                    'primaryBusinessCategory' => new Map<String, Object>{
-                        'code' => 'mock-code',
-                        'description' => 'mock-description'
-                    },
-                    'otherBusinessCategories' => new List<Map<String, Object>>{
-                        new Map<String, Object>{
-                            'code' => 'mock-code',
-                            'description' => 'mock-description'
-                        }
-                    },
-                    'legalForm' => new Map<String, Object>{
-                        'code' => 'mock-code',
-                        'description' => 'mock-description'
-                    },
-                    'financials' => new Map<String, Object>{
-                        'stockExchangeListed' => false,
-                        'shareCapital' => '100000',
-                        'turnoverGroup' => '1 - 49 tkr',
-                        'financialStatements' => new List<Map<String, Object>>{
-                            new Map<String, Object>{
-                                'period' => '2018-04-01',
-                                'durationMonths' => 12,
-                                'equityRatio' => '70.1',
-                                'liquidityRatio' => '406.6',
-                                'returnOnEquity' => '53.0',
-                                'returnOnAssets' => '37.3',
-                                'debtRatio' => '0.4',
-                                'profitMargin' => '34.2',
-                                'totalTurnover' => '1409',
-                                'yearResult' => '282'
+            System.JSON.serialize(
+                new List<Object>{
+                    new Map<String, Object>{
+                        '_type' => 'ORGANIZATION',
+                        'id' => '9947009438',
+                        'monitoringSetId' => 'bbaf3ad374f54893812bc9c194cc2db1',
+                        'addedAt' => '2025-11-13T14:56:29.102Z',
+                        'updatedAt' => '2025-11-13T14:56:29.102Z',
+                        'data' => new Map<String, Object>{
+                            '_type' => 'SE_ORGANIZATION',
+                            'id' => 'CAISFjRVY3Bzb3RyU1FPWWhucHphbUlJU3c',
+                            'country' => 'SE',
+                            'legalId' => '9947009438',
+
+                            // 🔹 names (replaces orgName)
+                            'names' => new List<Map<String, Object>>{
+                                new Map<String, Object>{
+                                    'name' => 'Advokatbyrån Kaiding KB',
+                                    'rawName' => 'Advokatbyrån Kaiding Kommanditbolag',
+                                    'kind' => 'OFFICIAL'
+                                }
                             },
-                            new Map<String, Object>{
-                                'period' => '2019-04-01',
-                                'durationMonths' => 12,
-                                'equityRatio' => '70.1',
-                                'liquidityRatio' => '406.6',
-                                'returnOnEquity' => '53.0',
-                                'returnOnAssets' => '37.3',
-                                'debtRatio' => '0.4',
-                                'profitMargin' => '34.2',
-                                'totalTurnover' => '1409',
-                                'yearResult' => '300'
+
+                            // 🔹 addresses (_type changed)
+                            'addresses' => new List<Map<String, Object>>{
+                                new Map<String, Object>{
+                                    '_type' => 'SE_NORMALIZED',
+                                    'kind' => 'MAIL',
+                                    'country' => 'SE',
+                                    'street' => 'Kanalgatan',
+                                    'number' => '59',
+                                    'zip' => '93132',
+                                    'city' => 'Skellefteå',
+                                    'county' => 'Västerbotten',
+                                    'municipality' => 'Skellefteå'
+                                }
+                            },
+
+                            // 🔹 contact info
+                            'emails' => new List<String>{
+                                'skelleftea@kaiding.se'
+                            },
+                            'phones' => new List<Map<String, Object>>{
+                                new Map<String, Object>{
+                                    'type' => 'MAIN',
+                                    'number' => '0910-12345'
+                                }
+                            },
+                            'urls' => new List<String>{
+                                'https://www.kaiding.se'
+                            },
+
+                            // 🔹 renamed from businessActivity
+                            'businessDescription' => 'Advokatrörelse.',
+
+                            // 🔹 replaces primaryBusinessCategory / otherBusinessCategories
+                            'primaryIndustry' => new Map<String, Object>{
+                                'primary' => new Map<String, Object>{
+                                    '_type' => 'NORDIC_INDUSTRY',
+                                    'description' => 'Advokatbyråverksamhet',
+                                    'standardName' => 'SNI',
+                                    'code' => '69101'
+                                },
+                                'altClassifications' => new List<Map<String, Object>>{
+                                    new Map<String, Object>{
+                                        '_type' => 'NORDIC_INDUSTRY',
+                                        'description' => 'Legal activities',
+                                        'standardName' => 'NACE',
+                                        'code' => '6910'
+                                    }
+                                }
+                            },
+
+                            // 🔹 related parties
+                            'relatedParties' => new List<Map<String, Object>>{
+                                new Map<String, Object>{
+                                    'name' => 'Bernt Micael Engström',
+                                    'legalId' => '197001139075',
+                                    'partyId' => '9onNqquES8iT99NrSEx5-g',
+                                    'function' => 'AUDIT',
+                                    'validFrom' => '2022-09-16',
+                                    'partyType' => 'PERSON'
+                                },
+                                new Map<String, Object>{
+                                    'name' => 'Advokatbyrån Kaiding AB',
+                                    'legalId' => '5566546593',
+                                    'partyId' => 'CAISFnNBX01FOWR1U2dHQjVwR2ZLbkRva2c',
+                                    'function' => 'LEGAL_OWNER',
+                                    'shares' => new Map<String, Object>{
+                                        'min' => 99.0,
+                                        'max' => 99.0
+                                    },
+                                    'partyType' => 'ORGANIZATION'
+                                }
+                            },
+
+                            // 🔹 replaces lifecycle.status
+                            'statusInfo' => new Map<String, Object>{
+                                '_type' => 'SE_STATUS_INFO',
+                                'status' => new Map<String, Object>{
+                                    'value' => 'ACTIVE',
+                                    'validFrom' => '2009-07-06'
+                                },
+                                'statusHistory' => new List<Object>{},
+                                'bvStatus' => 'ACTIVE',
+                                'bvStatusValidFrom' => '2009-07-06',
+                                'bvStatusText' => 'Företagets registreringsdatum'
+                            },
+
+                            // 🔹 replaces establishedOn
+                            'incorpDate' => '2009-07-06',
+
+                            // 🔹 unchanged conceptually
+                            'legalForm' => new Map<String, Object>{
+                                'code' => 'KB',
+                                'name' => 'Kommanditbolag'
+                            },
+
+                            // 🔹 replaces manpower
+                            'employmentHistory' => new List<Map<String, Object>>{
+                                new Map<String, Object>{
+                                    'date' => '2022-02-17',
+                                    'period' => 'MONTHLY',
+                                    'count' => 0,
+                                    'interval' => new Map<String, Object>{
+                                        'min' => 0,
+                                        'max' => 0
+                                    }
+                                }
                             }
                         }
-                    },
-                    'manpower' => new Map<String, Object>{
-                        'minNrOfEmployeesHQ' => 1,
-                        'maxNrOfEmployeesHQ' => 10,
-                        'minNrOfEmployeesOrg' => 1,
-                        'maxNrOfEmployeesOrg' => 10,
-                        'nrOfEmployeesOrg' => 1
                     }
                 }
-            }}),
+            ),
             null
         );
     }
+
 
     private SingleRequestMock createImportProcessStatusResponse(){
         return new SingleRequestMock(
